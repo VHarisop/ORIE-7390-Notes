@@ -1,0 +1,47 @@
+\documentclass[10pt]{article}
+
+\input{preamble}
+\usepackage{latex-macros}
+\usepackage{todonotes}
+\usepackage{tikz,pgfplots}
+\usepackage{algorithm, algpseudocode}
+\usepackage[margin=1in]{geometry}
+\usetikzlibrary{shapes.geometric}
+%\usepackage{parskip}
+\usepackage[capitalize]{cleveref}
+
+
+% Use tcolorbox, define custom "Exercise" environ
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems}
+
+% Create Exercise environment
+\newtcbtheorem[number within=section]{exercise}{Exercise}%
+{}{exc}
+\newtcbtheorem[number within=section]{ctheorem}{Theorem}%
+{colframe=gray!30!black}{thm}
+
+\usepackage{todonotes}
+
+\newcommand{\fsubsection}[1]{\subsection{\textsf{#1}}}
+\newcommand{\fsubsubsection}[1]{\subsubsection{\textsf{#1}}}
+
+\newcommand{\regdiff}{\hat{\partial}}
+\newcommand{\bd}[1]{\mathrm{bd}\left( #1 \right)}
+
+\begin{document}
+
+\allowdisplaybreaks
+\everymath{\displaystyle}
+
+\homework{\today}{Lecture Notes - Fall 2018}
+\tableofcontents
+
+\include{notes/aug_23}
+
+\appendix
+
+\clearpage
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}

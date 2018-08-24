@@ -1,0 +1,79 @@
+\section{Introduction}
+
+\subsection{Recap}
+We briefly review some fundamentals from convex analysis. Recall that, for
+\[
+	f : \Hbb \to \Rbb \cup \set{+\infty},
+\]
+where $f$ is convex and $\Hbb$ is a Hilbert space (e.g. $\Rbb^n$), we write
+\[
+	y \in \partial f(x) \Leftrightarrow x \in \argmin f(\cdot) - \ip{y, \cdot}.
+\]
+The subgradient $\partial f(x)$ is closed and convex, so it has a unique
+shortest element when it is nonempty. This is because the shortest element is
+given by the following convex program:
+\[
+	\inf_{z \in \partial f(x)} \norm{z}^2.
+\]
+$\norm{~}^2$ is a strongly convex function which is minimized over a closed,
+convex set, hence it admits a unique minimizer. Let us call this minimizer
+$\partial^o f(x)$.
+
+It can also be shown that the direction of steepest descent is given by
+$-\partial^o f(x)$. Hence, for minimization, it is natural to follow the
+trajectory given by
+\begin{align}
+	\begin{cases}
+		\dot{X}(t) = -\partial^o f(X(t)), & t \geq 0 \\
+		X(0) = x_0. &
+	\end{cases}
+	\label{eq:descent_trajectory}
+\end{align}
+This raises a fundamental question:
+
+\paragraph{Question 1: Can we really follow this trajectory?}
+
+The following Theorem provides an affirmative answer:
+
+\begin{ctheorem}{\cite{Brezis73}}
+	There exists a trajectory defined by~\cref{eq:descent_trajectory}.
+	Moreover, by~\cite{Bruck75}, if that trajectory is bounded, it converges
+	weakly to a minimizer of $f$.
+\end{ctheorem}
+
+However, in order to be tractable, we would also like to control the length of
+those trajectories.
+
+\paragraph{Question 2: How do we control them?}
+
+\subsection{History}
+For smooth $f: \Rbb^n \to \Rbb$ (nonconvex):
+\begin{itemize}
+	\item gradient descent trajectory:
+		\[
+			\begin{cases}
+				\dot{X}(t) = -\grad f(X(t)), & t \geq 0 \\
+				X(0) = x_0 \\
+			\end{cases}
+		\]
+		might not have finite length, even if it stays in bounded regions. The
+		canonical counterexample involves a spiral ridge or a so-called
+		``mexican hat''.
+	\item if $f$ is analytic, we have a positive result:
+		\begin{ctheorem}{{\L}ojasiewicz, 1984}
+			When $f$ is real-analytic (i.e. admits a power series expansion),
+			bounded gradient descent trajectories have finite length.
+		\end{ctheorem}
+\end{itemize}
+A key tool in the Theorem presented above is the {\L}ojasiewicz inequality,
+presented below:
+\begin{ctheorem}{\cite{Loja59}}
+	For real-analytic $f: \Rbb^n \mapsto \Rbb$, around a local minimizer
+	$\hat{x}$, it holds that
+	\[
+		\norm{\grad f(\cdot)} \geq c \abs{f(\cdot) - f(\hat{x})}, \;
+		c > 0, \; 0 \leq \mu < 1.
+	\]
+\end{ctheorem}
+An example is $f(x) = x^2$, which satisfies the {\L}ojasiewicz inequality
+around $0$ with exponent $\mu = 1/2$.
