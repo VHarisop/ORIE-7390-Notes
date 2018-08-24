@@ -35,7 +35,7 @@ This raises a fundamental question:
 
 The following Theorem provides an affirmative answer:
 
-\begin{ctheorem}{\cite{Brezis73}}
+\begin{ctheorem}{\cite{Brezis73}}{brezis73}
 	There exists a trajectory defined by~\cref{eq:descent_trajectory}.
 	Moreover, by~\cite{Bruck75}, if that trajectory is bounded, it converges
 	weakly to a minimizer of $f$.
@@ -60,14 +60,14 @@ For smooth $f: \Rbb^n \to \Rbb$ (nonconvex):
 		canonical counterexample involves a spiral ridge or a so-called
 		``mexican hat''.
 	\item if $f$ is analytic, we have a positive result:
-		\begin{ctheorem}{{\L}ojasiewicz, 1984}
+		\begin{ctheorem}{{\L}ojasiewicz, 1984}{loja84}
 			When $f$ is real-analytic (i.e. admits a power series expansion),
 			bounded gradient descent trajectories have finite length.
 		\end{ctheorem}
 \end{itemize}
 A key tool in the Theorem presented above is the {\L}ojasiewicz inequality,
 presented below:
-\begin{ctheorem}{\cite{Loja59}}
+\begin{ctheorem}{\cite{Loja59}}{loja59}
 	For real-analytic $f: \Rbb^n \mapsto \Rbb$, around a local minimizer
 	$\hat{x}$, it holds that
 	\[
@@ -77,3 +77,58 @@ presented below:
 \end{ctheorem}
 An example is $f(x) = x^2$, which satisfies the {\L}ojasiewicz inequality
 around $0$ with exponent $\mu = 1/2$.
+
+\subsection{Slope, Sharpness and the KL Property}
+It can be shown that the subgradient descent trajectory always attains the
+maximum instantaneous rate of decrease. We call this quantity the
+\textit{slope}:
+\begin{cdefinition}{Slope}{slope}
+	We define the slope to be the quantity
+	\[
+		\abs{\grad f}(x) := \limsup_{z \to x} \frac{f(x) - f(z)}{\norm{x - z}}.
+	\]
+\end{cdefinition}
+Based on the slope, we can characterize a class of functions that are
+\textit{sharp} around their minima:
+\begin{cdefinition}{Sharpness}{sharpness_informal}
+	We call a function $f: \Rbb^n \to \Rbb$ \textbf{sharp} around a minimizer
+	$x^{\star}$ if $\abs{\grad f}(x) > \epsilon > 0, \; \forall x \neq
+	x^{\star}$ and $x$ close to $x^{\star}$.
+\end{cdefinition}
+Equipped with the notion of sharpness, it is quite easy to show that
+trajectories have finite length. We can often reparameterize the functions of
+interest to achieve this; essentially, we are looking for
+\begin{equation}
+	\phi : \Rbb_+ \mapsto \Rbb \Rightarrow
+	\abs{\grad(\phi \circ f)} \geq 1, \; \text{locally}
+	\label{eq:kl_ineq_worded}
+\end{equation}
+\cref{eq:kl_ineq_worded} is called the \textbf{K-L inequality}.
+
+\textbf{Fact}: the length of a trajectory from time $s$ to $t$ satisfies
+\[
+	X[s, t] \leq \phi(f(X(s))) - \phi(f(X(t))), \; \forall 0 \leq s \leq t
+\]
+and then $X$ converges (in norm) to a minimizer.
+
+
+\subsection{Algorithms}
+The K-L inequality~\eqref{eq:kl_ineq_worded} is also enough to prove
+convergence (and control the rate of convergence) of subgradient descent
+\textit{sequences}:
+\[
+	\exists \alpha, \beta > 0 : \;
+	\begin{cases}
+		f(x) - f(x_{k+1}) \geq \alpha \norm{x_k - x_{k+1}}^2,  \\
+		\abs{\grad f}(x_{k+1}) \leq \beta \norm{x_k - x_{k+1}}.
+	\end{cases}
+\]
+Sharpness gives us the following statement:
+\[
+	\mathrm{dist}(x, \argmin(f)) \leq \phi(f(x) - \min f)
+\]
+
+\paragraph{Question 3: When does the KL property hold?}
+The KL property holds for very general classes of functions. For example, it
+holds when $f$ is semialgebraic, i.e. a function whose graph is the
+intersection of a set of polynomial inequalities.
