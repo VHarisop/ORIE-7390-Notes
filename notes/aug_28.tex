@@ -1,0 +1,143 @@
+\section{Some Convex Analysis}
+
+\subsection{Fundamentals}
+The setup: $\Hbb$ is a real Hilbert space (e.g. $\Rbb^n$ for us, but could be
+infinite-dimensional).
+We denote $\overline{\Rbb} = \Rbb \cup \set{\pm \infty}$. For $f: \Hbb \to
+\overline{\Rbb}$, we write
+\begin{equation}
+    \epi f = \set{(x, r) \in \Hbb \times \Rbb \mmid r \geq f(x)}
+    \label{eq:epif}
+\end{equation}
+
+It holds that $f$ convex $\Leftrightarrow$ $\epi f$ convex, which is a simple
+consequence of convexity. Additionally, $f$ closed implies that $\epi f$ is
+closed, which is equivalent to $f$ being lower semicontinuous.
+
+We call $f$ \textit{proper} if it is never $-\infty$, and not always $+\infty$.
+Moreover, we define
+\begin{equation}
+    \dom f = \set{x \in \Hbb \mmid f(x) < \infty} \label{eq:domf}
+\end{equation}
+
+\begin{cdefinition}{Subgradient}{subgradient}
+    For a convex function $f$, we write $y \in \partial f(x)$ meaning that
+    \[
+        f(z) \geq f(x) + \ip{y, z - x}, \; \forall z.
+    \]
+    The set $\partial f(x)$ is always a closed convex set. If it is nonempty,
+    it has a \textit{unique} shortest element $\partial^{\circ} f(x)$.
+\end{cdefinition}
+
+
+\begin{ctheorem}{Continuity of convex functions}{conv-cont}
+    For a proper convex $f: \Hbb \to \overline{\Rbb}$, at a point $x \in
+    \intr{\dom f}$, we know that $f$ is locally Lipschitz on a neighbourhood
+    around $x$ with constant $L$. Moreover, its subdifferential satisfies
+    \[
+        \partial f(x) \neq \emptyset, \quad \norm{\partial f(x)} \leq L.
+    \]
+\end{ctheorem}
+\begin{proof}
+    Via the separating hyperplane theorem (Hahn-Banach).
+\end{proof}
+
+\subsection{The Fenchel conjugate}
+Recall that, for any $f: \Hbb \to \overline{\Rbb}$, we define its
+\textbf{conjugate} $f^*$ by
+\begin{equation}
+    f^*(y) = \sup_{x} \set{\ip{x, y} - f(x)}
+    \label{eq:fenchel_conjugate}
+\end{equation}
+
+Additionally, from the above definition, we deduce the so-called
+\textit{Fenchel-Young inequality}:
+\[
+    f(x) + f^*(y) \geq \ip{x, y}, \; \forall x, y.
+\]
+
+\begin{ctheorem}{Biconjugate}{biconjugate}
+    For closed, convex, proper $f: \Hbb \to \overline{\Rbb}$, it holds that
+    $f^{**} = f$.
+\end{ctheorem}
+
+We briefly give some examples:
+\begin{itemize}
+\item Consider $\cC \subseteq \Hbb$. We define its \textit{indicator function}
+    $\delta_{\cC}(x) = \begin{cases}
+        0, & x \in \cC \\
+        +\infty, & x \notin \cC
+    \end{cases}$. Its conjugate is the \textit{support function} of $\cC$:
+    \[
+        \delta_{\cC}^*(x) = \sup{z} \set{\ip{x, z} - \delta_{\cC}(z)}
+        = \sup_{z \in \cC} \ip{x, z},
+    \]
+    where the simplification above occurs since $-\delta_{\cC}(z)$ is $-\infty$
+    for $z \notin \cC$, which is a case that we disregard when computing the
+    supremum, otherwise $0$.
+\item For an indicator function $\delta_{\cC}$, its subgradient at $x$ is the
+    so-called \textit{normal cone} at $x$, denoted by
+    \[
+        N_{\cC}(x) := \partial \delta_{\cC}(x).
+    \]
+    Its conjugate is defined as
+    \[
+        \partial \delta_{\cC}^*(y) := \argmax_{x \in \cC} \ip{x, y}.
+    \]
+\end{itemize}
+
+\begin{exercise}{Conjugates}{indicator-conjugates}
+    Prove the forms of the conjugates in the examples above.
+\end{exercise}
+
+The next proposition uncovers a relationship between the subgradients of the
+original function and its Fenchel conjugate.
+\begin{cproposition}{Subgradients of conjugates}{conj-subgrad}
+    For a closed, convex, proper $f$, we have $y \in \partial f(x)$ exactly when
+    $x \in \partial f^*(y)$. This is precisely when equality holds in the
+    Fenchel-Young inequality.
+\end{cproposition}
+\begin{proof}
+    The proof is left as an exercise.
+\end{proof}
+
+\begin{cdefinition}{Positive Homogeneity}{pos-homogen}
+    We call a function $f: \Hbb \mapsto \overline{\Rbb}$ positively homogeneous
+    if
+    \[
+        f(tx) = tf(x), \; \forall t \geq 0, \; \forall x,
+    \]
+    and, additionally, $f(0) = 0$.
+\end{cdefinition}
+The next proposition relates the positive homogeneity of support functions with
+the set $\cC$ having certain desirable properties:
+\begin{cproposition}{~}{support-fun-convex}
+    The support function $f = \delta_{\cC}^*$ is proper, closed, convex and
+    positively homogeneous when $\cC$ is a nonempty, closed, convex set that
+    satisfies $\cC \neq \Hbb$. The converse is also true.
+\end{cproposition}
+\begin{proof}
+    We prove each direction separately:
+    \begin{itemize}
+    \item $\Rightarrow$: the proof is immediate. \todo{Write down details}
+    \item $\Leftarrow$: Let $\cC = \partial f(0)$. Given a $y \in \partial
+    f(0)$, it holds that
+    \[
+        \ip{x, y} + \cancelto{0}{f(0)} \leq f(x), \; \forall x.
+    \]
+    Then, by the definition of the Fenchel conjugate:
+    \[
+        f^*(y) = \sup_{x} \set{\underbrace{\ip{x, y} - f(x)}_{\leq 0}}
+        \leq 0,
+    \]
+    and equality is satisfied for $x = 0$. If $y \notin \partial f(0)$, then
+    $\exists \bar{x}$ such that $\ip{\bar{x}, y} > f(\bar{x})$ (otherwise $y$
+    would satisfy the subgradient inequality!). This implies
+    \[
+        f^*(y) \geq \sup_{t \geq 0} \set{\ip{t\bar{x}, y} - f(t \bar{x})}
+        = \sup_{t \geq 0} t \set{\ip{\bar{x}, y} - f(\bar{x})} = +\infty
+    \]
+    This means that $f^* = \delta_{\cC}$ (\textbf{why?}) hence $f = f^{**} =
+    \delta_{\cC}^*$.
+    \end{itemize}
+\end{proof}
