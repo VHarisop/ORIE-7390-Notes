@@ -141,3 +141,58 @@ the set $\cC$ having certain desirable properties:
     \delta_{\cC}^*$.
     \end{itemize}
 \end{proof}
+The next theorem is the so-called \textit{max-formula} or what is also known as
+steepest ascent.
+
+\begin{ctheorem}{Max-formula}{max-formula}
+	Take any proper convex function $f: \Hbb \mapsto \overline{\Rbb}$, and take
+	$x \in \intr{\dom f}$. Consider its directional derivative
+	\[
+		f'(x; v) \triangleq \lim_{t \dto 0} \frac{f(x + tv) - f(x)}{t}.
+	\]
+	That limit exists and is equal to
+	\[
+		f'(x; v) = \max_{y \in \partial f(x)} \ip{y, v}.
+	\]
+	Furthermore, \[ \min_{v \in \mathbb{B}_2} f'(x; v) = -\mathrm{dist}(0,
+	\partial f(x)) = - \norm{\partial^{\circ} f(x)} \] and is attained uniquely
+	by $v = -\frac{\partial^{\circ} f(x)}{\norm{\partial^{\circ} f(x)}}$,
+	assuming that $x$ is not a minimizer.
+\end{ctheorem}
+\begin{proof}
+	Notice that in the above, we have that
+	\( \sup_{y \in \partial f(x)} \ip{y, v} = \max_{y \in \partial f(x)} \ip{y,
+	v}, \) since the subdifferential is nonempty at any point in the interior,
+	and additionally closed, convex and bounded. Hence the supremum is
+	attained, so we can write $\max$ instead of $\sup$.
+
+	Now, let us proceed with the proof of the max-formula. By convexity, it is easy
+	to check that $t \mapsto \frac{f(x + tv) - f(x)}{t}$ is nondecreasing in
+	$t$, when $t \in (0, 1]$. Hence $f'(x; v) \geq 0$ and $0 \leq f'(x; v) -
+	f(x)$.
+
+	Now, it is again easy to check that $f'(x; \cdot)$ is finite by the
+	Lipschitz property, convex since $f$ is convex, and continuous. By
+	definition, it is positively homogeneous. (why?)
+	Additionally, $\partial f'(x; 0) = \partial f(x)$, which is also easy to
+	check. Then, the max formula follows by the previous result about support
+	functions.
+
+	For any $v \in \mathbb{B}_2$, we have
+	\begin{align*}
+		f'(x; v) &= \max_{y \in \partial f(x)} \ip{y, v} \geq \ip{g, v}
+			\overset{(\text{Cauchy-Schwarz})}{\geq} - \norm{g},
+	\end{align*}
+	which is attained by $v = -\frac{g}{\norm{g}}$, where $g$ is the smallest
+	norm vector in $\partial f(x)$. But, if $x$ is not a minimizer, we have
+	that
+	\begin{align*}
+		f'\left(x; -\frac{g}{\norm{g}} \right) &= \max_{y \in \partial f(x)}
+			\ip{y, -\frac{g}{\norm{g}}} \\
+			&= -\frac{1}{\norm{g}} \min_{y \in \partial f(x)} \ip{y, g}
+	\end{align*}
+	Since $g$ is the shortest vector, by the characterization of projections we
+	obtain that $\ip{g, y - g} \geq 0 \Rightarrow \ip{g, y} \geq \norm{g}^2$,
+	so that $-\frac{1}{\norm{g}} \min_{y \in \partial f(x)} \ip{y, g} =
+		- \norm{g}$.
+\end{proof}
