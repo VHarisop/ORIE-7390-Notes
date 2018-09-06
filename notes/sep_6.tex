@@ -1,0 +1,161 @@
+\section{KL Property and Algorithms}
+
+Consider $f : \Hbb \to \overline{\Rbb}$ proper, with $\min f$ finite.
+
+\begin{cdefinition}{Kurdyka-{\L}ojasiewicz Property}{kl-prop}
+	The Kurdyka-Lojasiewicz property holds for $f$ on $\cX \subseteq \Hbb$
+	means that $\exists \rho > 0$ and a continuous, concave function
+	\[
+		\phi: [0, \rho) \mapsto \Rbb_+, \; \phi(0) = 0, \; \phi' > 0,
+	\]
+	called the \textbf{desingularization} function, such that
+	\begin{align*}
+		\abs{\grad (\phi \circ (f - \min f))}(x) &\geq 1, \quad
+		\forall x : 0 < f(x) - \min f < \rho
+	\end{align*}
+	Typically, $\phi(s) = k s^{1 - \theta}, \; \theta \in [0, 1)$, and $\theta$
+	is sometimes called the \textit{{\L}ojasiewicz exponent}.
+\end{cdefinition}
+Notice that the KL property implies sharpness for strictly convex quadratics.
+
+In general, we will consider \textit{slope descent} sequences $\set{x_k} \in
+\Hbb$ that satisfy the following properties:
+\begin{enumerate}
+	\item (sufficient decrease): $\exists \alpha > 0$ such that
+		\[
+			f(x_k) - f(x_{k+1}) \geq \alpha \norm{x_k - x_{k+1}}^2.
+		\]
+		It should be possible to get such a decrease if we take sufficiently
+		small steps, because it's relatively easy to guarantee by construction
+		of our optimization algorithms.
+	\item (error bound): $\exists \beta > 0$ such that
+		\[
+			\abs{\grad f}(x_{k+1}) \leq \beta \norm{x_k - x_{k+1}}.
+		\]
+\end{enumerate}
+Notice that, for sharp functions, the second property would imply that any
+algorithm that generates such a descent sequence must terminate. This is
+because the slope is bounded from below for sharp functions, which means that
+the size of the steps of the algorithm cannot be arbitrarily small. The only
+way this can happen is if the algorithm terminates.
+
+\paragraph{Example:} Consider closed convex proper $f: \Hbb \to
+\overline{\Rbb}$. $\gph f = \set{(x, y) \mmid y \in \partial f(x)}$ is
+closed (norm-weak). This means that
+\[
+	\left. \begin{array}{c}
+		x_k \overset{\text{(norm)}}{\to} x \\
+		y_k \overset{\text{(weak)}}{\to} y \\
+		y_k \in \partial f(x_k)
+	\end{array} \right\} \Rightarrow y \in \partial f(x),
+\]
+and $f(x_k) \to f(x)$. This is what is called \textit{subdifferential
+continuity}.
+
+\begin{ctheorem}{Convergence under KL}{KL-convergence-convex}
+	Suppose $\set{x_k}$ is a slope descent sequence for a closed convex proper
+	$f: \Hbb \to \overline{\Rbb}$ with $\min f$ finite, and assume that the KL
+	property holds on $\set{x_k}$. Then
+	\begin{align*}
+		x_k & \overset{\text{(norm)}}{\to} x^* \\
+		f(x_k) & \dto \min f \\
+		\norm{x_k - x^*} &\leq \frac{\beta}{\alpha} \phi(f(x_k) - \min f)
+			+ \sqrt{\frac{f(x_{k-1}) - \min f}{\alpha}},
+	\end{align*}
+	where $x^*$ is a minimizer of $f$.
+\end{ctheorem}
+\begin{proof}
+	Assume $\min f = 0$, so that $f(x) - \min f = f(x), \; \forall x$.
+	Let us consider the difference $\phi(f(x_k)) - \phi(f(x_{k+1}))$. By the
+	concavity of $\phi$ (and its corresponding subgradient inequality), we have
+	\begin{align*}
+		\phi(f(x_k)) - \phi(f(x_{k+1})) &\geq \phi'(f(x_k)) \left(
+			f(x_k) - f(x_{k+1}) \right) \geq \alpha \phi'(f(x_k))
+				\norm{x_k - x_{k+1}}^2 \\
+			&\geq \alpha \frac{\norm{x_k - x_{k+1}}^2}{\abs{ f }(x_k)}
+			 \quad \text{(by KL Prop. and chain rule)} \\
+			&\geq \frac{\alpha}{\beta} \frac{\norm{x_k -
+			x_{k+1}}^2}{\norm{x_{k-1}
+			- x_{k}}} \\
+			&\geq \frac{\alpha}{\beta} \frac{2\norm{x_k - x_{k+1}}
+			 \norm{x_{k-1} - x_k} - \norm{x_{k-1} - x_k}^2}{
+				 \norm{x_{k-1} - x_k}},
+	\end{align*}
+	where the last line follows since
+	\( \left( \norm{x_k - x_{k+1}} - \norm{x_{k-1} - x_k} \right)^2 \geq 0 \),
+	so we obtain
+	\begin{align*}
+		\phi(f(x_k)) - \phi(f(x_{k+1})) &\geq
+			\frac{\alpha}{\beta} \left(2 \norm{x_k - x_{k+1}} - \norm{x_{k-1} -
+			x_k} \right).
+	\end{align*}
+	Define $\lambda_k := \phi(f(x_k)) + \frac{\alpha}{\beta} \norm{x_{k-1} -
+	x_k}$. Thus we have proved that
+	\[
+		\lambda_k - \lambda_{k+1} \geq \frac{\alpha}{\beta} \norm{x_k -
+		x_{k+1}}, \; \forall k.
+	\]
+	We now resort to a telescoping sum argument. Summing over all $k$'s, we
+	conclude that $\sum_{k=0}^{\infty} \norm{x_k - x_{k+1}}$ is convergent,
+	hence $\set{x_k}$ is a Cauchy sequence, converging strongly to some $x^*$.
+
+	Furthermore, by the property (2) and the fact that $\abs{\grad f}(x) =
+	\mathrm{dist}(0, \partial f(x))$, we know that $\partial^{\circ} f(x_k) \to 0$,
+	and since the subdifferential is closed, $0 \in \partial f(x^*)$. Hence $x^*$
+	minimizes $f$ and $f(x_k) \dto \min f$.
+
+	More generally, if we look at the distance between iterates, $\norm{x_k -
+	x_{m}}$, we have (by triangle inequality and telescoping sums):
+	\begin{align*}
+		\norm{x_k - x_{m+1}} &\leq \sum_{j=k}^m \norm{x_j - x_{j+1}} \\
+			&\leq \frac{\beta}{\alpha} \sum_{k}^m \left(
+				\lambda_j - \lambda_{j+1} \right) \overset{m \to
+				\infty}{\Rightarrow} \\
+		\norm{x_k - x^*} &\leq \frac{\beta}{\alpha} \left(
+			\phi(f(x_k)) + \frac{\alpha}{\beta}
+			\norm{x_{k-1} - x_k}
+		\right) \\
+		&= \frac{\beta}{\alpha} \phi(f(x_k)) +
+		\sqrt{\frac{f(x_{k-1}) - f(x_k)}{\alpha}}
+		\leq \frac{\beta}{\alpha} \phi(f(x_k)) +
+		\sqrt{\frac{f(x_{k-1})}{\alpha}},
+	\end{align*}
+	where we used the fact that $\min f = 0 \Rightarrow
+	f(x_{k-1}) - f(x_k) \leq f(x_{k-1})$. We've used the convexity of $f$
+	indirectly above: for example, the fact that $\abs{\grad f} = \mathrm{dist}(0,
+	\partial f(x))$, or the convergence to a minimizer implying convergence to
+	the global minimum of $f$. However, convexity is not absolutely necessary
+	for these conditions.
+\end{proof}
+
+For the sequel, we will need the following proposition:
+\begin{cproposition}{Quadratic upper bound}{quad-upper-bound-kl}
+	Suppose that $f: \Hbb \to \Rbb$ is convex with $L$-Lipschitz $\grad f$.
+	Then we have that
+	\[
+		f(z) \leq f(x) + \ip{\grad f(x), z - x} + \frac{L}{2} \norm{z - x}^2,
+		\; \forall z.
+	\]
+\end{cproposition}
+
+Let us now talk about smooth convex minimization. Many algorithms for
+minimizing functions as in~\cref{prop:quad-upper-bound-kl} proceed iteratively
+at the current $x$ by choosing $x^+$ to satisfy
+\[
+	x^+ \in \argmin_z f(x) + \ip{\grad f(x), z - x} +
+		\frac{1}{2} \ip{A (z - x), z - x} =
+		\argmin_z \ip{\grad f(x), z - x} +
+		\frac{1}{2} \ip{A (z - x), z - x},
+\]
+where $A^\top = A, \; A$ psd, giving us
+\[
+	x^+ = x - A^{-1} \grad f(x).
+\]
+Algorithms like Newton, quasi-Newton, steepest descent, trust regions methods
+are subsumed by this framework. The following exercise is easy to check:
+\begin{exercise}{}{}
+	Providing that $\set{A_k}_{k=1}^{\infty}$ used in the above optimization
+	steps is uniformly bounded and $\norm{A^{-1}} \leq \frac{C}{L}$, $C$ a
+	constant (typically $2$), then the sequence of iterates $\set{x_k}$
+	satisfies the postulates of a slope descent sequence.
+\end{exercise}
