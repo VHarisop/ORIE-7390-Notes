@@ -1,0 +1,182 @@
+\section{Steepest Descent for Convex Functions}
+
+Recall: for a proper convex function $f: \Hbb \to \overline{\Rbb}$, and a point
+$x \in \intr{\dom f}$, the directional derivative
+\[
+	f'(x; v) = \lim_{t \dto 0} \frac{f(x + tv) - f(x)}{t}
+\]
+is uniquely minimized over $\mathbb{B}_2$ in the direction of the shortest
+subgradient $v = -\frac{\partial^{\circ} f(x)}{\norm{\partial^{\circ} f(x)}}$,
+assuming that $x$ is not a minimizer.
+
+\textbf{Question}: is this the best we can do?
+
+Recall the \textit{slope} of arbitrary $f: \Hbb \to \overline{\Rbb}$ at $x \in
+\dom f$, defined by
+\[
+	\abs{\grad f}(x) = \begin{cases}
+		0, & x \text{ local min} \\
+		\limsup_{z \to x} \frac{f(x) - f(z)}{\norm{x - z}}, & \text{otherwise}
+	\end{cases}
+\]
+
+\begin{exercise}{~}{slope-grad}
+	Prove that if $f$ is differentiable we have $\abs{\grad f}(x) = \norm{\grad
+	f(x)}$ at $x \in \dom f$.
+\end{exercise}
+
+The next theorem should be familiar from convex analysis:
+\begin{ctheorem}{Sum rule}{sum-rule-subgrad}
+	For convex, proper $f, g : \Hbb \mapsto \overline{\Rbb}$, if it holds that
+	$\dom f \cap \intr{\dom g} \neq \emptyset$, then
+	\[
+		\partial (f + g) = \partial f + \partial g.
+	\]
+\end{ctheorem}
+
+Using the sum rule for subgradients, we can prove the following Theorem, which
+relates the slope with the shortest subgradient:
+
+\begin{ctheorem}{~}{slope-shortest-subg}
+	For proper convex $f: \Hbb \mapsto \overline{\Rbb}$ and $x \in \dom f$, we
+	have that
+	\begin{align*}
+		\abs{\grad f}(x) &= \mathrm{dist}(0, \partial f(x)) \\
+						 &= -\inf_{\norm{v}_2 = 1} f'(x; v),
+	\end{align*}
+	assuming that $x$ is not a minimizer.
+\end{ctheorem}
+\begin{proof}
+	We will prove the above by showing two inequalities that can only be
+	satisfied with equality.
+
+	First, notice that for $v \in \mathbb{B}_2$:
+	\[
+		\abs{\grad f}(x) \geq \limsup_{t \dto 0} \frac{f(x) - f(x + tv)}{t}
+		= - f^*(x; v)
+	\]
+	The first inequality above happens since letting $t \dto 0$ describes a
+	subset of approaches $z \to x$ via the direction $v$. Therefore, we obtain
+	that
+	\[
+		\abs{\grad f}(x) \geq -\inf_{\norm{v}_2 = 1} f'(x; v).
+	\]
+
+	Now, by the expansion of the subgradient identity, we have
+	\begin{align*}
+		\abs{\grad f}(x) &= \limsup_{z \to x} \frac{f(x) - f(z)}{\norm{x - z}}
+					  \\ &\leq \limsup_{z \to x} \frac{\ip{y, x - z}}{\norm{x -
+z}}, \; \forall y \in \partial f(x) \\
+		&= \norm{y},
+	\end{align*}
+	since we are taking the $\limsup$, which gives us that $\abs{\grad f}(x)
+	\leq \mathrm{dist}(0, \partial f(x))$ as the above holds for all elements
+	of the subdifferential.
+
+	Now it remains to prove that
+	\begin{equation}
+		\mathrm{dist}(0, \partial f(x)) \leq -\inf_{\norm{v}_2 = 1} f'(x; v).
+		\label{eq:dist-dini-deriv}
+	\end{equation}
+	Choose any $\sigma \in (0, \mathrm{dist}(0, \partial f(x)))$. This implies
+	that $0 \notin \partial f(x) + \sigma \mathbb{B}$ or, equivalently, that
+	\[
+		0 \notin \partial f(x) + \partial \left(\sigma \norm{\cdot -
+		x}\right)(x),
+	\]
+	using properties of the Fenchel conjugate. By the sum rule, since $x \in
+	\dom f$ and since the domain of $\norm{\cdot - x}$ is the whole space
+	$\Hbb$, this implies that
+	\[
+		0 \notin \partial \left( f + \sigma \norm{\cdot - x} \right)(x),
+	\]
+	which shows that $x$ does not minimize that function. This implies that
+	\[
+		\exists z: f(z) + \sigma \norm{z - x} < f(x) \Rightarrow
+		\frac{f(z) - f(x)}{\norm{z - x}} < -\sigma,
+	\]
+	which in turn implies (by the definition of the directional derivative)
+	that $f'\left(x; \frac{z - x}{\norm{z - x}}\right) < -\sigma$. Since
+	$\sigma$ was arbitrary, the claim~\eqref{eq:dist-dini-deriv} follows.
+
+	Note that in the above, the sum rule does not assume $\emptyset \neq
+	\partial f(x)$, so $\partial f(x)$ can be empty. Even in that case, the proof
+	still goes through.
+\end{proof}
+Theorem~\ref{thm:slope-shortest-subg} implies that we can achieve instantaneous
+decrease arbitrarily close to the slope by looking along rays, for convex
+functions. Rays are only one of the many ways to approach $x$ in the definition
+of the slope.
+
+The following proposition generalizes the well-known chain rule from calculus:
+\begin{cproposition}{Chain rule}{slope-chain-rule}
+	For arbitrary $f$ and a $C^1$ function $\varphi: (a, b) \to \Rbb$ with
+	$\varphi' > 0$, we know that if $a < f(x) < b$, it holds that
+	\[
+		\abs{\grad (\varphi \circ f)}(x) = \varphi'(f(x)) \abs{\grad f}(x).
+	\]
+\end{cproposition}
+\begin{proof}
+	We will show the above by proving two inequalities in opposite directions:
+	\begin{enumerate}
+		\item[$(\leq):$] wlog, assume that $\abs{\grad (\varphi \circ f)}(x) > 0$
+			and $\varphi'(f(x)) \abs{\grad f}(x) < \infty$. Choose a sequence
+			$\set{x_n}_{n=1}^{\infty}$, $x_n \to x$ that satisfies
+			\[
+				\frac{\varphi(f(x)) - \varphi(f(x_n))}{\norm{x - x_n}}
+				\to \abs{\grad (\varphi \circ f)}(x).
+			\]
+			Since $\varphi$ is increasing, eventually we will have
+			\[
+				\varphi(f(x)) > \varphi(f(x_n)) \Rightarrow
+				f(x) > f(x_n),
+			\]
+			otherwise the LHS would be zero or negative, contrary to our
+			assumption. Furthermore, $f(x_n) \to f(x)$, since otherwise
+			$\abs{\grad f}(x) \to \infty$. By the Mean Value Theorem
+			\begin{align*}
+				\exists w_n \in (f(x_n), f(x)): & \frac{\varphi(f(x)) -
+				\varphi(f(x_n))}{\norm{x - x_n}} =
+				\frac{\varphi(f(x)) - \varphi(f(x_n))}{f(x) - f(x_n)}
+				\cdot \frac{f(x) - f(x_n)}{\norm{x - x_n}} \\
+				&= \varphi'(w_n) \frac{f(x) - f(x_n)}{\norm{x - x_n}}.
+			\end{align*}
+			But, $w_n \to f(x)$ and $\frac{f(x) - f(x_n)}{\norm{x - x_n}} \leq
+			\abs{\grad f}(x)$.
+		\item[$(\geq):$] by the arguments above, we can write
+			\[
+				\abs{\grad f}(x) = \abs{\grad(\varphi^{-1} \circ \varphi \circ
+				f)}(x), \]
+			where the inverse $\varphi^{-1}$ exists by the differentiability
+			and strict monotonicity of $\varphi$. This gives us
+			\begin{align*}
+				\abs{\grad f(x)} &\leq \left( \varphi^{-1} \right)'(\varphi(f(x)))
+					\abs{\grad (\varphi \circ f)}(x) \\
+					&= \frac{1}{\varphi'(f(x))} \abs{\grad (\varphi \circ
+				f)}(x),
+			\end{align*}
+			so the claim follows. In the last expression, we used the fact that
+			\(
+				(g^{-1})'(g(x)) = \frac{1}{g'(x)},
+			\) for any $1-1$, differentiable function (here $\varphi$ since
+			diffable and strictly monotone), by the Inverse Function Theorem.
+	\end{enumerate}
+\end{proof}
+The final question we are asking is the following: given a closed, proper,
+convex $f: \Hbb \to \overline{\Rbb}$, and an initial point $x_0 \in \Hbb$, is
+there a trajectory starting at $x_0$ that always attains the best possible
+instantaneous rate of decrease? In 1973, Brezis answered this question.
+
+\begin{ctheorem}{~}{brezis-rate}
+	There exists an absolutely continuous trajectory $X(t)$ starting at $x_0$,
+	meaning
+	\[
+		X(t) = x_0 + \int_0^t W(s) \dd s, \; W \text{ integrable},
+	\]
+	such that:
+	\begin{itemize}
+		\item $X(0) = x_0$, and
+		\item $ \frac{\dd X}{\dd t} \in -\partial f(X(t)) $ almost everywhere.
+	\end{itemize}
+	This trajectory attains the maximum rate of decrease.
+\end{ctheorem}
