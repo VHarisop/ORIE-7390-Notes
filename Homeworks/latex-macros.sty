@@ -1,0 +1,260 @@
+\ProvidesPackage{latex-macros}
+
+% Require packages
+\RequirePackage{amsmath,amssymb,amsthm}
+\RequirePackage{bm,bbm}
+\RequirePackage{hyperref}
+
+% mathbb letters
+\newcommand{\Abb}{\mathbb{A}}
+\newcommand{\Cbb}{\mathbb{C}}
+\newcommand{\Dbb}{\mathbb{D}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Fbb}{\mathbb{F}}
+\newcommand{\Gbb}{\mathbb{G}}
+\newcommand{\Hbb}{\mathbb{H}}
+\newcommand{\Ibb}{\mathbb{I}}
+\newcommand{\Jbb}{\mathbb{J}}
+\newcommand{\Kbb}{\mathbb{K}}
+\newcommand{\Lbb}{\mathbb{L}}
+\newcommand{\Mbb}{\mathbb{M}}
+\newcommand{\Nbb}{\mathbb{N}}
+\newcommand{\Obb}{\mathbb{O}}
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Rbb}{\mathbb{R}}
+\newcommand{\Sbb}{\mathbb{S}}
+\newcommand{\Tbb}{\mathbb{T}}
+\newcommand{\Ubb}{\mathbb{U}}
+\newcommand{\Vbb}{\mathbb{V}}
+\newcommand{\Wbb}{\mathbb{W}}
+\newcommand{\Xbb}{\mathbb{X}}
+\newcommand{\Ybb}{\mathbb{Y}}
+\newcommand{\Zbb}{\mathbb{Z}}
+
+% mathcal letters
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cD}{\mathcal{D}}
+\newcommand{\cE}{\mathcal{E}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cG}{\mathcal{G}}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\cI}{\mathcal{I}}
+\newcommand{\cJ}{\mathcal{J}}
+\newcommand{\cK}{\mathcal{K}}
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\cN}{\mathcal{N}}
+\newcommand{\cO}{\mathcal{O}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\cQ}{\mathcal{Q}}
+\newcommand{\cR}{\mathcal{R}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cT}{\mathcal{T}}
+\newcommand{\cU}{\mathcal{U}}
+\newcommand{\cV}{\mathcal{V}}
+\newcommand{\cW}{\mathcal{W}}
+\newcommand{\cX}{\mathcal{X}}
+\newcommand{\cY}{\mathcal{Y}}
+\newcommand{\cZ}{\mathcal{Z}}
+
+
+% Dynamically generates \{x}hat macros, where {x} is any letter in a-z,A-Z.
+% E.g: write \xhat to generate \widehat{x}.
+\def\mdefhat#1{\expandafter\def\csname #1hat\endcsname{\widehat{#1}}}
+\def\mdefallhat#1{\ifx#1\mdefallhat\else\mdefhat#1\expandafter\mdefallhat\fi}
+\mdefallhat abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\mdefallhat
+
+% Dynamically generates \{x}bar macros, where {x} is any letter in a-z
+% E.g: write \xbar to generate \bar{x}.
+\def\mdefbar#1{\expandafter\def\csname #1bar\endcsname{\bar{#1}}}
+\def\mdefallbar#1{\ifx#1\mdefallbar\else\mdefbar#1\expandafter\mdefallbar\fi}
+\mdefallbar abcdefghijklmnopqrstuvwxyz\mdefallbar
+
+% Dynamically generates \{x}tld macros, where {x} is any letter in a-z, A-Z
+% E.g: write \xtld to generate \widetilde{x}.
+\def\mdeftd#1{\expandafter\def\csname #1tld\endcsname{\widetilde{#1}}}
+\def\mdefalltd#1{\ifx#1\mdefalltd\else\mdeftd#1\expandafter\mdefalltd\fi}
+\mdefalltd abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\mdefalltd
+
+%% var letters
+% lower
+\newcommand{\veps}{\varepsilon}
+\newcommand{\vkap}{\varkappa}
+\newcommand{\vphi}{\varphi}
+\newcommand{\vpi}{\varpi}
+\newcommand{\vrho}{\varrho}
+\newcommand{\vthe}{\vartheta}
+% upper
+\newcommand{\vGam}{\varGamma}
+\newcommand{\vDel}{\varDelta}
+\newcommand{\vLam}{\varLambda}
+\newcommand{\vPsi}{\varPsi}
+\newcommand{\vPi}{\varPi}
+\newcommand{\vPhi}{\varPhi}
+\newcommand{\vSig}{\varSigma}
+
+%% set ops
+% delimited
+\DeclareMathOperator*{\setI}{\bigcap}
+\DeclareMathOperator*{\setU}{\bigcup}
+% non-delimited
+\newcommand{\setD}{\setminus}
+\newcommand{\setDsym}{\bigtriangleup}
+
+% argmin/argmax/arginf/argsup as operators
+% with up/down limits
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\arginf}{arginf}
+\DeclareMathOperator*{\argsup}{argsup}
+
+% various shorthand macros
+\newcommand{\grad}{\nabla}
+\newcommand{\conv}{\circledast}
+\newcommand{\convhull}{\mathrm{conv}}
+% note: span is a latex primitive
+\newcommand{\vspan}{\mathrm{span}}
+\newcommand{\rank}{\mathrm{rank}}
+\newcommand{\tr}{\mathrm{Tr}}
+\newcommand{\sign}{\mathrm{sign}}
+\newcommand{\tdef}{\triangleq}
+% middle bar, for use in delimited expressions like sets
+\newcommand{\mmid}{\ \middle| \ }
+% Positive semidefinite, positive definite cones
+\newcommand{\psd}[1]{\Sbb^{#1}_+}
+\newcommand{\pd}[1]{\Sbb^{#1}_{++}}
+% up/down arrows for limits
+\newcommand{\dto}{\downarrow}
+\newcommand{\uto}{\uparrow}
+\newcommand{\T}{\top}
+% unit ball
+\newcommand{\ball}{\mathbb{B}}
+% multiset
+\newcommand{\multo}{\rightrightarrows}
+
+% convergence symbols
+\newcommand{\asto}{\overset{a.s.}{\longrightarrow}}
+\newcommand{\probto}{\overset{\Pbb}{\longrightarrow}}
+\newcommand{\lpto}[1]{\overset{L^{#1}}{\longrightarrow}}
+
+% convex analysis
+\newcommand{\gph}{\mathrm{gph}}
+\newcommand{\epi}{\mathrm{epi}}
+\newcommand{\dom}{\textbf{dom}}
+\newcommand{\intr}[1]{\mathrm{int}\left( #1 \right)}
+\newcommand{\clos}[1]{\mathrm{cl}\left( #1 \right)}
+\newcommand{\relint}[1]{{#1}^{\circ}}
+
+% shorthands for parentheses / brackets
+\newcommand{\pars}[1]{\left( #1 \right)}
+\newcommand{\brks}[1]{\left[ #1 \right]}
+
+% macros for delimited expressions
+\newcommand{\abs}[1]{\left| #1  \right|}
+\newcommand{\expfun}[1]{\exp\left\{ #1 \right\}}
+\newcommand{\ip}[1] {\left\langle #1 \right\rangle }
+\newcommand{\norm}[1] {\left \| #1 \right \|}
+\newcommand{\opnorm}[1] {\norm{ #1 }_{\mathrm{op}}}
+\newcommand{\infnorm}[1]{\norm{ #1 }_{\infty}}
+\newcommand{\set}[1]{\left\{ #1 \right\}}
+\newcommand{\trace}[1]{\tr \left( #1 \right)}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\ceil}[1]{\left\lceil #1 \right\rceil}
+% proximal operator
+\newcommand{\prox}[2]{\mathrm{prox}_{#1}\left( #2 \right)}
+% indicator function
+\newcommand{\1}{\mathbbm{1}}
+
+% differential in integrals
+\newcommand{\dd}[1]{\mathrm{d}{#1}}
+
+% expectation, probability and variance, with optional subscripts
+\newcommand{\expec}[2][]{
+    \ifx\\#1\\
+        \Ebb \left[ #2 \right]
+    \else
+        \Ebb_{#1} \left[ #2 \right]
+    \fi
+}
+\newcommand{\prob}[2][]{
+    \ifx\\#1\\
+        \Pbb \left( #2 \right)
+    \else
+        \Pbb_{#1} \left( #2 \right)
+    \fi
+}
+\newcommand{\var}[2][]{
+    \ifx\\#1\\
+    \mathrm{Var}_{#1}\left( #2 \right)
+    \else
+    \mathrm{Var}\left( #2 \right)
+    \fi
+}
+
+% partial fractions
+\newcommand{\pfrac}[2]{\frac{\partial #1}{\partial #2}}
+
+% matrices
+\newcommand{\pmx}[1]{\begin{pmatrix} #1 \end{pmatrix}}
+\newcommand{\bmx}[1]{\begin{bmatrix} #1 \end{bmatrix}}
+\newcommand{\Bmx}[1]{\begin{Bmatrix} #1 \end{Bmatrix}}
+
+% Figures
+% produces a two-column figure environment
+\newcommand{\twocolfigs}[2]{
+    \begin{minipage}{0.49 \textwidth}
+        #1
+    \end{minipage}
+    \begin{minipage}{0.49 \textwidth}
+        #2
+    \end{minipage}}
+% produces a three-column figure environment
+\newcommand{\threecolfigs}[3]{
+    \begin{minipage}{0.33 \textwidth}
+        #1
+    \end{minipage}
+    \begin{minipage}{0.33 \textwidth}
+        #2
+    \end{minipage}
+    \begin{minipage}{0.33 \textwidth}
+        #3
+    \end{minipage}}
+
+% author information - produces a clickable link for author's email
+% example: \email{me@me.com}
+\newcommand{\email}[1]{\href{mailto:#1}{\texttt{#1}}}
+
+% Theorem envs - [section] means counter resets after each section
+% [theorem] means that same counter as theorem is used
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}{Claim}
+\newtheorem{remark}{Remark}
+
+% references
+\newcommand{\figref}[1]{Figure~\ref{#1}}
+\newcommand{\secref}[1]{Section~\ref{#1}}
+\newcommand{\propref}[1]{Proposition~\ref{#1}}
+\newcommand{\thmref}[1]{Theorem~\ref{#1}}
+\newcommand{\lemref}[1]{Lemma~\ref{#1}}
+\newcommand{\claimref}[1]{Claim~\ref{#1}}
+\newcommand{\corlref}[1]{Corollary~\ref{#1}}
+
+% sans-serif bold commands
+\newcommand{\sfbold}[1]{\textbf{\textsf{#1}}}
+\newtheoremstyle{mystyle}%                % Name
+  {}%                                     % Space above
+  {}%                                     % Space below
+  {\upshape}%                                     % Body font
+  {}%                                     % Indent amount
+  {\bfseries\sffamily}%                            % Theorem head font
+  {.}%                                    % Punctuation after theorem head
+  { }%                                    % Space after theorem head, ' ', or
+  %%\newline
+  {}%

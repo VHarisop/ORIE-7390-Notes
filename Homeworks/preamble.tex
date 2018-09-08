@@ -1,0 +1,34 @@
+% Required packages
+\usepackage{bm,bbm}
+\usepackage{amsmath,amssymb,amsthm,cancel}
+\usepackage{algorithm, algpseudocode}
+\usepackage{minted, caption}
+
+
+
+% Color references
+\usepackage[
+    colorlinks=true, citecolor=green, linkcolor=blue]{hyperref}
+
+\newcommand{\homework}[2]{
+	\noindent
+    \begin{center}
+    	\framebox{
+        	\vbox{
+            	% Course Title and Date
+            	\hbox to \hsize { \textsc{ORIE 7390 - Special Topics in
+				Mathematical Programming} \hfill \textsc{#1} }
+                \vspace{4mm}
+                % Title of handout/homework
+                \hbox to \hsize { {\Large \hfill \textsc{#2} \hfill} }
+                \vspace{1mm}
+            }
+        }
+    \end{center}
+}
+
+\newenvironment{alglist}{\begin{list}{}{\setlength{\leftmargin}{1.5cm}
+\setlength{\rightmargin}{0cm}\setlength{\itemsep}{1ex}\setlength{\parsep}{1ex}}}{\end{list}}
+
+\newcommand{\problem}[3]
+{\fbox{\parbox{6in}{{\bf #1}\begin{itemize}\item{\bf Input:} {#2} \item{\bf Goal:} {#3}\end{itemize}}}}

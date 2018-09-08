@@ -1,0 +1,74 @@
+\documentclass[10pt]{article}
+
+\input{preamble}
+\usepackage{latex-macros}
+\usepackage{todonotes}
+\usepackage{tikz,pgfplots}
+\usepackage{algorithm, algpseudocode}
+\usepackage[margin=1in]{geometry}
+\usetikzlibrary{shapes.geometric}
+%\usepackage{parskip}
+\usepackage[capitalize]{cleveref}
+\usepackage{exercise}
+
+\usepackage{todonotes}
+
+\newcommand{\regdiff}{\hat{\partial}}
+\newcommand{\bd}[1]{\mathrm{bd}\left( #1 \right)}
+
+\begin{document}
+
+\allowdisplaybreaks
+\everymath{\displaystyle}
+
+\homework{Vasileios Charisopoulos}{Homework 1}
+
+\begin{Exercise}
+	Consider $f: \Rbb^n \to \Rbb$, continuously differentiable. This means that
+	$f$ satisfies the following at any point $x$:
+	\begin{align}
+		f(x + d) &= f(x) + \ip{\grad f(x), d} + o(d), \;
+		\lim_{d \to 0} \frac{o(d)}{\norm{d}} = 0.
+		\label{eq:diff-defn}
+	\end{align}
+	First, consider $x$ being a minimizer. Then, we have defined the slope to
+	be $0$ by convention, which agrees with the first-order condition $\grad
+	f(x) = 0$ in unconstrained optimization. The nontrivial case has $x$ not
+	being a minimizer.
+
+	Let us work with the definition of the slope. We write
+	\begin{align*}
+		\abs{\grad f}(x) &= \limsup_{z \to x} \frac{f(x) - f(z)}{\norm{x - z}}
+		= \lim_{\delta \dto 0} \sup_{\norm{z - x} \leq \delta} \frac{f(x) -
+		f(z)}{\norm{x - z}} \\
+			&= \lim_{\delta \dto 0} \sup_{\norm{d} \leq \delta}
+			\frac{f(x) - f(x + d)}{\norm{d}} =
+				\lim_{\delta \dto 0} \sup_{\norm{d} \leq \delta}
+			\frac{f(x) - f(x) - \ip{\grad f(x), d} + o(d)}{\norm{d}} \\
+			&\overset{(\text{Cauchy-Schwarz})}{\leq} \limsup_{d \to 0} \left(
+				\frac{\norm{\grad f(x)} \norm{d}}{\norm{d}} +
+			  	\frac{o(d)}{\norm{d}} \right) = \norm{\grad f(x)},
+	\end{align*}
+	where we used the fact that $\frac{o(d)}{\norm{d}} = 0$ as $d \to 0$.
+	It is left to show that $\abs{\grad f}(x) \geq \norm{\grad f(x)}$, and the
+	proof will be complete. To that end, observe that since $z \to x$ in the
+	limit superior of $\abs{\grad f}$'s definition, we must have for any
+	$d \in \bball_2$:
+	\[
+		\abs{\grad f}(x) \geq \lim_{t \to 0} \frac{f(x) - f(x + td)}{t},
+	\]
+	which is simply the mathematical way to state the fact that approaching $x$
+	by arbitrary trajectories can only give us a bigger $\sup$ than by
+	approaching it from a single direction. Then, setting $d = -\frac{\grad
+	f(x)}{\norm{\grad f(x)}}$ and replacing $f(x + td)$ by~\cref{eq:diff-defn}
+	gives us:
+	\begin{align*}
+		\abs{\grad f}(x) &\geq
+		\lim_{t \dto 0} \frac{f(x) - f(x) + t \norm{grad f(x)} + o(t)}{t}
+			= \norm{\grad f(x)},
+	\end{align*}
+	which completes the claim. Hence $\abs{\grad f}(x) = \norm{\grad f(x)}$
+	when $f$ is $C^1$.
+\end{Exercise}
+
+\end{document}
