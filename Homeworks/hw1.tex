@@ -125,4 +125,35 @@
 	when $f$ is $C^1$.
 \end{Exercise}
 
+\begin{Exercise}
+
+	\ExePart
+
+	Consider the map $t \mapsto \frac{f(x + tv) - f(x)}{t}$, and let us set
+	$g(t) = f(x + tv) - f(x)$. This map satisfies $g(0) = 0$ and is convex since
+	\begin{align*}
+		g(\lambda t_1 + (1 - \lambda) t_2) &=
+		f\left(x + (\lambda t_1 + (1 - \lambda) t_2) v \right) - f(x) \\
+		&= f(\lambda (x + t_1 v) + (1 - \lambda) (x + t_2 v)) - f(x)
+		\leq \lambda f(x + t_1 v) + (1 - \lambda) f(x + t_2 v)
+			- \lambda f(x) - (1 - \lambda) f(x) \\
+		&= \lambda g(t_1) + (1 - \lambda) g(t_2),
+	\end{align*}
+	where in the above we only made use of the convexity of $f$ with respect to
+	its argument. The rest is trivial: consider $t_2 \leq t_1$, which means that
+	we can write $t_2 = \lambda t_1, \; 0 \leq \lambda \leq 1$, so that
+	\begin{align*}
+		g(t_2) &= g(\lambda t_1 + (1 - \lambda) 0) \leq
+			\lambda g(t_1) + (1 - \lambda) \cancelto{0}{g(0)} \Rightarrow \\
+			g(t_2) &\leq \lambda g(t_1)
+	\end{align*}
+	It is trivial to verify that $\lambda \in \set{0, 1}$ gives us trivial
+	implications. Then, for $\lambda \in (0, 1)$, we rewrite $\lambda =
+	\frac{t_2}{t_1}$ by definition, so we obtain
+	\[
+		\frac{g(t_2)}{t_2} \leq \frac{g(t_1)}{t_1}, \; t_1 \geq t_2
+	\]
+	which proves that $\frac{g(t)}{t} = \frac{f(x + tv) - f(x)}{t}$ is
+	non-decreasing.
+\end{Exercise}
 \end{document}
