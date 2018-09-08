@@ -24,6 +24,60 @@
 \homework{Vasileios Charisopoulos}{Homework 1}
 
 \begin{Exercise}
+	Consider $f(u, v) = \abs{u} + v^2$, so $\dom f = \Rbb^2$.
+
+	\ExePart
+
+		Let us simplify the notation by dropping $\lambda$ from $x_k^{\lambda}$
+		for now, until we determine the solution of the proximal map.
+		Consider $x^* = \argmin_{x} f(x) + \frac{\lambda}{2} \norm{x - x_k}^2$.
+		Since $f$ is a convex function, the proximal map is well defined and,
+		additionally, based on the $f$ having full domain, we can conclude that
+		\[
+			\partial \left(f(x) + \frac{\lambda}{2} \norm{x - x_k}^2 \right)
+			= \partial f(x) + \partial \left( \frac{\lambda}{2} \norm{x -
+			x_k}^2 \right).
+		\]
+		Therefore we simply have to write the first-order optimality conditions
+		for $x^*$, which means that
+		\begin{align*}
+			0 &\in \partial f(x^*) + \lambda ( x^* - x_k ) \Rightarrow
+			0 \in \begin{pmatrix} \partial \abs{x^*_1} \\ 2 x^*_2 \end{pmatrix}
+				+ \lambda \begin{pmatrix} x^*_1 - x_k^{(1)} \\ x^*_2 - x_k^{(2)}
+				\end{pmatrix},
+		\end{align*}
+		which we arrived at observing that the function minimized is separable.
+		For the smooth part, trivial algebraic manipulations lead to $x_2^* =
+		\frac{\lambda}{2 + \lambda} x_k^{(2)}$. For the nonsmooth part, we
+		know from ORIE 6328 that the solution is given by the
+		\textit{soft thresholding} operator. Nevertheless, we repeat the
+		derivation to convince the reader. Consider the following cases:
+		\begin{enumerate}
+			\item $x^*_1 > 0$: in that case $\partial \abs{x_1}^* = 1$ and
+				$x_k^{(1)} = x_1 + \frac{1}{\lambda}$.
+			\item $x^*_1 < 0$: like before, we have $\partial \abs{x_1}^* = -1$
+				leading to $x_k^{(1)} = x_1 - \frac{1}{\lambda}$.
+		\end{enumerate}
+		The two cases above imply that $\sign(x_k^{(1)}) = \sign(x_1^*)$ when
+		$x_1^* \neq 0$. Now, consider the case where it is equal to $0$. We
+		know from convex analysis that $\partial \abs{x} = [-1, 1]$ when
+		$x = 0$, so $x_k^{(1)}$ must be $\in \frac{[-1, 1]}{\lambda}$. Gathering all the
+		cases above (and keeping in mind that $\lambda > 0$) gives us
+		\begin{align*}
+			x_1^* &= \sign(x_k^{(1)}) \max\left(\abs{x_k^{(1)}} -
+				\frac{1}{\lambda}, 0\right).
+		\end{align*}
+		Therefore, we have
+		\[
+			x_{k+1}^{\lambda} = \begin{pmatrix}
+				\sign(x_k^{(1)}) \max\left( \abs{x_k^{(1)}} -
+				\frac{1}{\lambda}, 0 \right) \\
+				\frac{\lambda}{2 + \lambda} x_k^{(2)}
+			\end{pmatrix}, \; \forall \lambda > 0.
+		\]
+\end{Exercise}
+
+\begin{Exercise}
 	Consider $f: \Rbb^n \to \Rbb$, continuously differentiable. This means that
 	$f$ satisfies the following at any point $x$:
 	\begin{align}
@@ -53,7 +107,7 @@
 	It is left to show that $\abs{\grad f}(x) \geq \norm{\grad f(x)}$, and the
 	proof will be complete. To that end, observe that since $z \to x$ in the
 	limit superior of $\abs{\grad f}$'s definition, we must have for any
-	$d \in \bball_2$:
+	$d \in \ball_2$:
 	\[
 		\abs{\grad f}(x) \geq \lim_{t \to 0} \frac{f(x) - f(x + td)}{t},
 	\]
@@ -64,7 +118,7 @@
 	gives us:
 	\begin{align*}
 		\abs{\grad f}(x) &\geq
-		\lim_{t \dto 0} \frac{f(x) - f(x) + t \norm{grad f(x)} + o(t)}{t}
+		\lim_{t \dto 0} \frac{f(x) - f(x) + t \norm{\grad f(x)} + o(t)}{t}
 			= \norm{\grad f(x)},
 	\end{align*}
 	which completes the claim. Hence $\abs{\grad f}(x) = \norm{\grad f(x)}$
