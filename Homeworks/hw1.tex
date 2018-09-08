@@ -155,5 +155,69 @@
 	\]
 	which proves that $\frac{g(t)}{t} = \frac{f(x + tv) - f(x)}{t}$ is
 	non-decreasing.
+
+	\ExePart
+
+	Here, we only know that $x \in \dom f$, which means that there could exist
+	directions $v \in \Rbb^n$ such that $f(x + tv) \notin \dom f \Rightarrow
+	f(x + tv) = \infty$. Additionally, since we can only guarantee local
+	(Lipschitz) continuity when $x \in \intr{\dom f}$, there could be cases
+	where $\abs{f(x + tv) - f(x)} > \epsilon, \; \forall t > 0$. We will
+	consider the following mutually exclusive cases:
+	\begin{itemize}
+		\item $x + tv \notin \dom f, \; \forall t > 0$, which means that $v$
+			extends into infeasibility in constraint scenarios.
+		\item $x + tv \in \dom f, \forall t$ small enough, but $f(x + tv) -
+			f(x) < -\epsilon$, where $\epsilon > 0$ is fixed.
+			This means that $f$ is discontinuous at $x$.
+		\item $x \in \intr{\dom f}$, which automatically means that $f$ is
+			continuous around $x$.
+	\end{itemize}
+	Note that one case we omitted is when $f(x + tv) - f(x) > \epsilon, \;
+	\forall t$ small enough. This case is straightforward to deduce as
+	impossible: the algebraic definition of convexity for $f$ will give us
+	\begin{align*}
+		f(x) + \epsilon &\leq f(x + tv) = f(t(x + v) + (1 - t)(x + 0)) \\
+			&\leq t f(x + v) + (1 - t) f(x) \Rightarrow ( t \dto 0 ) \\
+		f(x) + \epsilon &\leq \lim_{t \dto 0} t f(x + v) + (1 - t) f(x)
+		\Rightarrow \epsilon \leq 0,
+	\end{align*}
+	which is a contradiction.
+
+	Let us first try to deduce that $g(v) \tdef f'(x; v)$ is positively
+	homogeneous. We need to check two postulates:
+	\begin{enumerate}
+		\item $g(0) = 0$: this is trivial since
+			\[
+				\lim_{t \dto 0} \frac{f(x + t 0) - f(x)}{t} =
+				\lim_{t \dto 0} \frac{f(x) - f(x)}{t} = 0.
+			\]
+		\item $g(cv) = c g(v)$ for $c > 0$: we will proceed on a case-by-case basis. If $x
+			+ tv$ extends outside $\dom f$ for all small $t > 0$, we write
+			\begin{align*}
+				g(cv) &= \lim_{t \dto 0} \frac{f(x + c t v) - f(x)}{t} \\
+					  &= \lim_{t \dto 0} \frac{\infty - f(x)}{t} = \infty,
+			\end{align*}
+			since $c t > 0$ as well. Additionally, $g(v) = \infty$ by the same
+			reasoning, since $f(x + tv) = \infty, \; \forall t > 0$. Hence
+			$\infty = g(cv) = c g(v) = \infty$ as $c > 0$.
+
+			If $x, v$ are such that $f(x + tv) - f(x) < -\epsilon$ for small
+			$t$, then we obtain $\lim_{t \dto 0} \frac{f(x + tv) - f(x)}{t} =
+			-\infty$ and the same line of reasoning will give us
+			\( g(cv) = -\infty = c \cdot (-\infty) \).
+
+			Finally, if $x \in \intr{\dom f}$, we showed in class that
+			$f(x; v) = \max_{y \in \partial f(x)} \ip{y, v}$ and then it is
+			trivial to verify that
+			\[
+				g(cv) = \max_{y \in \partial f(x)} \ip{y, cv} =
+					\max_{y \in \partial f(x)} c \ip{y, v} = c g(v)
+			\]
+			by the linearity of the inner product.
+	\end{enumerate}
+	Since we have imposed no constraints on the choice of $v$, we can conclude
+	that $g(v)$ must be positively homogeneous.
+
 \end{Exercise}
 \end{document}
