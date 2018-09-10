@@ -219,5 +219,97 @@
 	Since we have imposed no constraints on the choice of $v$, we can conclude
 	that $g(v)$ must be positively homogeneous.
 
+	Now, let us try to prove that $g(v)$ is convex. We work with the algebraic
+	definition of convexity: take $\lambda \in [0, 1]$ and write
+	\begin{align*}
+		g(\lambda v_1 +( 1 - \lambda )v_2) &= f(x; \lambda v_1 + (1 - \lambda)
+		v_2) &= \lim_{t \dto 0} \frac{f(x + t (\lambda v_1 + (1 - \lambda)
+		v_2)) - f(x)}{t}
+	\end{align*}
+
 \end{Exercise}
+
+
+\begin{Exercise}
+	We are given that $f$ is diffable and convex, with $L$-Lipschitz gradient.
+	This implies that
+	\[
+		\abs{\grad f(x) - \grad f(y)} \leq L \norm{x - y}.
+	\]
+	Additionally, we consider the sequence of points
+	\begin{align}
+		x_{k+1} = x_k - A_k^{-1} \grad f(x_k) \Rightarrow
+		\grad f(x_k) = A_k \left(x_{k} - x_{k+1}\right)
+		\label{eq:seq-def}
+	\end{align}
+	where $A_k$ is a sequence of symmetric matrices satisfying
+	$\inf_k \underline{\lambda_k} > \frac{L}{2}, \; \sup_k \overline{\lambda_k}
+	< \infty$, where $\underline{\lambda}_k$, $\overline{\lambda}_k$ are the
+	smallest and largest eigenvalues of $A_k$, respectively.
+
+	To prove that $\set{x_k}_{k=1}^{\infty}$ is a slope descent sequence, we
+	need to verify the two postulates given in lecture. Let us try to verify
+	the sufficient decrease condition first: we exploit the fact that $f$ is
+	convex and $L$-smooth, which implies that it has the following quadratic
+	upper bound:
+	\begin{align}
+		f(z) &\leq f(x) + \ip{\grad f(x), z - x} + \frac{L}{2} \norm{z - x}^2,
+		\label{eq:quad-upper-bound},
+	\end{align}
+	which was stated in lecture and also proven in the lectures of ORIE 6328.
+	If we set $x = x_k, z = x_{k+1}$ in~\cref{eq:quad-upper-bound}, we obtain
+	(moving terms around):
+	\begin{align*}
+		f(x_k) - f(x_{k+1}) &\geq \ip{\grad f(x_k), x_{k} - x_{k+1}}
+			- \frac{L}{2} \norm{x_k - x_{k+1}}^2 \\
+			&\overset{\cref{eq:seq-def}}{=} \ip{A_k (x_{k} - x_{k+1}), x_k -
+		x_{k+1}} - \frac{L}{2} \norm{x_k - x_{k+1}}^2 \Rightarrow \\
+			&\geq \inf_k \underline{\lambda_k} \norm{x_k - x_{k+1}}^2
+			- \frac{L}{2} \norm{x_k - x_{k+1}}^2,
+	\end{align*}
+	where we have made use of the variational definition of the smallest
+	eigenvalue of a matrix:
+	\[
+		\underline{\lambda} = \inf_{d \neq 0} \frac{d^\top A d}{d^\top d}
+		\Rightarrow d^\top A d \geq \underline{\lambda} \norm{d}^2, \; \forall
+		d.
+	\]
+	Since $\inf_k \underline{\lambda}_k > \frac{L}{2}$, it must hold that
+	$\exists \alpha > 0: \alpha = \inf_k \underline{\lambda}_k - \frac{L}{2}$,
+	so that we may conclude
+	\[
+		f(x_k) - f(x_{k+1}) \geq \alpha \norm{x_k - x_{k+1}}^2, \; \forall k
+		\in \Nbb,
+	\]
+	which is precisely the sufficient decrease condition. It remains to show
+	that
+	\[
+		\abs{\grad f}(x_{k+1}) \leq \beta \norm{x_k - x_{k+1}}, \; \forall k.
+	\]
+	Notice that the Lipschitz bound along with the reverse triangle inequality
+	give us
+	\[
+		\norm{\grad f(x_{k+1})} - \norm{\grad f(x_k)} \leq
+		\norm{\grad f(x_{k+1}) - \grad f(x_k)} \leq L \norm{x_{k+1} - x_k}
+	\]
+	which, combined with~\eqref{eq:seq-def}, implies
+	\begin{align*}
+		\norm{\grad f(x_{k+1})} &\leq \norm{A_k (x_k - x_{k+1})} + L
+		\norm{x_{k+1} - x_k} \leq \sup_k \overline{\lambda}_k \norm{x_{k+1} -
+		x_k} + L \norm{x_{k+1} - x_k} \\
+		&\leq \left(L + \lambda\right) \norm{x_{k+1} - x_k},
+	\end{align*}
+	where $\lambda = \sup_k \overline{\lambda}_k$, as our assumptions dictate
+	that $\set{A_k}$ are uniformly bounded and $\norm{Ax} \leq \opnorm{A}
+	\norm{x}$ when $\norm{\cdot} = \norm{\cdot}_2$. This completes the second
+	postulate, since in Exercise 2 we proved that $\abs{\grad f}(x) =
+	\norm{\grad f(x)}$ for a differentiable function $f$. Hence
+	\[
+		\abs{\grad f}(x_{k+1}) \leq \left(L + \lambda\right) \norm{x_{k+1} -
+		x_k},
+	\]
+	and the sequence $\set{x_k}_{k=1}^{\infty}$ is indeed a slope descent
+	sequence.
+\end{Exercise}
+
 \end{document}
