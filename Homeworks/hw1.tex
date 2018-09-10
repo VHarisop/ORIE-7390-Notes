@@ -4,6 +4,7 @@
 \usepackage{latex-macros}
 \usepackage{todonotes}
 \usepackage{tikz,pgfplots}
+\pgfplotsset{compat=1.12}
 \usepackage{algorithm, algpseudocode}
 \usepackage[margin=1in]{geometry}
 \usetikzlibrary{shapes.geometric}
@@ -33,7 +34,7 @@
 		for now, until we determine the solution of the proximal map.
 		Consider $x^* = \argmin_{x} f(x) + \frac{\lambda}{2} \norm{x - x_k}^2$.
 		Since $f$ is a convex function, the proximal map is well defined and,
-		additionally, based on the $f$ having full domain, we can conclude that
+		additionally, based on $f$ having full domain, we can conclude that
 		\[
 			\partial \left(f(x) + \frac{\lambda}{2} \norm{x - x_k}^2 \right)
 			= \partial f(x) + \partial \left( \frac{\lambda}{2} \norm{x -
@@ -216,19 +217,26 @@
 		\item $x + tv \in \dom f, \forall t$ small enough, but $f(x + tv) -
 			f(x) < -\epsilon$, where $\epsilon > 0$ is fixed.
 			This means that $f$ is discontinuous at $x$.
-		\item $x \in \intr{\dom f}$, which automatically means that $f$ is
-			continuous around $x$.
-	\end{itemize}
-	Note that one case we omitted is when $f(x + tv) - f(x) > \epsilon, \;
-	\forall t$ small enough. This case is straightforward to deduce as
-	impossible: the algebraic definition of convexity for $f$ will give us
-	\begin{align*}
-		f(x) + \epsilon &\leq f(x + tv) = f(t(x + v) + (1 - t)(x + 0)) \\
-			&\leq t f(x + v) + (1 - t) f(x) \Rightarrow ( t \dto 0 ) \\
-		f(x) + \epsilon &\leq \lim_{t \dto 0} t f(x + v) + (1 - t) f(x)
-		\Rightarrow \epsilon \leq 0,
-	\end{align*}
-	which is a contradiction.
+		\item $f$ is continuous in the direction $v$, which means that
+        $\lim_{t \dto 0} f(x + tv) = f(x)$. This implies that $f$ is also
+        Lipschitz in $\set{z \mmid z = x + tv, \; t \leq \epsilon}$ for some
+        $\epsilon > 0$, with Lipschitz modulus $L_v$.
+        \item $f$ is not continuous in the direction $v$. This can happen when
+        $v$ extends into infeasibility, or when $f(x + tv) - f(x) < -\epsilon$,
+        $\epsilon > 0$. Note that the opposite, when $f(x + tv) - f(x) >
+        \epsilon, \; \forall t$ small enough, is straightforward to deduce as
+	   impossible: the algebraic definition of convexity for $f$ will give us
+	   \begin{align*}
+		  f(x) + \epsilon &\leq f(x + tv) = f(t(x + v) + (1 - t)(x + 0)) \\
+			 &\leq t f(x + v) + (1 - t) f(x) \Rightarrow ( t \dto 0 ) \\
+		  f(x) + \epsilon &\leq \lim_{t \dto 0} t f(x + v) + (1 - t) f(x)
+		  \Rightarrow \epsilon \leq 0,
+	   \end{align*}
+	   which is a contradiction. In the above, we assume that both $f(x + tv),
+	   f(x)$ are finite, otherwise (since $f$ is proper) $f(x + tv)$ must equal
+	   $+\infty$, which reduces to the case where $v$ extends into
+	   infeasibility.
+    \end{itemize}
 
 	Let us first try to deduce that $g(v) \tdef f'(x; v)$ is positively
 	homogeneous. We need to check two postulates:
@@ -253,14 +261,8 @@
 			-\infty$ and the same line of reasoning will give us
 			\( g(cv) = -\infty = c \cdot (-\infty) \).
 
-			Finally, if $x \in \intr{\dom f}$, we showed in class that
-			$f(x; v) = \max_{y \in \partial f(x)} \ip{y, v}$ and then it is
-			trivial to verify that
-			\[
-				g(cv) = \max_{y \in \partial f(x)} \ip{y, cv} =
-					\max_{y \in \partial f(x)} c \ip{y, v} = c g(v)
-			\]
-			by the linearity of the inner product.
+			Finally, if $f$ is continuous in the direction $v$?
+            \todo{Find formula in this case?}
 	\end{enumerate}
 	Since we have imposed no constraints on the choice of $v$, we can conclude
 	that $g(v)$ must be positively homogeneous.
@@ -268,11 +270,85 @@
 	Now, let us try to prove that $g(v)$ is convex. We work with the algebraic
 	definition of convexity: take $\lambda \in [0, 1]$ and write
 	\begin{align*}
-		g(\lambda v_1 +( 1 - \lambda )v_2) &= f(x; \lambda v_1 + (1 - \lambda)
-		v_2) &= \lim_{t \dto 0} \frac{f(x + t (\lambda v_1 + (1 - \lambda)
-		v_2)) - f(x)}{t}
+		g(\lambda v_1 +( 1 - \lambda )v_2) &= f'(x; \lambda v_1 + (1 - \lambda)
+		v_2) = \lim_{t \dto 0} \frac{f(x + t (\lambda v_1 + (1 - \lambda)
+		v_2)) - f(x)}{t} \\
+            &\overset{(\text{$f$ convex})}{\leq} \lim_{t \dto 0}
+                \frac{\lambda f(x + t v_1) + (1 - \lambda) f(x + t v_2)
+                    - f(x)}{t} \\
+            &= \lim_{t \dto 0} \left[ \lambda \frac{f(x + t v_1) - f(x)}{t}
+             + (1 - \lambda) \frac{f(x + t v_2) - f(x)}{t} \right]
 	\end{align*}
+    Notice that the cases $\lambda = 0, \lambda = 1$ are trivial.
+    For $\lambda \in (0, 1)$, we would like to be able to interchange the order
+    of summation and limit. However, in general, the two limits might be $\pm
+    \infty$, which raises concerns. Consider the following cases:
+    \begin{itemize}
+    \item $f$ is continuous in $x + \epsilon d$ for some neighbourhood
+    $\epsilon$ in the directions $d \in \set{v_1, v_2}$: in that case, $f(x + t
+    v_1) < \infty, f(x + tv_2) < \infty$, and both inner limits are finite.
+    Therefore,
+    \[
+        \lim_{t \dto 0} \left[ \lambda \frac{f(x + tv_1) - f(x)}{t}
+        + (1 - \lambda )\frac{f(x + tv_2) - f(x)}{t}\right]
+        = \lambda g(v_1) + (1 - \lambda) g(v_2),
+    \]
+    as desired.
+    \item At least one of $x + tv_1, x + tv_2$ extends into infeasibility: in
+        this case, we choose $x + tv_1$ to satisfy $f(x + tv_1) = \infty$,
+        without loss of generality, so that we may deduce
+        \begin{align}
+            \frac{\lambda f(x + tv_1) + (1 - \lambda) f(x + tv_2) - f(x)}{t} &=
+            \frac{+\infty + (1 - \lambda) f(x + tv_2) - f(x)}{t} = +\infty
+            \Rightarrow \\
+            g(\lambda v_1 + (1 - \lambda) v_2) &\leq \infty =
+                \lambda g(v_1) + (1 - \lambda) g(v_2),
+        \end{align}
+        where the last equality holds since $g(v_1) = \infty$ when $x + tv_1$
+        extends into infeasibility. In the above, $f(x + tv_2)$ can be either
+        finite or $+\infty$, but not $-\infty$ since $f$ is assumed to be
+        proper, therefore there is no concern about ill-defined sums.
+    \end{itemize}
 
+    \ExePart
+
+    We now give some examples for each of the possibilities mentioned in the
+    problem stated. Note that if $x \in \intr{\dom f}$, by resorting to the
+    result proved in lecture (max-formula), we know that $g(v) =
+    \max_{y \in \partial f(x)} \ip{y, v}$, which is a closed, proper function
+    (maxima of affine functions are closed and $\partial f(x)
+    \neq \emptyset$). Additionally, its infimum over the unit ball must be
+    attained since there exists a shortest vector $g$ in the subdifferential.
+    \begin{enumerate}
+    \item $g$ is not necessarily proper: take a point $x$ such that $f$ is not
+    continuous in $x$. Obviously, $x$ cannot be in $\intr{\dom f}$. Consider
+    the following function, shown in~\cref{fig:pw-f}.
+    \begin{equation}
+        f(x) = \begin{cases}
+            \frac{x^2}{2}, & x \in [0, 1), \\
+            0.75, & x = 1 \\
+            \infty, & \text{otherwise}
+        \end{cases}
+        \label{eq:pw-f}
+    \end{equation}
+    It is trivially verifiable that $f$ is convex. If we set $v = -1$, one can
+    easily verify that $f'(x; v)$ is $-\infty$ for $x = 1$, as $\lim_{t \dto 0}
+    \frac{f(1 - t) - f(1)}{t} \leq \lim_{t \dto 0} \frac{-0.25}{t} = -\infty$.
+    \begin{figure}[h]
+        \centering
+        \begin{tikzpicture}% function
+        \begin{axis}[xlabel=$x$,ylabel=$f(x)$, legend pos=north west]
+        \addplot[thick, color=blue,domain = 0:1] {(0.5 * (x * x))};
+        \addplot[mark=*, color=blue] coordinates {(1,0.75)};
+        \draw [dashed, very thick] (1,0.5) -- (1,0.75);
+        \legend{$f(x)$}
+        \end{axis}
+        \end{tikzpicture}
+        \caption{Graph for $f$ from~\cref{eq:pw-f}}
+        \label{fig:pw-f}
+    \end{figure}
+    \item $g$ is not necessarily closed.
+    \end{enumerate}
 \end{Exercise}
 
 
