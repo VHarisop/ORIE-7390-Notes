@@ -24,6 +24,7 @@
 \homework{Vasileios Charisopoulos}{Homework 1}
 
 \begin{Exercise}
+	\label{ex:p1}
 	Consider $f(u, v) = \abs{u} + v^2$, so $\dom f = \Rbb^2$.
 
 	\ExePart
@@ -78,6 +79,7 @@
 \end{Exercise}
 
 \begin{Exercise}
+	\label{ex:p2}
 	Consider $f: \Rbb^n \to \Rbb$, continuously differentiable. This means that
 	$f$ satisfies the following at any point $x$:
 	\begin{align}
@@ -126,7 +128,51 @@
 \end{Exercise}
 
 \begin{Exercise}
+	\label{ex:p3}
+	Consider $f: \Rbb^n \to \Rbb$, proper, convex, and point $x \in \intr{\dom
+	f}$. Our objective is to show that $f(x; v) = \ip{a, v}$ for some $a \in
+	\Rbb^n$ if and only if $\partial f(x) = \set{g}$, a singleton.
+	\begin{itemize}
+		\item[$\Leftarrow$:] suppose that $\partial f(x) = \set{g}$, with $g
+			\in \Rbb^n$. Then, by the max-formula, we can write
+			\[
+				f'(x; v) = \max_{y \in \partial f(x)} \ip{y, v} =
+					\ip{g, v},
+			\]
+			since the subdifferential is a singleton. The above is obviously a
+			linear function of $v$.
+		\item[$\Rightarrow$:] suppose that $f'(x; v) = \ip{g, v}$ for some $g$.
+			Assume, for the sake of contradiction, that $\exists y_1, y_2
+			\in \partial f(x)$, with $y_1 \neq y_2$ i.e. that the subdifferential is not a
+			singleton (obviously, the subdifferential cannot be empty since it
+			is always nonempty at $\intr{\dom f}$). That implies that
+			\[
+				\max\set{\ip{y_1, v}, \ip{y_2, v}} = \ip{g, v}.
+			\]
+			At least one of $y_1, y_2$ must be $g$, otherwise there would be no
+			range of $v$ where the above equality holds. Therefore, we have
+			(wlog setting $g = y_1$):
+			\[
+				\max\set{\ip{y_1, v}, \ip{y_2, v}} = \ip{y_1, v},
+			\]
+			which implies that
+			\begin{align*}
+				\ip{y_1, v} &\geq \ip{y_2, v} \Leftrightarrow
+				\ip{y_1 - y_2, v} \geq 0, \; \forall v \in \Rbb^n.
+			\end{align*}
+			However, since we can freely choose $v$, we set $v = -(y_1 - y_2)$,
+			which gives us
+			\[
+				\ip{y_1 - y_2, y_2 - y_1} \geq 0 \Rightarrow
+				-\norm{y_1 - y_2}^2 \geq 0 \Rightarrow y_1 = y_2.
+			\]
+			Therefore, it must hold that $y_1 = y_2$, implying that the
+			subdifferential has to be a singleton.
+	\end{itemize}
+\end{Exercise}
 
+\begin{Exercise}
+	\label{ex:p4}
 	\ExePart
 
 	Consider the map $t \mapsto \frac{f(x + tv) - f(x)}{t}$, and let us set
