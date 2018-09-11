@@ -26,8 +26,66 @@
 
 \begin{Exercise}
 	\label{ex:p1}
-	Consider $f(u, v) = \abs{u} + v^2$, so $\dom f = \Rbb^2$.
+	Consider $f(u, v) = \abs{u} + v^2$, so $\dom f = \Rbb^2$. This function is
+    easily shown to be convex as a sum of convex functions, which will be
+    needed in the sequel. Additionally, it is proper by virtue of being bounded
+    below from $0$, with minimum value $\min f = f(0, 0) = 0$, and closed since
+    its individual summands are also closed.
 
+    \ExePart
+        In class, we mentioned the theorem given by Brezis: for closed, convex,
+        proper $f$ which attain their minima, there exist unique steepest
+        descent trajectories $X(\cdot)$ which satisfy
+        \begin{align}
+            \begin{cases}
+                X(0) = x_0 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}, & \\
+                \frac{\dd{} X(t)}{\dd t} \in -\partial f(X(t)), & \text{a.e.}
+            \end{cases}
+            \label{eq:descent_trajectory}
+        \end{align}
+        Observe that $f$ is separable, which means that we may treat each
+        coordinate of the descent trajectory separately, as seen below:
+        \begin{align*}
+            \left\{
+            \begin{aligned}
+                \frac{\dd{} X_1(t)}{\dd t} & \in
+                -\partial \abs{X_1(t)} \\
+                \frac{\dd{} X_2(t)}{\dd t} & \in
+                -2 X_2(t)
+            \end{aligned} \right.
+        \end{align*}
+        The second of the above ODEs is easy to solve, since the inclusion is
+        actually an equality giving us (using dot notation for the time
+        derivative):
+        \[
+            \dot{X}_2(t) + 2 X_2(t) = 0 \Rightarrow
+            X_2(t) = e^{-2t} X_2(0) = e^{-2t}.
+        \]
+        For the other part, we have
+        \[
+            \dot{X}_1(t) + \partial \abs{X_1(t)} = 0,
+        \]
+        where we have to take cases depending on $X_1(t)$'s sign:
+        \begin{itemize}
+        \item $X_1(t) > 0$: in that case, we have $\dot{X}_1(t) = -1 \Rightarrow
+            X_1(t) = C - t = 1 - t$, since $X_1(0) = 1$.
+        \item $X_1(t) = 0$: in that case, we must have $\dot{X}_1(t) =
+            0 = \partial^{\circ} f(X_1(t))$, which is the minimum length
+            subgradient, This means that if we start from $X(0)$ and eventually
+            hit $X(t)$ such that $X_1(t) = 0$, $X_1(s) = 0, \; \forall s \geq
+            t$.
+        \item $X_1(t) < 0$: this case implies that
+            $\dot{X}_1(t) = 1 \Rightarrow X_1(t) = t + C$, but $t \in \Rbb_+$
+            so we will end up in $X_1(0) = 0$ before we get any chance to reach
+            $X_1(t) < 0$.
+        \end{itemize}
+        Putting all of the above together, we recover
+        \[
+            X(t) = \begin{pmatrix}
+                    \max(1 - t, 0) \\
+                    e^{-2t}
+                \end{pmatrix}
+        \]
 	\ExePart
 
 		Let us simplify the notation by dropping $\lambda$ from $x_k^{\lambda}$
@@ -77,6 +135,8 @@
 				\frac{\lambda}{2 + \lambda} x_k^{(2)}
 			\end{pmatrix}, \; \forall \lambda > 0.
 		\]
+
+    \ExePart
 \end{Exercise}
 
 \begin{Exercise}
@@ -143,32 +203,24 @@
 			since the subdifferential is a singleton. The above is obviously a
 			linear function of $v$.
 		\item[$\Rightarrow$:] suppose that $f'(x; v) = \ip{g, v}$ for some $g$.
-			Assume, for the sake of contradiction, that $\exists y_1, y_2
-			\in \partial f(x)$, with $y_1 \neq y_2$ i.e. that the subdifferential is not a
-			singleton (obviously, the subdifferential cannot be empty since it
-			is always nonempty at $\intr{\dom f}$). That implies that
+			Assume, for the sake of contradiction, that the subdifferential is
+			not a singleton (obviously, the subdifferential cannot be empty
+			since it is always nonempty at $\intr{\dom f}$). That implies that
+            $\exists z, z' \in \partial f(x)$ with $z \neq z'$, and additionally
+            that
 			\[
-				\max\set{\ip{y_1, v}, \ip{y_2, v}} = \ip{g, v}.
+				\max_{y \in \partial f(x)} \ip{y, v} = \ip{g, v} \Rightarrow
+                \ip{g - y, v} \geq 0, \; \forall y \in \partial f(x).
 			\]
-			At least one of $y_1, y_2$ must be $g$, otherwise there would be no
-			range of $v$ where the above equality holds. Therefore, we have
-			(wlog setting $g = y_1$):
-			\[
-				\max\set{\ip{y_1, v}, \ip{y_2, v}} = \ip{y_1, v},
-			\]
-			which implies that
-			\begin{align*}
-				\ip{y_1, v} &\geq \ip{y_2, v} \Leftrightarrow
-				\ip{y_1 - y_2, v} \geq 0, \; \forall v \in \Rbb^n.
-			\end{align*}
-			However, since we can freely choose $v$, we set $v = -(y_1 - y_2)$,
-			which gives us
-			\[
-				\ip{y_1 - y_2, y_2 - y_1} \geq 0 \Rightarrow
-				-\norm{y_1 - y_2}^2 \geq 0 \Rightarrow y_1 = y_2.
-			\]
-			Therefore, it must hold that $y_1 = y_2$, implying that the
-			subdifferential has to be a singleton.
+            However, since $v$ ranges over the whole space $\Rbb^n$, we may pick
+            $v = -(g - y)$ for any $y \in \partial f(x)$. This gives us
+            \[
+                -\ip{g - y, g - y} \geq 0 \Rightarrow
+                \norm{g - y}^2 \leq 0 \Leftrightarrow g = y.
+            \]
+			Setting $y = z$ and $y = z'$ successively gives us a contradiction
+            $ g = z = z' $, since we assumed $z \neq z'$, hence we conclude
+            that $\partial f(x)$ must be a singleton.
 	\end{itemize}
 \end{Exercise}
 
@@ -212,11 +264,6 @@
 	where $\abs{f(x + tv) - f(x)} > \epsilon, \; \forall t > 0$. We will
 	consider the following mutually exclusive cases:
 	\begin{itemize}
-		\item $x + tv \notin \dom f, \; \forall t > 0$, which means that $v$
-			extends into infeasibility in constraint scenarios.
-		\item $x + tv \in \dom f, \forall t$ small enough, but $f(x + tv) -
-			f(x) < -\epsilon$, where $\epsilon > 0$ is fixed.
-			This means that $f$ is discontinuous at $x$.
 		\item $f$ is continuous in the direction $v$, which means that
         $\lim_{t \dto 0} f(x + tv) = f(x)$. This implies that $f$ is also
         Lipschitz in $\set{z \mmid z = x + tv, \; t \leq \epsilon}$ for some
@@ -286,7 +333,8 @@
     \begin{itemize}
     \item $f$ is continuous in $x + \epsilon d$ for some neighbourhood
     $\epsilon$ in the directions $d \in \set{v_1, v_2}$: in that case, $f(x + t
-    v_1) < \infty, f(x + tv_2) < \infty$, and both inner limits are finite.
+    v_1) < \infty, f(x + tv_2) < \infty$, and both inner limits exists and are
+    finite. \todo{argue about the existence and finiteness}
     Therefore,
     \[
         \lim_{t \dto 0} \left[ \lambda \frac{f(x + tv_1) - f(x)}{t}
@@ -294,6 +342,20 @@
         = \lambda g(v_1) + (1 - \lambda) g(v_2),
     \]
     as desired.
+    \item None of $x + tv_1, x + tv_2$ extends into infeasibility, and at least
+        one of the directions (wlog $v_1$) satisfies $f(x + tv_1) - f(x) <
+        -\varepsilon, \; \forall t \in (0, \delta)$, then the LHS will be
+        $-\infty$ since
+        \[
+            \frac{\lambda [f(x + tv_1) - f(x)] + (1 - \lambda) [
+                f(x + tv_2) - f(x)]}{t} \leq
+            -\frac{\varepsilon}{t} + (1 - \lambda) \frac{f(x + tv_2) - f(x)}{t}.
+        \]
+        and taking limits sends it to $-\infty$. Therefore, it remains to show
+        that $\lambda g(v_1) + (1 - \lambda) g(v_2) \geq -\infty$, which is
+        satisfied since $g(v_1) = \lim_{t \dto 0} \frac{f(x + tv_1) - f(x)}{t}
+            = -\infty$ and the other limit cannot be $+\infty$ by our
+            assumption.
     \item At least one of $x + tv_1, x + tv_2$ extends into infeasibility: in
         this case, we choose $x + tv_1$ to satisfy $f(x + tv_1) = \infty$,
         without loss of generality, so that we may deduce
@@ -308,6 +370,7 @@
         extends into infeasibility. In the above, $f(x + tv_2)$ can be either
         finite or $+\infty$, but not $-\infty$ since $f$ is assumed to be
         proper, therefore there is no concern about ill-defined sums.
+
     \end{itemize}
 
     \ExePart
@@ -353,8 +416,8 @@
 
 
 \begin{Exercise}
-	We are given that $f$ is diffable and convex, with $L$-Lipschitz gradient.
-	This implies that
+	We are given that $f$ is differentiable and convex, with $L$-Lipschitz
+	gradient. This implies that
 	\[
 		\abs{\grad f(x) - \grad f(y)} \leq L \norm{x - y}.
 	\]
