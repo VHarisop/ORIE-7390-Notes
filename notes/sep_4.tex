@@ -1,0 +1,64 @@
+\section{Steepest Descent Trajectories}
+
+Let us recall a definition that we touched upon in previous lectures. Given
+proper $f: \Hbb \to \overline{\Rbb}$, $x_0 \in \dom f$, a steepest descent
+trajectory is an \textit{absolutely continuous} curve $X(\cdot): \Rbb_+ \to
+\Hbb$, $X(0) = x_0$, such that
+\begin{equation}
+	X(t) = x_0 + \int_0^t W(s) \dd s, \;
+	\frac{\dd^+}{\dd t} f(X(t)) = -
+	\underbrace{\abs{\grad f}(X(t))}_{\text{slope}} \cdot
+	\underbrace{\norm{ \frac{\dd^+}{\dd t} X(t) }}_{\text{speed}}
+	\label{eq:steepest-descent-trajectory}
+\end{equation}
+In plaintext, the above simply says that the rate by which the function value
+decreases along a steepest descent trajectory is proportional to the slope
+times speed.
+
+\begin{cproposition}{}{}
+	If $X(\cdot)$ is a steepest descent trajectory for $f$, then it is also a
+	steepest descent trajectory for $\phi \circ f$, where $\phi \in C^1$ and
+	$\phi' > 0$.
+\end{cproposition}
+\begin{proof}
+	Using the ordinary chain rule, we write
+	\begin{align*}
+		\frac{\dd^+}{\dd t} \left(\phi \circ f\right)(X(t)) &=
+			\phi'(f(X(t))) \frac{\dd^+}{\dd t} f(X(t)) \\
+			&= -\phi'(f(X(t))) \cdot \abs{\grad f}(X(t))
+			   \norm{\frac{\dd^+}{\dd t} X(t)} \\
+			&\overset{\cref{prop:slope-chain-rule}}{=}
+			-\grad(\phi \circ f)(X(t)) \norm{\frac{\dd^+}{\dd t} X(t)},
+	\end{align*}
+	which concludes that
+	\[
+		\frac{\dd^+}{\dd t} (\phi \circ f)(X(t))
+		= -\grad (\phi \circ f)(X(t)) \norm{\frac{\dd^+}{\dd t} X(t)}.
+	\]
+\end{proof}
+
+Now, let us suppose that $f$ is \textbf{sharp} along $X(t)$, i.e. $\exists
+\varepsilon > 0$ such that $\abs{\grad f}(X(\cdot)) \geq \varepsilon$. Then,
+for any $0 \leq t < s$, the length of the curve $\ell(X(\cdot), t, s)$ satisfies
+\begin{align*}
+	\ell(X, t, s) &= \int_t^s \norm{\dot{x}}
+	\overset{\cref{eq:steepest-descent-trajectory}}{=}
+	\int_t^s -\frac{\frac{\dd^+}{\dd \tau} f(X(\tau))}{\abs{\grad f}(X(t))}
+		\dd \tau \\
+		&\leq \frac{1}{\varepsilon} \int_t^s
+			-\frac{\dd^+}{\dd \tau} f(X(\tau)) \dd \tau \\
+		&=\frac{1}{\varepsilon} \left(f(X(t)) - f(X(s))\right),
+\end{align*}
+where in the above we've made use of the fact that $\frac{\dd^+}{\dd t} f(X(t))
+= \frac{\dd}{\dd t} f(X(t))$ \textit{almost everywhere} to perform the
+integration, by replacing the integral with the one involving the ordinary
+derivative.
+Therefore, sharpness gives a uniform bound on the length of steepest descent
+trajectories in terms of decrease in function value.
+
+Furthermore, if we know that $f(X(t)) \overset{t \to \infty}{\to} \min f$, and
+assuming the minimum is attained, the uniform bound above is enough to prove
+that the trajectory (or sequence, if discretized) above has the Cauchy
+property, hence converges in norm. Recall that a sequence
+$\set{x_n}_{n=1}^{\infty}$ is Cauchy if $\forall \varepsilon > 0$, $\exists N$
+such that $\abs{x_m - x_n} < \varepsilon, \; \forall m, n > N$.
