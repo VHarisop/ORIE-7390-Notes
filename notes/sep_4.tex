@@ -6,9 +6,9 @@ trajectory is an \textit{absolutely continuous} curve $X(\cdot): \Rbb_+ \to
 \Hbb$, $X(0) = x_0$, such that
 \begin{equation}
 	X(t) = x_0 + \int_0^t W(s) \dd s, \;
-	\frac{\dd^+}{\dd t} f(X(t)) = -
+	\frac{ \dd{~}^+ }{\dd{t}} f(X(t)) = -
 	\underbrace{\abs{\grad f}(X(t))}_{\text{slope}} \cdot
-	\underbrace{\norm{ \frac{\dd^+}{\dd t} X(t) }}_{\text{speed}}
+	\underbrace{\norm{ \frac{\dd{~}^+}{\dd{t}} X(t) }}_{\text{speed}}
 	\label{eq:steepest-descent-trajectory}
 \end{equation}
 In plaintext, the above simply says that the rate by which the function value
@@ -23,17 +23,17 @@ times speed.
 \begin{proof}
 	Using the ordinary chain rule, we write
 	\begin{align*}
-		\frac{\dd^+}{\dd t} \left(\phi \circ f\right)(X(t)) &=
-			\phi'(f(X(t))) \frac{\dd^+}{\dd t} f(X(t)) \\
+		\frac{\dd{~}^+}{\dd{t}} \left(\phi \circ f\right)(X(t)) &=
+			\phi'(f(X(t))) \frac{\dd{~}^{+}}{\dd{t}} f(X(t)) \\
 			&= -\phi'(f(X(t))) \cdot \abs{\grad f}(X(t))
-			   \norm{\frac{\dd^+}{\dd t} X(t)} \\
+			   \norm{\frac{\dd{~}^{+}}{\dd{t}} X(t)} \\
 			&\overset{\cref{prop:slope-chain-rule}}{=}
-			-\grad(\phi \circ f)(X(t)) \norm{\frac{\dd^+}{\dd t} X(t)},
+			-\grad(\phi \circ f)(X(t)) \norm{\frac{\dd{~}^{+}}{\dd{t}} X(t)},
 	\end{align*}
 	which concludes that
 	\[
-		\frac{\dd^+}{\dd t} (\phi \circ f)(X(t))
-		= -\grad (\phi \circ f)(X(t)) \norm{\frac{\dd^+}{\dd t} X(t)}.
+		\frac{\dd{~}^+}{\dd{t}} (\phi \circ f)(X(t))
+		= -\grad (\phi \circ f)(X(t)) \norm{\frac{\dd{~}^{+}}{\dd{t}} X(t)}.
 	\]
 \end{proof}
 
@@ -43,14 +43,16 @@ for any $0 \leq t < s$, the length of the curve $\ell(X(\cdot), t, s)$ satisfies
 \begin{align*}
 	\ell(X, t, s) &= \int_t^s \norm{\dot{x}}
 	\overset{\cref{eq:steepest-descent-trajectory}}{=}
-	\int_t^s -\frac{\frac{\dd^+}{\dd \tau} f(X(\tau))}{\abs{\grad f}(X(t))}
-		\dd \tau \\
+	\int_t^s -\frac{\frac{\dd{~}^{+}}{\dd{\tau}} f(X(\tau))}{\abs{\grad 
+	f}(X(t))}
+		\dd{\tau} \\
 		&\leq \frac{1}{\varepsilon} \int_t^s
-			-\frac{\dd^+}{\dd \tau} f(X(\tau)) \dd \tau \\
+			-\frac{\dd{~}^+}{\dd{\tau}} f(X(\tau)) \dd{\tau} \\
 		&=\frac{1}{\varepsilon} \left(f(X(t)) - f(X(s))\right),
 \end{align*}
-where in the above we've made use of the fact that $\frac{\dd^+}{\dd t} f(X(t))
-= \frac{\dd}{\dd t} f(X(t))$ \textit{almost everywhere} to perform the
+where in the above we've made use of the fact that $\frac{\dd{~}^{+}}{\dd{t}} 
+f(X(t))
+= \frac{\dd{~}}{\dd{t}} f(X(t))$ \textit{almost everywhere} to perform the
 integration, by replacing the integral with the one involving the ordinary
 derivative.
 Therefore, sharpness gives a uniform bound on the length of steepest descent

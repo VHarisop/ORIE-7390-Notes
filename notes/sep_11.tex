@@ -1,0 +1,150 @@
+\section{KL and complexity}
+
+Recall that we are mostly concerned with $f: \Hbb \to \overline{\Rbb}$, closed,
+proper and convex, and assume that $\min f = 0$ for simplicity.
+
+\textbf{Slope descent sequence}: a sequence $\set{x_k}_{k=1}^{\infty}$
+satisfying the following properties $\forall k \in \Nbb$:
+\begin{enumerate}
+	\item $f(x_k) - f(x_{k+1}) \geq \alpha \norm{x_k - x_{k+1}}^2$, for a
+	universal constant $\alpha > 0$
+	\item $\abs{\grad f}(x_{k+1}) \leq \beta \norm{x_k - x_{k+1}}$, for a
+	universal constant $\beta > 0$.
+\end{enumerate}
+
+Assume that the KL property is satisfied: $\exists$ desingularizing function
+$\phi: [0, \rho) \to \Rbb_+$, continuous and concave, with $\phi(0) = 0$ and
+$\phi' > 0, $ continuous on $(0, \rho)$, (e.g. $\phi(s) = ks^{1- \theta},
+0 \leq \theta < 1$), such that
+\[
+	\abs{\grad (\phi \circ f)}(x) \geq 1, \; \forall x \in \cX,
+\]
+where $\cX$ is the slope descent sequence.
+Then we deduce that $x_k \overset{\mathrm{norm}}{\to} x^*$, where $x^*$ is a
+minimizer of $f$, and
+\[
+	\norm{x_k - x^*} \leq \frac{\beta}{\alpha} \phi(f(x_k))
+		+ \sqrt{\frac{f(x_{k-1})}{\alpha}}.
+\]
+
+By inverse function Theorem, we know that $\phi$ has an inverse $\psi :=
+\phi^{-1}$, defined on some interval $(0, \mu) \to \Rbb_+$, for some $0 < \mu <
+\phi(\rho)$, which will be:
+\begin{itemize}
+	\item continuous, with $\psi(0) = 0$, and
+	\item $\psi' > 0$, continuous on $(0, \mu)$, with
+		\[
+			\psi'(\phi(s)) = \frac{1}{\phi'(x)}.
+		\]
+\end{itemize}
+Since $\phi$ is concave, it follows that $\psi$ is convex.
+\textbf{Notice}: $\phi$ desingularizes $\psi$. So it makes sense, in an
+exploratory sense, to try and apply our theorem to $\psi$.
+
+We need an \textit{additional} assumption: $\psi'(0) = 0$ and $\psi'$ is also
+L-Lipschitz on $[0, \mu)$.
+
+\paragraph{Example:} for $\phi(s) = ks^{1 - \theta}$, we obtain $\psi(t) = k'
+t^{\frac{1}{1 - \theta}}, t \geq 0$. A canonical example is when $\theta =
+\frac{1}{2}$, where we obtain $\psi(t) = k' t^2, \; t \geq 0$.
+
+We will see that the complexity depends just on $\alpha, \beta, L$ and $\psi$,
+by applying the proximal point method to minimize $\psi$.
+
+\subsubsection{Proximal point method}
+Recall: for closed, proper, convex $f: \Hbb \to \overline{\Rbb}$ and any $x \in
+\dom f$, $\exists! y \in \Hbb$ such that
+\[
+	y = \argmin_x \set{f(x) + \frac{1}{2} \norm{x - y}^2},
+\]
+characterized by (using the sum rule for the subdifferential):
+\[
+	x - y \in \partial f(y),
+\]
+which has unique solution $y^*$, and this solution is called the
+\textit{proximal map}. The proximal map is $1$-Lipschitz.
+
+E.g. $f = \delta_C$, $C$ closed and convex, then $\prox{f}{~} = \cP_{C}$, where
+$\cP$ denotes the projection operator.
+
+If $\argmin f \neq \emptyset$, then the proximal point method
+\[
+	x_{k+1} = \prox{\lambda f}{x_k}, \; \lambda > 0,
+\]
+converges to a minimizer (weakly) and $f(x_k) \dto \min f$ at rate
+$\cO\left(\frac{1}{k}\right)$. In fact, we can choose $\lambda = \lambda_k$ at
+every step, providing $\sum_k \lambda_k = \infty$.
+
+
+Now, let us apply the proximal point method to $\psi$. Choose $t_k > 0$, so
+that $\psi(t_k) = f(x_k)$, implying that $t_k = \psi^{-1}(f(x_k)) =
+\phi(f(x_k))$, and choose $\lambda_k > 0$ so that
+\[
+	t_{k+1} = \prox{\lambda_k \psi}{t_k}, \; \forall k.
+\]
+By definition, this means that
+\[
+	\lambda_k \psi'(t_{k+1}) + t_{k+1} - t_k = 0 \Rightarrow
+	\lambda_k = \frac{t_k - t_{k+1}}{\psi'(t_{k+1})}.
+\]
+Let us try and get a handle on how this sequence of $\lambda_k$ behaves. Since
+$\set{x_k}$ is a slope descent sequence. If we look at
+$\frac{\alpha}{\beta^2}$, we obtain
+\[
+	\frac{\alpha}{\beta^2} \leq \frac{f(x_k) - f(x_{k+1})}{\abs{\grad
+	f}^2(x_{k+1})}.
+\]
+The KL inequality says that $1 \leq \abs{\grad (\phi \circ f)}(x_{k+1}), \; \forall k$, which by the chain rule gives us
+\begin{align*}
+	1 & \leq \phi'(f(x_{k+1})) \cdot \abs{\grad f}(x_{k+1}) \Rightarrow
+	\abs{\grad f}(x_{k+1}) \geq \frac{1}{\phi'(f(x_{k+1}))} \\
+	&= \frac{1}{\phi'(\psi(t_{k+1}))} = \psi'(t_{k+1})
+\end{align*}
+Hence we obtain that
+\begin{align*}
+	\frac{\alpha}{\beta^2} &\leq \frac{\psi(t_k) - \psi(t_{k+1})}
+		{\left(\psi'(t_{k+1}) \right)^2} \\
+		&\overset{\cref{prop:quad-upper-bound-kl}}{\leq} \frac{\psi'(t_{k+1})(t_k - t_{k+1}) - \frac{L}{2}\norm{t_k -
+		t_{k+1}}^2}{\psi'(t_{k+1})} \\
+		&= \lambda_k + \frac{L}{2} \lambda_k^2 \Rightarrow \\
+	\lambda_k^2 + \frac{2}{L} \lambda_k + \frac{1}{L^2} &\geq
+	\frac{2\alpha}{L\beta^2} + \frac{1}{L^2} \Rightarrow
+	\lambda_k \geq
+	\underbrace{\sqrt{\frac{2a}{L\beta^2} + \frac{1}{L^2}} - \frac{1}{L}}_{=:
+	\bar{\lambda} > 0}.
+\end{align*}
+The last step involves proving the following, which is an easy exercise:
+\begin{exercise}{}{}
+	Define $\tau_0 = t_0$ and
+	\begin{align*}
+		\tau_{k+1} &= \prox{\bar{\lambda} \psi}{\tau_k} \\
+		t_{k+1} &= \prox{\lambda_k \psi}{t_k}, \; \lambda_k \geq
+		\bar{\lambda},
+	\end{align*}
+	for any convex $\psi$ with $\psi'(0) = 0$. Then $t_k \leq \tau_k, \;
+	\forall k$.
+	\begin{proof}
+		An easy inductive argument.
+	\end{proof}
+\end{exercise}
+
+Define $\tau_0 = f(x_0)$ and $\tau_{k+1} = \prox{\bar{\lambda} \psi}{\tau_k},
+\; \forall k$. Then
+\[
+	\norm{x_k - x^*} \leq \frac{\beta}{\alpha} \tau_k +
+	\sqrt{\frac{\psi(\tau_{k-1})}{\alpha}}.
+\]
+In particular, if $\phi(s) = k \sqrt{s}$, which implies that $\psi(s) = k'
+s^2$, the proximal point method gives \textit{linear convergence} of $x_k$ to
+$x^*$.
+
+In order to apply the above to a real problem we need:
+\begin{itemize}
+	\item an algorithm, which we also need to be able to prove that satisfies
+	the slope descent sequence postulates (get a hold of $\alpha, \beta$).
+	\item a guarantee about the KL property and the existence of a
+	desingularizing function. We'll take about finding such functions in the
+	sequel.
+	\item look at the behavior of $\tau_k$ to see how fast it is converging to
+	zero, assuming the sequence $f(x_k)$ is precomputed.
+\end{itemize}
