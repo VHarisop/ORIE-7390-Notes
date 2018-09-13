@@ -25,6 +25,7 @@
 
 \homework{Vasileios Charisopoulos}{Homework 1}
 
+\vspace{1em}
 \begin{Exercise}
 	\label{ex:p1}
 	Consider $f(u, v) = \abs{u} + v^2$, so $\dom f = \Rbb^2$. This function is
@@ -33,7 +34,7 @@
     below from $0$, with minimum value $\min f = f(0, 0) = 0$, and closed since
     its individual summands are also closed.
 
-    \ExePart
+    \paragraph{1.}
         In class, we mentioned the theorem given by Brezis: for closed, convex,
         proper $f$ which attain their minima, there exist unique steepest
         descent trajectories $X(\cdot)$ which satisfy
@@ -87,8 +88,8 @@
                     e^{-2t}
                 \end{pmatrix}
         \]
-	\ExePart
 
+    \paragraph{2.}
 		Let us simplify the notation by dropping $\lambda$ from $x_k^{\lambda}$
 		for now, until we determine the solution of the proximal map.
 		Consider $x^* = \argmin_{x} f(x) + \frac{\lambda}{2} \norm{x - x_k}^2$.
@@ -137,9 +138,11 @@
 			\end{pmatrix}, \; \forall \lambda > 0.
 		\]
 
-    \ExePart
-		We provide code that computes the proximal point sequence in a simple
-		\texttt{Python} script. Example sequences can be found
+    \paragraph{3.}
+		We provide code that computes the proximal point sequence and saves the
+        resulting trajectory in a \texttt{.csv} file as a \texttt{Python}
+        script, which is attached in a \texttt{.zip} file along with this
+        report. Example sequences as well as the real trajectory can be found
 		in~\cref{fig:prox-seq}.
 		\begin{figure}[h]
 			\centering
@@ -152,18 +155,25 @@
             sep=comma] {code/prox_20.000.csv};
             \addplot+[mark options={scale=0.75}] table[x=x,y=y, col
             sep=comma] {code/prox_5.000.csv};
-            \legend{$\lambda = 50$, $\lambda = 20$, $\lambda=5$};
+            \addplot+[no markers, thick] table[x=x,y=y, col
+            sep=comma] {code/trajectory_10.000.csv};
+            \legend{$\lambda = 50$, $\lambda = 20$, $\lambda=5$, Real};
             \end{axis}
             \end{tikzpicture}
-            \caption{Proximal point sequence for different $\lambda$}
+            \caption{Proximal point sequence for different $\lambda$
+            against real trajectory}
             \label{fig:prox-seq}
 		\end{figure}
+        The real trajectory plotted is $x(t), 0 \leq t \leq 10$.
+
 \end{Exercise}
+
+\vspace{1em}
 
 \begin{Exercise}
 	\label{ex:p2}
 	Consider $f: \Rbb^n \to \Rbb$, continuously differentiable. This means that
-	$f$ satisfies the following at any point $x$:
+	$f$ satisfies, at any point $x$:
 	\begin{align}
 		f(x + d) &= f(x) + \ip{\grad f(x), d} + o(d), \;
 		\lim_{d \to 0} \frac{o(d)}{\norm{d}} = 0.
@@ -209,6 +219,8 @@
 	when $f$ is $C^1$.
 \end{Exercise}
 
+\vspace{1em}
+
 \begin{Exercise}
 	\label{ex:p3}
 	Consider $f: \Rbb^n \to \Rbb$, proper, convex, and point $x \in \intr{\dom
@@ -245,9 +257,12 @@
 	\end{itemize}
 \end{Exercise}
 
+\vspace{1em}
+
 \begin{Exercise}
 	\label{ex:p4}
-	\ExePart
+
+    \paragraph{1.}
 
 	Consider the map $t \mapsto \frac{f(x + tv) - f(x)}{t}$, and let us set
 	$g(t) = f(x + tv) - f(x)$. This map satisfies $g(0) = 0$ and is convex since
@@ -276,7 +291,7 @@
 	which proves that $\frac{g(t)}{t} = \frac{f(x + tv) - f(x)}{t}$ is
 	non-decreasing.
 
-	\ExePart
+    \paragraph{2.}
     In class, we settled what happens with the directional derivative when
     $x \in \intr{\dom f}$. However, in this question we are only given that
     $x \in \dom f$, and by virtue of being proper, $f(z) > -\infty, \; \forall
@@ -366,7 +381,7 @@
     which completes the proof.
     \end{itemize}
 
-    \ExePart
+    \paragraph{3.}
 
     We now give some examples for each of the possibilities mentioned in the
     problem stated. Note that if $x \in \intr{\dom f}$, by resorting to the
@@ -420,6 +435,7 @@
     \end{enumerate}
 \end{Exercise}
 
+\vspace{1em}
 
 \begin{Exercise}
 	We are given that $f$ is differentiable and convex, with $L$-Lipschitz
