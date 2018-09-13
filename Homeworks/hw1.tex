@@ -256,122 +256,44 @@
 	non-decreasing.
 
 	\ExePart
+    In class, we settled what happens with the directional derivative when
+    $x \in \intr{\dom f}$. However, in this question we are only given that
+    $x \in \dom f$, and by virtue of being proper, $f(z) > -\infty, \; \forall
+    z$.
 
-	Here, we only know that $x \in \dom f$, which means that there could exist
-	directions $v \in \Rbb^n$ such that $f(x + tv) \notin \dom f \Rightarrow
-	f(x + tv) = \infty$. Additionally, since we can only guarantee local
-	(Lipschitz) continuity when $x \in \intr{\dom f}$, there could be cases
-	where $\abs{f(x + tv) - f(x)} > \epsilon, \; \forall t > 0$. We will
-	consider the following mutually exclusive cases:
-	\begin{itemize}
-		\item $f$ is continuous in the direction $v$, which means that
-        $\lim_{t \dto 0} f(x + tv) = f(x)$. This implies that $f$ is also
-        Lipschitz in $\set{z \mmid z = x + tv, \; t \leq \epsilon}$ for some
-        $\epsilon > 0$, with Lipschitz modulus $L_v$.
-        \item $f$ is not continuous in the direction $v$. This can happen when
-        $v$ extends into infeasibility, or when $f(x + tv) - f(x) < -\epsilon$,
-        $\epsilon > 0$. Note that the opposite, when $f(x + tv) - f(x) >
-        \epsilon, \; \forall t$ small enough, is straightforward to deduce as
-	   impossible: the algebraic definition of convexity for $f$ will give us
-	   \begin{align*}
-		  f(x) + \epsilon &\leq f(x + tv) = f(t(x + v) + (1 - t)(x + 0)) \\
-			 &\leq t f(x + v) + (1 - t) f(x) \Rightarrow ( t \dto 0 ) \\
-		  f(x) + \epsilon &\leq \lim_{t \dto 0} t f(x + v) + (1 - t) f(x)
-		  \Rightarrow \epsilon \leq 0,
-	   \end{align*}
-	   which is a contradiction. In the above, we assume that both $f(x + tv),
-	   f(x)$ are finite, otherwise (since $f$ is proper) $f(x + tv)$ must equal
-	   $+\infty$, which reduces to the case where $v$ extends into
-	   infeasibility.
-    \end{itemize}
-
-	Let us first try to deduce that $g(v) \tdef f'(x; v)$ is positively
-	homogeneous. We need to check two postulates:
-	\begin{enumerate}
+    Let us first settle positive homogeneity:  We need to check two postulates:
+    \begin{enumerate}
 		\item $g(0) = 0$: this is trivial since
 			\[
 				\lim_{t \dto 0} \frac{f(x + t 0) - f(x)}{t} =
 				\lim_{t \dto 0} \frac{f(x) - f(x)}{t} = 0.
 			\]
-		\item $g(cv) = c g(v)$ for $c > 0$: we will proceed on a case-by-case basis. If $x
-			+ tv$ extends outside $\dom f$ for all small $t > 0$, we write
-			\begin{align*}
-				g(cv) &= \lim_{t \dto 0} \frac{f(x + c t v) - f(x)}{t} \\
-					  &= \lim_{t \dto 0} \frac{\infty - f(x)}{t} = \infty,
-			\end{align*}
-			since $c t > 0$ as well. Additionally, $g(v) = \infty$ by the same
-			reasoning, since $f(x + tv) = \infty, \; \forall t > 0$. Hence
-			$\infty = g(cv) = c g(v) = \infty$ as $c > 0$.
-
-			If $x, v$ are such that $f(x + tv) - f(x) < -\epsilon$ for small
-			$t$, then we obtain $\lim_{t \dto 0} \frac{f(x + tv) - f(x)}{t} =
-			-\infty$ and the same line of reasoning will give us
-			\( g(cv) = -\infty = c \cdot (-\infty) \).
-
-			Finally, if $f$ is continuous in the direction $v$?
-            \todo{Find formula in this case?}
+		\item $g(cv) = c g(v)$ for $c > 0$: observe the following series of
+        algebraic manipulations:
+        \begin{align*}
+            g(cv) &= \lim_{t \dto 0} \frac{f(x + t cv) - f(x)}{t} =
+                c \frac{f(x + tcv) - f(x)}{t c} \\
+                & \overset{t' = ct}{=}
+                \lim_{t' \dto 0} c \frac{f(x + t'v) - f(x)}{t'} =
+                c \lim_{t \dto 0} \frac{f(x + tv) - f(x)}{t} = c g(v).
+        \end{align*}
+        Note that we can ``pull out'' $c$ from the limit above because the
+        following are true:
+        \begin{itemize}
+        \item we showed that $\frac{f(x+tv) - f(x)}{t}$ is monotone increasing
+        in $(0, 1]$ in the previous part of the exercise, which means that its
+        right limit $t \dto 0$ exists(by~\cite[Theorem 4.29]{Rudin76}), and
+        \item $c$ is nonnegative, so if the limit was $\pm \infty$, it is
+        preserved since infinities are preserved when multiplied with a
+        nonnegative scalar.
+        \end{itemize}
 	\end{enumerate}
-	Since we have imposed no constraints on the choice of $v$, we can conclude
-	that $g(v)$ must be positively homogeneous.
+    We thus conclude that $g(v) = f'(x; v)$ is positively homogeneous.
 
-	Now, let us try to prove that $g(v)$ is convex. We work with the algebraic
-	definition of convexity: take $\lambda \in [0, 1]$ and write
-	\begin{align*}
-		g(\lambda v_1 +( 1 - \lambda )v_2) &= f'(x; \lambda v_1 + (1 - \lambda)
-		v_2) = \lim_{t \dto 0} \frac{f(x + t (\lambda v_1 + (1 - \lambda)
-		v_2)) - f(x)}{t} \\
-            &\overset{(\text{$f$ convex})}{\leq} \lim_{t \dto 0}
-                \frac{\lambda f(x + t v_1) + (1 - \lambda) f(x + t v_2)
-                    - f(x)}{t} \\
-            &= \lim_{t \dto 0} \left[ \lambda \frac{f(x + t v_1) - f(x)}{t}
-             + (1 - \lambda) \frac{f(x + t v_2) - f(x)}{t} \right]
-	\end{align*}
-    Notice that the cases $\lambda = 0, \lambda = 1$ are trivial.
-    For $\lambda \in (0, 1)$, we would like to be able to interchange the order
-    of summation and limit. However, in general, the two limits might be $\pm
-    \infty$, which raises concerns. Consider the following cases:
-    \begin{itemize}
-    \item $f$ is continuous in $x + \epsilon d$ for some neighbourhood
-    $\epsilon$ in the directions $d \in \set{v_1, v_2}$: in that case, $f(x + t
-    v_1) < \infty, f(x + tv_2) < \infty$, and both inner limits exists and are
-    finite. \todo{argue about the existence and finiteness}
-    Therefore,
-    \[
-        \lim_{t \dto 0} \left[ \lambda \frac{f(x + tv_1) - f(x)}{t}
-        + (1 - \lambda )\frac{f(x + tv_2) - f(x)}{t}\right]
-        = \lambda g(v_1) + (1 - \lambda) g(v_2),
-    \]
-    as desired.
-    \item None of $x + tv_1, x + tv_2$ extends into infeasibility, and at least
-        one of the directions (wlog $v_1$) satisfies $f(x + tv_1) - f(x) <
-        -\varepsilon, \; \forall t \in (0, \delta)$, then the LHS will be
-        $-\infty$ since
-        \[
-            \frac{\lambda [f(x + tv_1) - f(x)] + (1 - \lambda) [
-                f(x + tv_2) - f(x)]}{t} \leq
-            -\frac{\varepsilon}{t} + (1 - \lambda) \frac{f(x + tv_2) - f(x)}{t}.
-        \]
-        and taking limits sends it to $-\infty$. Therefore, it remains to show
-        that $\lambda g(v_1) + (1 - \lambda) g(v_2) \geq -\infty$, which is
-        satisfied since $g(v_1) = \lim_{t \dto 0} \frac{f(x + tv_1) - f(x)}{t}
-            = -\infty$ and the other limit cannot be $+\infty$ by our
-            assumption.
-    \item At least one of $x + tv_1, x + tv_2$ extends into infeasibility: in
-        this case, we choose $x + tv_1$ to satisfy $f(x + tv_1) = \infty$,
-        without loss of generality, so that we may deduce
-        \begin{align}
-            \frac{\lambda f(x + tv_1) + (1 - \lambda) f(x + tv_2) - f(x)}{t} &=
-            \frac{+\infty + (1 - \lambda) f(x + tv_2) - f(x)}{t} = +\infty
-            \Rightarrow \\
-            g(\lambda v_1 + (1 - \lambda) v_2) &\leq \infty =
-                \lambda g(v_1) + (1 - \lambda) g(v_2),
-        \end{align}
-        where the last equality holds since $g(v_1) = \infty$ when $x + tv_1$
-        extends into infeasibility. In the above, $f(x + tv_2)$ can be either
-        finite or $+\infty$, but not $-\infty$ since $f$ is assumed to be
-        proper, therefore there is no concern about ill-defined sums.
-
-    \end{itemize}
+    Now, let us try to prove that $g(v)$ is convex. Consider the epigraph of
+    $g$, $\mathrm{epi} g = \set{(v, r) \mmid r \geq g(v)}$. It suffices to show
+    that $\mathrm{epi} g$ is convex, since convexity of the epigraph is
+    equivalent to convexity of $g$.
 
     \ExePart
 
@@ -496,5 +418,8 @@
 	and the sequence $\set{x_k}_{k=1}^{\infty}$ is indeed a slope descent
 	sequence.
 \end{Exercise}
+
+\bibliographystyle{plain}
+\bibliography{references}
 
 \end{document}
