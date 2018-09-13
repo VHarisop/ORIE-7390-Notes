@@ -1,0 +1,168 @@
+\section{Slope Descent Sequences}
+Recall $f: \Hbb \to \overline{\Rbb}$ a closed, convex, proper function
+satisfying (for $\alpha, \beta > 0$):
+\begin{align}
+	\left\{ \begin{aligned}
+	f(x) - f(x_+) &\geq \alpha \norm{x - x_+}^2 \\
+	\abs{\grad f}(x_+) &\leq \beta \norm{x - x_+}
+	\end{aligned} \right.
+	\label{eq:slope-descent-recap}
+\end{align}
+
+In this lecture, we are going to talk about ensuring the slope descent sequence
+properties hold and also about ensuring that the Kurdyka-{\L}ojasiewicz
+condition holds, through the scope of the proximal gradient algorithm.
+
+\subsection{Proximal gradient method}
+Recall that this method is also known as forward-backward splitting. Suitable
+for problems of the form
+\begin{align}
+	\min_{x \in \Hbb} \set{g(x) + h(x)}
+	\label{eq:prox-grad-prob}
+\end{align}
+where $g$ is closed, convex and nonsmooth and $h$ is convex with $\grad h$
+being $L$-Lipschitz.
+
+At current $x$, appealing to the quadratic upper bound implies that
+\[
+	g(z) + h(z) \leq g(z) + h(x) + \ip{\grad h(x), z - x}
+	+ \frac{1}{2 \lambda} \norm{z - x}^2,
+\]
+for a small enough $\lambda$. Note that we keep $g(z)$ instead of $g(x)$ on the
+RHS since we are only majorizing the smooth part.
+
+Now, choose $x_+$ to minimize the RHS, or equivalently
+\[
+	\lambda g(z) + \frac{1}{2} \norm{z - (x - \lambda \grad h(x))}^2,
+\]
+which implies that $x_+ = \overbrace{\prox{\lambda g}{
+\underbrace{x - \lambda \grad h(x)}_{\text{forward step}}}}^{\text{backward
+step}}$; hence the name forward-backward splitting.
+
+By definition, this gives us
+\[
+	0 \in \partial g(x_+) - \grad h(x) + \frac{1}{\lambda} (x_+ - x).
+\]
+Using the above, notice that
+\begin{align*}
+	f(x) - f(x_+) &= g(x) - g(x_+) + h(x) - h(x_+) \geq
+	\ip{\frac{1}{\lambda} (x_+ - x) - \grad h(x), x - x_+}
+	+ \ip{\grad h(x), x - x_+} - \frac{L}{2} \norm{x - x_+}^2 \\
+	&= \left( \frac{1}{\lambda} - \frac{L}{2} \right) \norm{x - x_+}^2.
+\end{align*}
+The condition above is precisely the sufficient decrease condition
+in~\cref{eq:slope-descent-recap}, providing we always choose $\lambda$ such
+that $\lambda \leq \bar{\lambda} < \frac{2}{L}$.
+
+Additionally,
+\begin{align*}
+	\frac{1}{\lambda} (x - x_+) - \grad h(x) &\in \partial g(x_+) \Rightarrow
+	\frac{1}{\lambda} (x - x_+) + \grad h(x_+) - \grad h(x) \in \grad h(x_+) +
+	\partial g(x_+) \\
+	\Rightarrow \abs{\grad f}(x_+) &\leq 
+	\norm{\frac{1}{\lambda} (x - x_+) + \grad h(x_+) - \grad h(x)} \\
+	&\leq \left( \frac{1}{\lambda} + L \right) \norm{x - x_+},
+\end{align*}
+where in the last inequality we've used the triangle inequality and the fact
+that $\grad h$ is $L$-Lipschitz. Additionally, we've appealed to the fact that
+$\abs{\grad f}$ is the length of the shortest subgradient, so the subgradient
+we've identified above is an upper bound for it.
+Therefore, providing we choose $\lambda \geq
+\underline{\lambda} > 0$, we satisfy the second of the postulates
+in~\cref{eq:slope-descent-recap} with $\beta = \frac{1}{\underline{\lambda}} +
+L$.
+
+The above is an example of verifying slope descent sequence properties for an
+optimization algorithm.
+
+
+\begin{ctheorem}{Moreau-Rockafellar}{moreau-rockafellar}
+	Consider $f: \Hbb \to \overline{\Rbb}$ a closed, proper, convex function.
+	Then, $\forall x \in \Hbb$,
+	\[
+		e_f(x) \triangleq \inf_{y \in \Hbb} \set{f(y) + \frac{1}{2} \norm{y - x}^2}
+	\]
+	is attained by a unique $y = \prox{f}{x}$ and characterized by
+	\[
+		x - y \in \partial f(y).
+	\]
+	The quantity $e_f(x)$ is called the \textit{Moreau envelope} of $f$ at $x$.
+	Additionally, $e_f(x)$ is convex, everywhere finite, and smooth, with
+	$\grad e_f (x) = I - \prox{f}{\cdot}$. Moreover, $\grad e_f, \prox{f}{\cdot}, 2
+	\prox{f}{\cdot} - I$ are all nonexpansive (1-Lipschitz).
+\end{ctheorem}
+
+\textbf{Aside}: $\frac{1}{\lambda} e_{\lambda f}(\cdot) \uparrow f(\cdot)$ as
+$\lambda \dto 0$.
+
+Let us recall a previous theme: Brezis' argument for solvability of $\dot{x}(t)
+\in -\partial f(x(t))$, which is the subgradient descent trajectory, works by
+approximating
+\[
+	\dot{x}(t) = -\grad \left( \frac{1}{\lambda} e_{\lambda f} \right) x(t),
+	\; t \geq 0,
+\]
+which is reduced to solving ODEs that involve smooth, Lipschitz functions, for
+which well-established arguments apply.
+
+
+\subsection{Examples}
+
+\paragraph{1. Closest pair of convex sets.}
+Consider sets $C, D \subseteq \Hbb, \; C, D \neq \emptyset$, both closed and
+convex. If $C \cap D \neq \emptyset$, we are seeking a point in the
+intersection.
+
+Equivalently:
+\[
+	\inf_{x} \set{\delta_C(x) + \frac{1}{2} \mathrm{dist}^2_D(x)}, \;
+	\mathrm{dist}_D(x) = \inf_{y \in D} \norm{x - y}.
+\]
+We claim that the above is amenable to the proximal gradient method, since
+$\delta_C(x)$ is convex and nonsmooth and $\mathrm{dist}^2_D(x)$ is the Moreau
+envelope of $\delta_D(x)$, verifiable by bringing it to the form
+\[
+	\frac{1}{2} \mathrm{dist}^2_D(x) = \inf_{y} \set{\delta_D(y) + \frac{1}{2}
+	\norm{x - y}^2}.
+\]
+Hence we obtain
+\begin{align*}
+	\grad h(x) &= \grad e_{\delta_D}(x) = x - \prox{\delta_D}{x} \\
+		&= x - \mathrm{proj}_{D}(x).
+\end{align*}
+Additionally, $\grad h(x)$ has Lipschitz constant $1$ by virtue of being the
+gradient of a Moreau envelope~\cref{thm:moreau-rockafellar}. Therefore, the
+iteration becomes
+\begin{align}
+	x_+ &\gets \mathrm{prox}_{\lambda g}\left( x - \lambda \grad h(x) \right) \\
+		&= \cP_C \left( x - \lambda (x - \cP_D(x)) \right) \\
+		&= \cP_C \bigg( \underbrace{(1 - \lambda) x + \lambda
+		\cP_D(x)}_{\text{relaxed projection}} \bigg)
+\end{align}
+In particular, for $\lambda = 1$, we recover the traditional method of
+alternating projections. In terms of slope descent sequence properties,
+we recover
+\[
+	\alpha = \frac{1}{\lambda} - \frac{1}{2}, \; \beta = \frac{1}{\lambda} + 1.
+\]
+
+\paragraph{2. $\ell_1$-regularized least squares}
+In this case, our problem is
+\[
+	\inf_{x \in \Rbb^n} \set{\mu \norm{x}_1 + \frac{1}{2} \norm{Ax - b}^2_2},
+	\; \mu > 0, \; A \in \Rbb^{m \times n}, \; b \in \Rbb^m.
+\]
+Adapting to our forward-backward framework, we have $g(x) = \mu \norm{x}_1$,
+and $h(x) = \frac{1}{2} \norm{Ax - b}_2^2$, with
+\[
+	\grad h(x) = A^\top (Ax - b) \Rightarrow
+	\abs{h(x) - h(y)} \leq \opnorm{A^\top A}.
+\]
+The proximal gradient method for this problem reads
+\begin{align*}
+	x_+ &\gets \prox{\mu \norm{\cdot}_1}{x - \lambda A^\top (A x - b)} \\
+		&= \sign\left(x - \lambda A^\top (A x - b)\right) \cdot
+			\left( \abs{x - A^\top (A x - b)} - \mu \right)_+,
+\end{align*}
+which recovers the elementwise soft thresholding operator on a steepest descent
+step.
