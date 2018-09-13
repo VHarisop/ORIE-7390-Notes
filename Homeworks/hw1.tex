@@ -11,6 +11,7 @@
 %\usepackage{parskip}
 \usepackage[capitalize]{cleveref}
 \usepackage{exercise}
+\usepackage{svg}
 
 \usepackage{todonotes}
 
@@ -137,6 +138,26 @@
 		\]
 
     \ExePart
+		We provide code that computes the proximal point sequence in a simple
+		\texttt{Python} script. Example sequences can be found
+		in~\cref{fig:prox-seq}.
+		\begin{figure}[h]
+			\centering
+            \begin{tikzpicture}% table
+            \begin{axis}[xlabel=$x$,ylabel=$y$, legend pos=north west,
+                         legend style={nodes={scale=0.75}}]
+            \addplot+[mark options={scale=0.75}] table[x=x,y=y, col
+            sep=comma] {code/prox_50.000.csv};
+            \addplot+[mark options={scale=0.75}] table[x=x,y=y, col
+            sep=comma] {code/prox_20.000.csv};
+            \addplot+[mark options={scale=0.75}] table[x=x,y=y, col
+            sep=comma] {code/prox_5.000.csv};
+            \legend{$\lambda = 50$, $\lambda = 20$, $\lambda=5$};
+            \end{axis}
+            \end{tikzpicture}
+            \caption{Proximal point sequence for different $\lambda$}
+            \label{fig:prox-seq}
+		\end{figure}
 \end{Exercise}
 
 \begin{Exercise}
@@ -233,8 +254,8 @@
 	\begin{align*}
 		g(\lambda t_1 + (1 - \lambda) t_2) &=
 		f\left(x + (\lambda t_1 + (1 - \lambda) t_2) v \right) - f(x) \\
-		&= f(\lambda (x + t_1 v) + (1 - \lambda) (x + t_2 v)) - f(x)
-		\leq \lambda f(x + t_1 v) + (1 - \lambda) f(x + t_2 v)
+		&= f(\lambda (x + t_1 v) + (1 - \lambda) (x + t_2 v)) - f(x) \\
+		&\leq \lambda f(x + t_1 v) + (1 - \lambda) f(x + t_2 v)
 			- \lambda f(x) - (1 - \lambda) f(x) \\
 		&= \lambda g(t_1) + (1 - \lambda) g(t_2),
 	\end{align*}
@@ -290,10 +311,60 @@
 	\end{enumerate}
     We thus conclude that $g(v) = f'(x; v)$ is positively homogeneous.
 
-    Now, let us try to prove that $g(v)$ is convex. Consider the epigraph of
-    $g$, $\mathrm{epi} g = \set{(v, r) \mmid r \geq g(v)}$. It suffices to show
-    that $\mathrm{epi} g$ is convex, since convexity of the epigraph is
-    equivalent to convexity of $g$.
+    Now, let us try to prove that $g(v)$ is convex. Notice that, by leveraging
+    the monotonicity of $t \mapsto \frac{f(x + tv) - f(x)}{t}$, we know that the
+    limit exists. Additionally, we have
+    \begin{align*}
+        g(\lambda v_1 + (1 - \lambda)v_2) &= \inf_{t > 0}
+            \frac{f(x + \lambda t v_1 + (1 - \lambda) t v_2) - f(x)}{t} =
+            \inf_{t > 0}
+            \frac{f(\lambda (x + tv_1) + (1 - \lambda) (x + tv_2)) - f(x)}{t}
+            \\
+            &\leq \inf_{t > 0} \frac{\lambda [f(x + tv_1) - f(x)]
+            + (1 - \lambda) [f(x + tv_2) - f(x)]}{t}
+    \end{align*}
+    Assuming that we do not have
+    $\inf_{t > 0} \frac{f(x + tv_1) - f(x)}{t} = +\infty, \inf_{t > 0}
+        \frac{f(x + tv_2) - f(x)}{t} = -\infty$ at the same time, or the
+        opposite, we can break up the above limit to conclude
+    \[
+        g(\lambda v_1 + (1 - \lambda) v_2) \leq
+        \lambda \inf_{t > 0} \frac{f(x + tv_1) - f(x)}{t} +
+        (1 - \lambda) \inf_{t > 0} \frac{f(x + tv_2) - f(x)}{t}.
+    \]
+
+    Let us now try to show that $\partial g(0) = \partial f(x)$. We proceed by
+    showing two inclusions. Recall that
+    \[
+        \partial g(0) = \set{d \mmid \ip{z, d} \leq g(z), \; \forall z}
+    \]
+    \begin{itemize}
+    \item $\partial f(x) \subseteq \partial g(0)$: suppose $y \in \partial f(x)$
+        which implies that
+        \begin{align*}
+            f(x + p) &\geq f(x) + \ip{p, y}, \; \forall p \Rightarrow
+            g(z) = \inf_{t > 0} \frac{f(x + tz) - f(x)}{t} \geq
+                \inf_{t > 0} \frac{f(x) + \ip{tz, y} - f(x)}{t} \\
+                &= \inf_{t > 0} \frac{t \ip{z, y}}{t} = \ip{z, y}
+                \Rightarrow y \in \partial g(0)
+        \end{align*}
+        since we just showed that $g(z) \geq \ip{z, y}$.
+    \item $\partial g(0) \subseteq \partial f(x)$: on the other hand, suppose
+    that $y \in \partial g(0)$, which implies
+    \[
+        g(d) \geq g(0) + \ip{y, d}, \; \forall d \in \Rbb^n.
+    \]
+    However, using the positive homogeneity of $g$, we can see that the above
+    simplifies to $g(d) \geq \ip{y, d}$. Then, the monotonicity we proved in
+    part (1) gives us
+    \begin{align*}
+        f(x + d) - f(x) &\geq \inf_{t > 0} \frac{f(x + td) - f(x)}{t}
+            =: g(d) \geq \ip{y, d}, \; \forall d \Rightarrow \\
+        f(x + d) - f(x) &\geq \ip{y, d}, \; \forall d \Rightarrow
+            y \in \partial f(x),
+    \end{align*}
+    which completes the proof.
+    \end{itemize}
 
     \ExePart
 
@@ -332,7 +403,20 @@
         \caption{Graph for $f$ from~\cref{eq:pw-f}}
         \label{fig:pw-f}
     \end{figure}
-    \item $g$ is not necessarily closed.
+    \item $g$ is not necessarily closed. Take
+        \[
+            f(x) = \begin{cases}
+                0, & x = 0, \\
+                +\infty, & x > 0 \\
+                -10, & x < 0
+            \end{cases} \Rightarrow
+            g(v) := f'(0; v) = \begin{cases}
+                +\infty, & v > 0 \\
+                -\infty, & v < 0 \\
+                0, & v = 0
+            \end{cases}
+        \]
+        where $g(v)$ is obviously not closed since its epigraph is not closed.
     \end{enumerate}
 \end{Exercise}
 
