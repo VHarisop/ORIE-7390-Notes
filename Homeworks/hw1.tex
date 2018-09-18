@@ -166,6 +166,51 @@
 		\end{figure}
         The real trajectory plotted is $x(t), 0 \leq t \leq 10$.
 
+    \paragraph{4.}
+        Results presented in lecture suggest that $\lim_{k \to \infty}
+        x_{k}^{k/t} \to x(t)$. Let us try to see if we can verify this result
+        analytically for our proximal step sequences. First, examine the
+        second coordinate, for which it holds
+        \[
+            v_{k} := {(x_{k+1}^{\lambda})}_2 = \frac{\lambda}{2 +
+            \lambda} x_k^{(2)}
+        \]
+        If we substitute $x^{(2)}_0 = 1$ we obtain
+        \( v_k = \left( \frac{\lambda}{2 + \lambda} \right)^{k} \)
+        and substituting $\lambda = \frac{k}{t}$ gives us
+        \begin{align*}
+            \left( \frac{\lambda}{2 + \lambda} \right)^k &=
+                \left( \frac{k/t}{2 + k/t} \right)^k =
+                \left( \frac{k}{2t + k} \right)^k =
+                \left(1 - \frac{\alpha}{k + \alpha}\right)^k \\
+            \Rightarrow \lim_{k \to \infty} v_k &= e^{-\alpha},
+        \end{align*}
+        where in our case we set $\alpha = 2t$. Therefore,
+        \( \lim_{k \to \infty} \left( x_{k}^{k/t} \right)_2 = e^{-2t} = x_2(t)
+        \).
+        The case for $x_1$ is a bit more delicate. Notice that the initial point
+        $x_0^{(1)} = 1$ provides us with the first iterate
+        \( u_1 := \left( x^{\lambda}_{1} \right)_1 =
+           \max\big(1 - \frac{1}{\lambda}, 0\big) \).
+        Then, assuming that $\lambda > 1$, which implies that $\frac{1}{\lambda}
+        < 1$, we obtain:
+        \(
+            u_2 = \max\bigg( \abs{1 - \frac{1}{\lambda}} - \frac{1}{\lambda}, 0
+            \bigg) = \max\bigg( 1 - \frac{2}{\lambda}, 0 \bigg).
+        \)
+        Notice that the above gives us a decreasing sequence of positive $u_k$'s
+        until the first point where we hit some $u_{p} < \frac{1}{\lambda}$,
+        which will give us $\max\left(u_p - \frac{1}{\lambda}, 0\right) = 0$.
+        Therefore, we obtain
+        \[
+            u_k = \max\left(1 - \frac{k}{\lambda}, 0\right)
+            \overset{\lambda=\frac{k}{t}}{\Rightarrow} u_k
+            = \max\left(1 - t, 0\right) \Rightarrow
+            \lim_{k \to \infty} u_k = \max(1 - t, 0) = x_1(t).
+        \]
+        Note that our assumption $\lambda > 1$ is without loss of generality,
+        since taking the limit $k \to \infty$ results in a ratio $\frac{k}{t} >
+        1$ for all finite values of $t$.
 \end{Exercise}
 
 \vspace{1em}
@@ -418,21 +463,34 @@
         \caption{Graph for $f$ from~\cref{eq:pw-f}}
         \label{fig:pw-f}
     \end{figure}
-    \item $g$ is not necessarily closed. Take
+    \item $g$ is not necessarily closed. Take $\cC = \set{(x, y) \in \Rbb^2
+        \mmid x^2 \leq y}$ and define
         \[
-            f(x) = \begin{cases}
-                0, & x = 0, \\
-                +\infty, & x > 0 \\
-                -10, & x < 0
-            \end{cases} \Rightarrow
-            g(v) := f'(0; v) = \begin{cases}
-                +\infty, & v > 0 \\
-                -\infty, & v < 0 \\
-                0, & v = 0
+            f(x, y) = \begin{cases}
+                0, & x = y = 0 \\
+                x^2y^{-1}, & x \in \cC, y \neq 0.
             \end{cases}
         \]
-        where $g(v)$ is obviously not closed since its epigraph is not closed.
+        Take $\bar{x} = 0$. Obviously $g(0) = 0$ as we proved in the previous
+        part of the problem. Now, consider $v_n = \begin{pmatrix}
+        n^{-1/2} \\ n^{-1}
+        \end{pmatrix}, \; n \geq 1$, which satisfies $0 + t v_n
+        \in \dom f$ for small $t$, as $t^2 \frac{1}{n} \leq t \frac{1}{n}$.
+        Then, the directional derivative is given by
+        \[
+            g(v_n) = \lim_{t \dto 0} \frac{\frac{t^2 n^{-1}}{t n^{-1}} -
+            f(0)}{t}
+            = \lim_{t \dto 0} \frac{t}{t} = 1.
+        \]
+        However, $v_n$ is a sequence of points approaching $(0, 0)$ as $n \to
+        \infty$, for which $g(v_n) \overset{n \to \infty}{\to} 1 \neq g(0)$.
+        Therefore, $g$ is not necessarily closed.
     \end{enumerate}
+    The first of the examples above suffers from the fact that $f$ is originally
+    not closed. Unfortunately, we were unable to find a counterexample for which
+    $f$ is closed but $g$ is not proper. This is also reflected in the fact that
+    we were not able to resolve the case where one of the directional
+    derivatives could be $-\infty$ in the previous part of the question.
 \end{Exercise}
 
 \vspace{1em}
