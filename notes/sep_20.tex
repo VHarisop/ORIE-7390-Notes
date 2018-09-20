@@ -1,0 +1,71 @@
+\section{Proximal Gradient for LASSO}
+Continuing on our discussion about error bounds, today we present another
+example based on a famous problem.
+
+Recall the $\ell_1$-regularized least squares problem:
+\begin{equation}
+	\min_{x \in \Rbb^n} \frac{1}{2} \norm{Ax - b}_2^2 + \mu \norm{x}_1
+	=: f(x).
+	\label{eq:lasso-problem}
+\end{equation}
+Notice that $\forall \bar{x} \in \argmin f$:
+\[
+	\mu \norm{\bar{x}}_1 \leq f(\bar{x})
+	= \min f \leq \frac{\norm{b}^2_2}{2} \Rightarrow
+	\norm{\bar{x}}_1 \leq \frac{\norm{b}_2^2}{2 \mu}.
+\]
+We want to convert~\cref{eq:lasso-problem} to an equivalent problem that is
+amenable to analysis. Consider the equivalent problem:
+\begin{align}
+	\begin{aligned}
+	\mbox{Minimize } & \frac{1}{2} \norm{Ax - b}_2^2 + y \\
+	\mbox{s.t. } & \norm{x}_1 \leq y \\
+				 & y \leq \frac{\norm{b}^2}{2\mu}
+	\end{aligned}
+	\label{eq:lasso-equiv}
+\end{align}
+\cref{eq:lasso-equiv} has the form
+\[
+	\min_{x} \frac{1}{2} \norm{Cz - d}_2^2 + \ip{e, z}, \;
+	z = \begin{pmatrix} x \\ y \end{pmatrix}, \;
+	z \in \text{polytope } K.
+\]
+We now derive an error bound for $g(z) := \frac{1}{2} \norm{Cz - d}_2^2 +
+\ip{e, z}$, of the form
+\[
+	\mathrm{dist}(z, \argmin_K g) \leq
+	\nu^2 \lambda \cdot \left( g(z) - \min_{K} g \right).
+\]
+In the above, $\nu$ is a \textbf{Hoffman constant}. This comes from the fact
+that
+\[
+	\mathrm{dist}\left(z, \begin{pmatrix} C \\ e \end{pmatrix}^{-1} w \right)
+	\leq \nu \norm{\begin{pmatrix} C \\ e \end{pmatrix} z - w}_2, \;
+	\forall z \in K.
+\]
+The existence of $\nu$ is guaranteed by a Theorem due to (Hoffman, 1952).
+
+\paragraph{A few words about Hoffman's Theorem.} Suppose we are solving a
+system of linear inequalities $Gx \leq p$, where $G \in \Rbb^{m \times n}$ is a
+fixed matrix. When this system is feasible, that problem is equivalent to
+minimizing
+\(
+	\norm{(Gx - p)_+}_2,
+\)
+where the notation $(x)_+$ denotes the componentwise positive part of $x$.
+\begin{ctheorem}{Hoffman'S Theorem}{hoffman}
+	There $\exists \mu$ such that
+	\[
+		\mathrm{dist}\left(x, \set{u \mmid Gu \leq p}\right)
+		\leq \nu \norm{(Gx - p)_+}_2.
+	\]
+\end{ctheorem}
+If we define $\Phi$ to be a set valued mapping by $\Phi(x) = Gx + \Rbb_+^n$,
+the theorem above says that
+\[
+	\mathrm{dist}\left(x, \Phi^{-1}(p)\right) \leq \nu \mathrm{dist}(p,
+	\Phi(x)).
+\]
+The above is a ``global'' form of \textbf{metric regularity}, since it does not
+hold only locally. In fact, this is true for any polyhedral set-valued mapping
+$\Phi$.
