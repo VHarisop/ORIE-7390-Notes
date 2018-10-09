@@ -92,7 +92,22 @@ domains of $f, g$ intersect in a stable fashion, Fenchel duality tells us that
 	\delta_{\mathbb{B}}(y) - \delta_{C}^*(y) = \sup_{y \in \mathbb{B}}
 		\inf_{p \in C} \ip{x - p, y},
 \end{align*}
-which completes the claim.
+which completes the claim. In the above, we made use of the auxiliary result
+that is explained in the sequel. First, consider
+\begin{align*}
+    \sup_{p \in \Rbb^n} \ip{p, y} - \norm{p} &\geq
+    \ip{\lambda y, y} - \lambda \norm{y} = \lambda
+    \left( \norm{y}^2 - \norm{y}\right)
+\end{align*}
+Therefore, if $y \notin \mathbb{B}$, the above can be driven to $+\infty$ by
+choosing $\lambda \to \infty$. On the other hand, if $y \in \mathbb{B}$, we have
+$\sup_{p \in \Rbb^n} \ip{p, y} - \norm{p} \leq \sup_{p \in \Rbb^n} \norm{p}
+\norm{y} - \norm{p} = \sup_{p \in \Rbb^n} \left( \norm{y} - 1 \right)\norm{p}$,
+which is nonpositive since $\norm{y} \leq 1$. In that case, the supremum is
+attained for $p = 0$, hence we conclude
+\[
+    \sup_{p \in \Rbb^n} \ip{p, y} - \norm{p} = \delta_{\mathbb{B}}(y).
+\]
 
 \paragraph{3.}
 By the Fenchel-Young inequality, we know that
@@ -185,6 +200,14 @@ which shows that both of the postulates for $\set{x_k}_{k \in \Nbb}$ to be a
 slope descent sequence are satisfied.
 
 \paragraph{3.}
+Denote $d \triangleq \max_i d_{C_i}(x)$ and set $u_i \triangleq P_{C_i}(x)$.
+We know that $\norm{u_i} \leq \norm{x}, \; \forall i$, since
+\[
+    0 \in C_i \Rightarrow
+    \norm{x - u_i} \leq \norm{x - \lambda u_i}, \; \forall \lambda \in [0, 1],
+\]
+which leads to $\norm{u_i} \leq \norm{x}$ after squaring and a limiting
+argument.
 
 \section*{Problem 3}
 \paragraph{1.}
@@ -256,7 +279,162 @@ Finally, we prove that $d_{\cZ}(z_k) \to 0$. We write
 \]
 
 \section*{Problem 5}
+\paragraph{Limiting Subdifferential.}
+Define $f(u, v) = \abs{u} - \abs{v}$, which does not have a regular subgradient
+at $(0, 0)$ since $-\abs{v}$ admits no regular subgradient at $0$. Therefore, we
+must deal with sequences of approaching regular subgradients along paths where
+$\regdiff f(u, v)$ exists and approaches a limit. Consider the following cases:
+\begin{itemize}
+\item $u, v \neq 0$: in this case, $f$ is differentiable with $\regdiff f (u,
+v) = \grad f (u, v) = \sign(u) - \sign(v)$.
+\item $u = 0, v \neq 0$: in this case, $\partial \abs{u}(0)= [-1, 1]$ by known
+results about convex subdifferentials, so the limiting subdifferential will
+depend on the approach along $(0, v)$. The sum rule gives us
+\[
+    \regdiff f(u, v) \subset \regdiff \abs{u} + \regdiff (-\abs{v}) =
+    \begin{pmatrix} [-1, 1] \\ 0 \end{pmatrix} + \begin{pmatrix}
+        0 \\ \regdiff (-\abs{v}) \end{pmatrix} =
+    \begin{pmatrix}
+        [-1, 1] \\ \sign(v)
+    \end{pmatrix}
+\]
+Notice that the above inclusion is actually an equality, since we can plug in
+any element from the RHS in the definition of $\regdiff f$ and verify the
+reverse inclusion. We have that $(g_1, g_2)^\top \in \regdiff f(0, v)$ if
+\begin{align*}
+    f(0 + \lambda_1, v + \lambda_2) &=
+        \abs{\lambda_1} - \abs{v + \lambda_2} \geq
+        0 - \abs{v} + g_1 \lambda_1 + g_2 \lambda_2 + o\left(
+        \bm{\lambda}\right).
+\end{align*}
+Notice that, for any $g_1 \in [-1, 1]$, we have that $\abs{\lambda_1} \geq g_1
+\lambda_1$. Moreover, setting $g_2 = \sign(v) = \grad (-\abs{v})$ satisfies by
+the local linearization property of the gradient:
+\[
+    -\abs{v + \lambda_2} \geq -\abs{v} + \sign(v) \lambda_2 + o(\lambda_2),
+\]
+therefore we conclude that $\regdiff f(0, v) = \pmx{[-1, 1] \\ \sign(v)}$.
+\item $v = 0, u \neq 0$: in that case, we show that $-\abs{v}$ has no regular
+subdifferential. If that existed, then we would have $g$ such that
+\[
+    -\abs{d} \geq -\abs{0} + g d + o(d) \Rightarrow \abs{d} + g d + o(d) \leq 0,
+    \; \forall d \in \Rbb^n
+\]
+If $g = 0$, we get $\abs{d} + o(d) \leq 0$, which is impossible. If $g \neq 0$,
+for $d = \lambda \sign(g), \lambda > 0$, we obtain the contradiction
+\[
+    \lambda (1 + \abs{g}) + o(\lambda) \leq 0 \Rightarrow
+    \lim_{\lambda \to 0^+} \frac{\lambda (1 + \abs{g})}{\norm{\lambda}}
+    + \cancelto{0}{\frac{o(\lambda)}{\norm{\lambda}}} \leq 0 \Rightarrow
+    1 + \abs{g} \leq 0.
+\]
+\end{itemize}
+Combining the above approaches, we conclude that
+\[
+    \partial f(u, v) = [-1, 1] \times \set{-1, 1}
+\]
+since for $u = 0, v \neq 0$ we can find approaching sequences $(0, v_k), (0,
+w_{\ell}) \to (0, 0)$ with $v_k > 0$ and $w_{\ell} < 0$ which lead to sequences
+of regular subdifferentials $\partial f(0, v_k) = [-1, 1] \times \set{1}, \;
+\partial f(0, w_{\ell}) = [-1, 1] \times \set{-1}$.
+
+
+\paragraph{Limiting Slope.}
+For the limiting slope, we know that
+\[
+    \overline{\abs{\grad f}}(0, 0) = \liminf_{\substack{u \to (0, 0) \\ f(u)
+    \to f(0, 0)}} \abs{\grad f}(u).
+\]
+For any point $u \neq (0, 0)$, we have $\abs{\grad f}(u) =
+\limsup_{u \to 0} \frac{f(u) - f(0)}{\norm{u - 0}} = \limsup_{u \to 0}
+\frac{\abs{u_1} - \abs{u_2}}{\norm{u}}$.
 
 \section*{Problem 6}
+Consider the unconstrained low-rank matrix factorization problem:
+\[
+    \inf\set{\frac{1}{2}\norm{A - X}_F^2, \; \rank(X) \leq r}
+\]
+The Eckhart-Young theorem suggests that the optimal low-rank approximation is
+given by
+\[
+    X_* = U \mathrm{diag}(\sigma_1, \dots, \sigma_r, 0, \dots 0) V^\top,
+\]
+where $A = U \mathrm{diag}(\sigma_1, \dots, \sigma_n) V^\top$ is the singular
+value
+decomposition of $A$, where the singular values are ordered as $\sigma_1 \geq
+\sigma_2 \geq \dots \geq \sigma_n$.
+On the other hand, the alternating proximal gradient applied to
+\[
+    \Psi(X, Y) = \frac{1}{2} \norm{A - XY}_F^2
+\]
+yields the following updates:
+\begin{algorithm}
+    \caption{Alternating gradients for low-rank approximation}
+    \begin{algorithmic}
+        \Repeat
+            \State $X_{k+1} \gets \prox{\lambda \delta_{\Rbb^{n \times r}}}{
+                X_k - \frac{1}{\lambda} \grad_X \Psi(X_k, Y_k)}$
+            \State $Y_{k+1} \gets \prox{\nu \delta_{\Rbb^{r \times n}}}{
+                Y_k - \frac{1}{\nu} \grad_Y \Psi(X_{k+1}, Y_k)}$
+        \Until{convergence}
+    \end{algorithmic}
+\end{algorithm}
+However, $\prox{\lambda \delta_{\Hbb}}{x} = x$ when $\Hbb$ is the underlying
+space, therefore the above reduces to alternating gradient descent steps.
+We write
+\[
+    \grad_X \Psi(X, Y) = (XY - A) Y^\top, \; \grad_Y \Psi(X, Y) = X^\top (XY -
+    A).
+\]
+Notice that the gradient is separately Lipschitz since we have
+\begin{align*}
+    \norm{\grad_{X} \Psi(X_1, Y) - \grad_X \Psi(X_2, Y)}_F &=
+        \norm{X_1 Y Y^\top - X_2 Y Y^\top}_F \leq \opnorm{YY^\top}
+        \norm{X_1 - X_2}_F = \sigma_{\max}^2(Y) \norm{X_1 - X_2}_F
+\end{align*}
+and similarly for $\grad_Y$. Setting $\lambda = \sigma_{\max}^2(Y_k), \nu =
+\sigma_{\max}^2(X_{k+1})$, we obtain the convergence plots shown
+in~\cref{fig:rankA-15,fig:rankA-30}, where all matrices are initialized as
+Gaussian ensembles.
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.49 \textwidth}
+    \centering
+    \begin{tikzpicture}% table
+    \begin{axis}[xlabel=$k$,ylabel={$\Psi(X_k, Y_k)$}, ymode=log,
+                 legend pos=north east, width=\linewidth]
+    \addplot+[no markers, thick] table[x expr=\coordindex+1, y index=0, col
+    sep=comma] {prox_dim_50_rank_15.csv};
+    \addplot+[no markers, thick] table[x expr=\coordindex+1, y index=0, col
+    sep=comma] {prox_dim_100_rank_15.csv};
+    \addplot+[no markers, thick] table[x expr=\coordindex+1, y index=0, col
+    sep=comma] {prox_dim_150_rank_15.csv};
+    \legend{\scalebox{0.75}{$n = 50$}, \scalebox{0.75}{$n = 100$},
+            \scalebox{0.75}{$n = 150$}};
+    \end{axis}
+    \end{tikzpicture}
+    \caption{Error plots for $\rank(A) = 15$}
+    \label{fig:rankA-15}
+    \end{minipage}~
+    \begin{minipage}{0.49 \textwidth}
+    \centering
+    \begin{tikzpicture}% table
+    \begin{axis}[xlabel=$k$,ylabel={$\Psi(X_k, Y_k)$}, ymode=log,
+                 legend pos=south west, width=\linewidth]
+    \addplot+[no markers, thick] table[x expr=\coordindex+1, y index=0, col
+    sep=comma] {prox_dim_50_rank_30.csv};
+    \addplot+[no markers, thick] table[x expr=\coordindex+1, y index=0, col
+    sep=comma] {prox_dim_100_rank_30.csv};
+    \addplot+[no markers, thick] table[x expr=\coordindex+1, y index=0, col
+    sep=comma] {prox_dim_150_rank_30.csv};
+    \legend{\scalebox{0.75}{$n = 50$}, \scalebox{0.75}{$n = 100$},
+            \scalebox{0.75}{$n = 150$}};
+    \end{axis}
+    \end{tikzpicture}
+    \caption{Error plots for $\rank(A) = 30$}
+    \label{fig:rankA-30}
+    \end{minipage}
+\end{figure}
 
 \end{document}
