@@ -53,7 +53,46 @@ by the $1$-Lipschitz property of the distance map (proved in e.g. \textsc{Orie
 \end{itemize}
 
 \paragraph{2.}
-
+Notice that since $d_C$ is closed, convex and proper, it holds that $d_C =
+d_C^{**}$. The following implication holds:
+\[
+	d_{C}^* = \delta_{\mathbb{B}} + \delta_{C}^* \Leftrightarrow
+	d_{C} = \left( \delta_{\mathbb{B}} + \delta_{C}^* \right)^*.
+\]
+It suffices to prove the latter, which combined with an argument about Fenchel
+duality will let us pass to the conjugate. We write
+\begin{align}
+	d_{C}(x) &= \inf_{t \in C} \norm{x - t} =
+		\inf_{t \in C} \sup_{z \in \mathbb{B}} \ip{z, x - t} \nonumber \\
+		&= \sup_{z \in \mathbb{B}} \inf_{t \in C} \ip{z, x - t}
+		 = \sup_{z \in \mathbb{B}} \set{\ip{z, x} - \sup_{t \in C} \ip{x, t}}
+		\label{eq:fench-dual} \\
+		&= \sup_{z \in \mathbb{B}} \set{\ip{z, x} - \delta_{C}^*(x)} =
+		   \sup_{z \in \Rbb^n} \set{\ip{z, x} - \delta_{\mathbb{B}}(x) -
+		   \delta_C^*(x)} \nonumber
+\end{align}
+Now, it suffices to justify the interchange of $\sup / \inf$
+in~\cref{eq:fench-dual}. This follows from Fenchel duality: indeed, write the
+first form as
+\begin{align*}
+	\inf_{t \in C} \sup_{z \in \mathbb{B}} \ip{z, x - t} &=
+		\inf_{t} \set{\delta_{C}(t) + \norm{x - t}}.
+\end{align*}
+Writing $f(t) = \delta_{C}(t), g(t) = \norm{x - t}$, and noticing that the
+domains of $f, g$ intersect in a stable fashion, Fenchel duality tells us that
+\begin{align*}
+	\inf_{t} f(t) + g(t) &= \sup_{y \in \Rbb^n} -f^*(y) - g^*(-y) =
+		\sup_{y \in \Rbb^n} -\delta_{C}^*(y) - g^*(-y). \\
+	g^*(-y) &= \sup_{z \in \Rbb^n} \ip{z, -y} - \norm{x - z} =
+		\sup_{z \in \Rbb^n} \ip{x - z, y} - \ip{x, y} - \norm{x - z} \\
+		&= -\ip{x, y} + \sup_{z \in \Rbb^n} \ip{x - z, y} - \norm{x - z}
+		 = -\ip{x, y} + \sup_{p \in \Rbb^n} \ip{p, y} - \norm{p} \\
+		&= -\ip{x, y} + \delta_{\mathbb{B}}(y) \\
+	\inf_t f(t) + g(t) &= \sup_{y \in \Rbb^n} \ip{x, y} -
+	\delta_{\mathbb{B}}(y) - \delta_{C}^*(y) = \sup_{y \in \mathbb{B}}
+		\inf_{p \in C} \ip{x - p, y},
+\end{align*}
+which completes the claim.
 
 \paragraph{3.}
 By the Fenchel-Young inequality, we know that
@@ -178,7 +217,7 @@ Name those ``safe limits'' $\epsilon_*, \varepsilon_*$. Then, we know that
     \mathrm{dist}_{\partial f(u)}(0) \geq \kappa, \; \forall u
     \in U(\epsilon_*) \cap \mathbb{B}(\bar{x}, \varepsilon_*),
 \]
-for some $\kappa > 0$, implying that $\phi = \kappa^{-1} s$ satisfies the
+for some $\kappa > 0$, implying that $\phi(s) = \kappa^{-1} s$ satisfies the
 KL property at $\bar{x}$ with $\phi(0) = 0, \phi' = \kappa^{-1} > 0$, defined
 on a slice $U(\epsilon_*)$ in the neighbourhood $\mathbb{B}(\bar{x},
 \varepsilon_*)$, since
