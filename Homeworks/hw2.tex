@@ -1,0 +1,223 @@
+\documentclass[10pt]{article}
+
+\input{preamble}
+\usepackage{latex-macros}
+\usepackage{todonotes}
+\usepackage{tikz,pgfplots}
+\pgfplotsset{compat=1.12}
+\usepackage{algorithm, algpseudocode}
+\usepackage[margin=1in]{geometry}
+\usetikzlibrary{shapes.geometric}
+\usepackage[capitalize]{cleveref}
+\usepackage{exercise}
+\usepackage{svg}
+
+\usepackage{todonotes}
+
+\newcommand{\regdiff}{\hat{\partial}}
+\newcommand{\bd}[1]{\mathrm{bd}\left( #1 \right)}
+
+\begin{document}
+
+\allowdisplaybreaks
+\everymath{\displaystyle}
+
+\homework{Vasileios Charisopoulos}{Homework 2}
+
+\section*{Problem 1}
+\paragraph{1.}
+For the first part, we want to prove three properties:
+\begin{itemize}
+\item $d_{C}$ is \textbf{proper} since $\norm{x - P_C(x)} \geq 0$ by the
+nonnegativity of the norm.
+\item $d_{C}$ is \textbf{convex}: take an arbitrary convex combination $
+\lambda x + (1 - \lambda) y$ and notice that $P_C(x), P_C(y) \in C \Rightarrow
+\lambda P_C(x) + (1 - \lambda) P_C(y) \in C$, by convexity of $C$. Then:
+\begin{align*}
+    d_C(\lambda x + (1 - \lambda)y) &= \inf_{z \in C}
+    \norm{\lambda x + (1 - \lambda) y - z} \leq
+    \norm{\lambda x + (1 - \lambda) y - \lambda P_C(x) - (1 - \lambda) P_C(y)}
+    \\
+    &= \norm{\lambda(x  - P_C(x)) + (1 - \lambda)(y - P_C(y))} \leq
+       \lambda \norm{x - P_C(x)} + (1 - \lambda) \norm{y - P_C(y)} \\
+    &=   \lambda d_C(x) + (1 - \lambda) d_C(y).
+\end{align*}
+\item $d_C$ is \textbf{closed}: take a sequence
+$\set{z_k}_{k=1}^{\infty} \to \bar{z}$. Then, we have
+\[
+    \lim_{k \to \infty} \norm{d_C(z_k) - d_C(\bar{z})} \leq
+    \lim_{k \to \infty} \norm{z_k - \bar{z}} = 0,
+\]
+by the $1$-Lipschitz property of the distance map (proved in e.g. \textsc{Orie
+6328}). Hence $d_C$ is closed.
+\end{itemize}
+
+\paragraph{2.}
+
+
+\paragraph{3.}
+By the Fenchel-Young inequality, we know that
+\[
+    d_C^*(x) + d_C^{**}(y) \geq \ip{x, y} \Leftrightarrow
+    d_C^*(x) + d_C(y) \geq \ip{x, y},
+\]
+Using the Proposition proved in class, we know that $y \in \partial d_C^*(x)
+\Leftrightarrow x \in \partial d_C^{**}(y) = \partial d_C(y)$, since $d_C$ is
+closed, convex and proper and therefore equal to its biconjugate. Therefore,
+we know that
+\begin{align*}
+    \partial d_{C}(x) &= \set{z \mmid d_{C}(x) + d^*_{C}(z) = \ip{z, x}}
+    \overset{\text{(Part 2)}}{=}
+    \set{z \mmid d_{C}(x) = \ip{z, x} - \delta_{\mathbb{B}}(z) - \sup_{t \in C}
+    \ip{t, z}}
+\end{align*}
+Now, consider the following cases:
+\begin{itemize}
+\item $x \in C$: in that case, we know that $d_{C}(x) = 0$, and therefore we
+must have
+\begin{align*}
+    0 &= \ip{z, x} - \delta_{\mathbb{B}}(z) - \sup_{t \in C} \ip{t, z}
+    \Rightarrow z \in \mathbb{B},
+\end{align*}
+otherwise the RHS is $-\infty$. Additionally, as soon as $z \in \mathbb{B}$, we
+obtain
+\[
+    \ip{z, x} = \sup_{t \in C} \ip{t, z} \Rightarrow
+    \ip{z, x} \geq \ip{z, t}, \; \forall t \in C \Rightarrow
+    \ip{z, t - x} \leq 0, \; \forall t \in C.
+\]
+However, this is precisely the definition of a normal cone for a convex set,
+which concludes that $z \in \mathrm{N}_{C}(x)$.
+\item $x \notin C$: in that case, the LHS is nonzero and we write
+\begin{align*}
+    d_{C}(x) &= \ip{z, x} - \delta_{\mathbb{B}}(z) - \sup_{t \in C} \ip{t, z}
+    \Leftrightarrow d_{C}(x) = \ip{z, x} - \sup_{t \in C} \ip{t, z}, \; z \in
+    \mathbb{B} \\
+        &= \inf_{t \in C} \ip{x - t, z}
+\end{align*}
+For $z = \frac{x - t}{\norm{x - t}}$, we obtain $d_{C}(x) = \inf_{t \in C}
+\norm{x - t} = d_{C}(x)$ when $t = P_C(x)$, leading to $z = \frac{1}{d_{C}(x)}
+(x - P_C(x))$.
+\end{itemize}
+\paragraph{4.}
+The Lipschitzness of the gradient follows since
+\begin{align*}
+    \norm{\grad \frac{d_C^2}{2}(x) - \grad \frac{d_C^2}{2}(y)} &=
+    \norm{x - P_C(x) - (y - P_C(y))} = \norm{x - y + (P_C(y) - P_C(x))} \\
+    &\leq \norm{x - y} + \norm{P_C(y) - P_C(x)} \leq 2 \norm{x - y}.
+\end{align*}
+
+\section*{Problem 2}
+\paragraph{1.}
+We can write for the gradient of $f$ at iterate $x_k$:
+\begin{align*}
+    \grad f(x_k) &= \frac{1}{m} \sum_{i=1}^{m} \grad \left(
+    \frac{d^2_{C_i}}{2} \right)(x_k) = \frac{1}{m} \sum_{i=1}^m x_k -
+    P_{C_i}(x_k) = x_k - \frac{1}{m} \sum_{i=1}^m P_{C_i}(x_k) \\
+    \Leftrightarrow
+    x_k - \grad f(x_k) &= x_k - x_k + \frac{1}{m} \sum_{i=1}^m P_{C_i}(x_k)
+        = \frac{1}{m} \sum_{i=1}^m P_{C_i}(x_k),
+\end{align*}
+which is essentially the update rule if we consider applying gradient descent
+with step size $\eta_k = 1$ to the function $f$.
+
+\paragraph{2.}
+We know that $\grad f(x_k)$ is $1$-Lipschitz from Question (1.4).
+Additionally, we have from part (2.1) that $x_{k+1} = x_k - \grad f(x_k)$.
+Combine the above just like in the last question of HW1 to obtain
+\begin{align*}
+    \norm{\grad f(x_{k+1})} - \norm{\grad f(x_k)} &\leq
+    \norm{\grad f(x_k) - \grad f(x_{k+1})} \leq \norm{x_k - y_k} \\
+    \norm{\grad f(x_{k+1})} &\leq \norm{\grad f(x_k)} + \norm{x_k - y_k}
+        = 2 \norm{x_k - y_k},
+\end{align*}
+which is one of the postulates needed to characterize slope descent sequences,
+as a differentiable convex function satisfies $\abs{\grad f}(x_+) =
+\norm{\grad f(x_+)}$. For the latter postulate, we notice that $f$ is a
+$1$-smooth function by virtue of gradient Lipschitzness, therefore we can
+use the quadratic upper bound to conclude
+\begin{align*}
+    f(x_k) - f(x_{k+1}) &\geq \ip{\grad f(x_{k}), x_k - x_{k+1}} - \frac{1}{2}
+    \norm{x_k - x_{k+1}}^2 \\
+    &\geq \ip{x_k - x_{k+1}, x_k - x_{k+1}} - \frac{1}{2} \norm{x_k - x_{k+1}}^2
+    = \frac{1}{2} \norm{x_k - x_{k+1}}^2,
+\end{align*}
+which shows that both of the postulates for $\set{x_k}_{k \in \Nbb}$ to be a
+slope descent sequence are satisfied.
+
+\paragraph{3.}
+
+\section*{Problem 3}
+\paragraph{1.}
+For this part, notice that if we assume $f: \Hbb \to \overline{\Rbb}$ with
+$f(\bar{x})$ finite, if $\bar{x}$ is not a critical point, then there must
+exist an upper slice $U(\epsilon) = \set{u \in \Rbb^d \mmid f(\bar{x}) < f(u) <
+f(\bar{x}) + \epsilon}$ and a $\varepsilon$ ball around $\bar{x}$ such that no
+point in $\mathbb{B}(\bar{x}, \varepsilon) \cap U(\epsilon)$ is a critical
+point. Otherwise, $\forall \epsilon, \varepsilon$, we would be able to find a
+sequence $u_k \to \bar{u}$, $f(u_k) \to f(\bar{u})$
+with $w_k \in \hat{\partial} f(u_k), w_k \to \partial f(\bar{u}), \norm{w_k}
+\to 0$, with $\norm{f(\bar{u}) - f(\bar{x})} < \epsilon, \; \norm{\bar{u} -
+\bar{x}} < \varepsilon$. However, this would imply that
+\[
+    \norm{f(\bar{x}) - f(u_k)} \leq \norm{f(\bar{x}) - f(\bar{u})}
+    + \norm{f(\bar{u}) - f(u_k)} < \epsilon' + \epsilon'', \; \forall
+    \epsilon', \epsilon'' < \epsilon
+\]
+and also that
+\[
+    \norm{\bar{x} - u_k} \leq \norm{\bar{x} - \bar{u}} + \norm{\bar{u}- u_k}
+    \leq \varepsilon' + \varepsilon'' < \varepsilon, \; \forall
+    \varepsilon', \varepsilon'' < \varepsilon.
+\]
+This implies that $\exists w_k \in \hat{\partial} f(u_k), \; f(u_k) \to
+f(\bar{x}), u_k \to \bar{x}$ with $\norm{w_k} \to 0$, which means that $0 \in
+\partial f(\bar{x})$, a clear contradiction.
+Name those ``safe limits'' $\epsilon_*, \varepsilon_*$. Then, we know that
+\[
+    \mathrm{dist}_{\partial f(u)}(0) \geq \kappa, \; \forall u
+    \in U(\epsilon_*) \cap \mathbb{B}(\bar{x}, \varepsilon_*),
+\]
+for some $\kappa > 0$, implying that $\phi = \kappa^{-1} s$ satisfies the
+KL property at $\bar{x}$ with $\phi(0) = 0, \phi' = \kappa^{-1} > 0$, defined
+on a slice $U(\epsilon_*)$ in the neighbourhood $\mathbb{B}(\bar{x},
+\varepsilon_*)$, since
+\[
+    \phi'(f(u) - f(\bar{x})) \mathrm{dist}_{\partial f(u)}(0) >
+    \kappa^{-1} \kappa \geq 1.
+\]
+
+\section*{Problem 4}
+Consider $\cZ = \set{\bar{z} \in \Rbb^n \mmid \lim_{k \in K \subset \Nbb} z_{k}
+= \bar{z}}$, where $\set{z_k}$ is an arbitrary bounded sequence that satisfies
+$\norm{z_k - z_{k+1}} \to 0$. We have to prove the following properties:
+\begin{itemize}
+\item nonemptiness: this follows trivially, since $\set{z_k}$ is a bounded
+sequence and by the Bolzano-Weierstrass Theorem admits at least one convergent
+subsequence.
+\item compactness: $\cZ$ has to be a bounded set, since otherwise we would be
+able to find a sequence $\set{\bar{z}_k}, \norm{\bar{z}_k} \to \infty$. This
+would imply the existence of an unbounded subsequence $\set{z_{j_k}} \to
+\bar{z}_k$, which contradicts the construction of $\cZ$.
+Additionally, $\cZ$ is defined as the closure of all convergent subsequences of
+$\set{z_k}$ with the aforementioned properties, hence itself closed.
+\item connectedness: assume, for the sake of contradiction, that $\cZ$ was not
+a connected set. This means that there exists a pair of open sets $U, V$ such
+that $\cZ = U \cup V$ with $U \cap V = \emptyset$. This implies that
+$\exists \epsilon: \inf_{u \in U, v \in V} \norm{u - v} > \epsilon$. However,
+this means that there exist two subsequences of $\set{z_k}$,
+\[
+    u_{k} \to u, \; v_{n} \to v, \; \norm{u - v} > \epsilon.
+\]
+
+\end{itemize}
+Finally, we prove that $d_{\cZ}(z_k) \to 0$. We write
+\[
+    d_{\cZ}(z_k) = \inf_{z \in \cZ} \norm{z - z_k}
+\]
+
+\section*{Problem 5}
+
+\section*{Problem 6}
+
+\end{document}
