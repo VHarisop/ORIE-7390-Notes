@@ -11,7 +11,10 @@
 \usepackage[capitalize]{cleveref}
 \usepackage{exercise}
 \usepackage{svg}
-
+\setminted{
+    linenos=true,
+    autogobble,
+}
 \usepackage{todonotes}
 
 \newcommand{\regdiff}{\hat{\partial}}
@@ -21,8 +24,9 @@
 
 \allowdisplaybreaks
 \everymath{\displaystyle}
+\newenvironment{longlisting}{\captionsetup{type=listing}}{}
 
-\homework{Vasileios Charisopoulos}{Homework 2}
+\homework{Vasileios Charisopoulos}{Homework 2}{vc333}
 
 \section*{Problem 1}
 \paragraph{1.}
@@ -395,7 +399,7 @@ Notice that the gradient is separately Lipschitz since we have
 and similarly for $\grad_Y$. Setting $\lambda = \sigma_{\max}^2(Y_k), \nu =
 \sigma_{\max}^2(X_{k+1})$, we obtain the convergence plots shown
 in~\cref{fig:rankA-15,fig:rankA-30}, where all matrices are initialized as
-Gaussian ensembles.
+Gaussian ensembles. The full code can be found in Listing~\ref{code:p6}.
 
 \begin{figure}[h]
     \centering
@@ -436,5 +440,19 @@ Gaussian ensembles.
     \label{fig:rankA-30}
     \end{minipage}
 \end{figure}
+
+We point out that the distance of the final iterate in instances where the rank
+of the matrix $A$ is small compared to the ambient dimension $n$ is at least as
+good as the SVD solution, for a moderate value of iterations. When we increase
+the rank $r$ compared to $n$, the proximal gradient method needs more
+iterations to converge to a solution. However, given enough iterations, it
+always seems to produce a global minimizer since the final error is close to
+$0$.
+
+\begin{longlisting}
+	\inputminted{python}{hw2_p6.py}
+	\caption{Script for Problem 6}
+	\label{code:p6}
+\end{longlisting}
 
 \end{document}

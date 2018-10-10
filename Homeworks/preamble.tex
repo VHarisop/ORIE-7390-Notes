@@ -10,17 +10,19 @@
 \usepackage[
     colorlinks=true, citecolor=green, linkcolor=blue]{hyperref}
 
-\newcommand{\homework}[2]{
+\newcommand{\homework}[3]{
 	\noindent
     \begin{center}
     	\framebox{
         	\vbox{
             	% Course Title and Date
             	\hbox to \hsize { \textsc{ORIE 7390 - Special Topics in
-				Mathematical Programming} \hfill \textsc{#1} }
+				Mathematical Programming} \hfill Fall 2018 }
                 \vspace{4mm}
                 % Title of handout/homework
                 \hbox to \hsize { {\Large \hfill \textsc{#2} \hfill} }
+				\hbox to \hsize { {\large \hfill \textbf{\textsf{#1}} -
+				\texttt{{#3}@cornell.edu} \hfill }}
                 \vspace{1mm}
             }
         }

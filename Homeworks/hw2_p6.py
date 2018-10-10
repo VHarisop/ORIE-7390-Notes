@@ -18,6 +18,25 @@ def gradient_updates(A, Xk, Yk):
 
 
 def prox_gradient(A, r, iters):
+    """
+    Implements the proximal gradient method for unconstrained matrix
+    factorization.
+
+    Arguments
+    ---------
+    A : numpy.array
+        The product matrix
+    r : int
+        The rank of the desired factorization
+    iters : int
+        The number of iterations to run for
+
+    Returns
+    -------
+    dists : numpy.array
+        An array containing the distances from the solution over all elapsed
+        iterations
+    """
     n, _ = A.shape
     X0 = np.random.randn(n, r)
     Y0 = np.random.randn(r, n)
@@ -29,6 +48,28 @@ def prox_gradient(A, r, iters):
         Xk[:], Yk[:] = gradient_updates(A, Xk, Yk)
         dists[i] = cost(Xk, Yk)
     return dists
+
+
+def svd_approx(A, r):
+    """
+    Approximates `A` using the singular value decomposition to obtain a
+    low-rank matrix factorization.
+
+    Arguments
+    ---------
+    A : numpy.array
+        The product matrix
+    r : int
+        The desired rank of the factorization
+
+    Returns
+    -------
+    float
+        The distance of the solution
+    """
+    U, S, V = np.linalg.svd(A, compute_uv=True, full_matrices=False)
+    S[r:] = 0.0
+    return np.linalg.norm(A - np.dot(U * S, V), "fro")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -46,3 +87,5 @@ if __name__ == "__main__":
     dists = prox_gradient(A, rank, iters)
     np.savetxt("prox_dim_{}_rank_{}.csv".format(dim, rank), dists,
                delimiter=",", comments="")
+    err_svd = svd_approx(A, rank)
+    print("SVD Error: %e - ProxGrad Error: %e" % (err_svd, dists[-1]))
