@@ -49,10 +49,11 @@ nonnegativity of the norm.
 \item $d_C$ is \textbf{closed}: take a sequence
 $\set{z_k}_{k=1}^{\infty} \to \bar{z}$. Then, we have
 \[
-    \lim_{k \to \infty} \norm{d_C(z_k) - d_C(\bar{z})} \leq
-    \lim_{k \to \infty} \norm{z_k - \bar{z}} = 0,
+    \lim_{k \to \infty} \norm{d_C(z_k) - d_C(\bar{z})} =
+    \lim_{k \to \infty} \norm{x - P_C(z_k) - \bar{z} - P_C(\bar{z})} \leq
+    2 \lim_{k \to \infty} \norm{z_k - \bar{z}} = 0,
 \]
-by the $1$-Lipschitz property of the distance map (proved in e.g. \textsc{Orie
+by the 1-Lipschitz property of the projection map (proved in e.g. \textsc{Orie
 6328}). Hence $d_C$ is closed.
 \end{itemize}
 
@@ -158,13 +159,38 @@ For $z = \frac{x - t}{\norm{x - t}}$, we obtain $d_{C}(x) = \inf_{t \in C}
 (x - P_C(x))$.
 \end{itemize}
 \paragraph{4.}
+In HW1, we showed that a closed, proper, convex function $f$ is (Gateaux) 
+differentiable at a point $x \in \intr{\dom f}$ iff its 
+subdifferential is a singleton. Moreover, in that case, its gradient is equal
+to its Gateaux derivative. Now, $f(x) = \frac{1}{2} \norm{x - P_C(x)}^2$ is
+obviously proper since $f(x) \geq 0$ and closed as the product of two closed
+functions. Finally, it is convex as the composition of $x^2$ and $d_C(x)$. 
+This gives us
+\[
+    d^2_C(\lambda x + (1 - \lambda) y) =
+    \left( d_C(\lambda x + (1 - \lambda) y) \right)^2 \leq
+    \left( \lambda d_C(x) + (1 - \lambda) d_C(y) \right)^2 \leq
+    \lambda d_C^2(x) + (1 - \lambda) d_C(y)^2,
+\]
+where in the above steps we made use of the fact that $x^2$ is nondecreasing on
+$[0, +\infty)$ and $d_C$ is convex for the first inequality, and the fact that
+$x^2$ is convex for the second inequality. This proves that $x \mapsto 
+\frac{1}{2}d_C^2(x)$ is also convex.
+
 The Lipschitzness of the gradient follows since
 \begin{align*}
     \norm{\grad \frac{d_C^2}{2}(x) - \grad \frac{d_C^2}{2}(y)} &=
     \norm{x - P_C(x) - (y - P_C(y))} = \norm{x - y + (P_C(y) - P_C(x))} \\
-    &\leq \norm{x - y} + \norm{P_C(y) - P_C(x)} \leq 2 \norm{x - y}.
+    &= \norm{x - y} - 2\ip{x - y, P_C(x) - P_C(y)} + \ip{P_C(x) - P_C(y)} \\
+    &= \norm{x - y} + 2 \underbrace{\ip{y - P_C(y), P_C(x) - P_C(y)}}_{\leq 0}
+       + 2 \underbrace{\ip{x - P_C(x), P_C(y) - P_C(x)}}_{\leq 0} \\
+    &\leq \norm{x - y},
 \end{align*}
-
+where in the above we've made use of the following fundamental 
+property\footnote{Proved in HW1 of ORIE 6328, Spring 2018}:
+\[
+    \ip{z - P_C(z), s - P_C(z)} \leq 0, \; \forall s \in C.
+\]
 \section*{Problem 2}
 \paragraph{1.}
 We can write for the gradient of $f$ at iterate $x_k$:
@@ -185,9 +211,9 @@ Additionally, we have from part (2.1) that $x_{k+1} = x_k - \grad f(x_k)$.
 Combine the above just like in the last question of HW1 to obtain
 \begin{align*}
     \norm{\grad f(x_{k+1})} - \norm{\grad f(x_k)} &\leq
-    \norm{\grad f(x_k) - \grad f(x_{k+1})} \leq \norm{x_k - y_k} \\
-    \norm{\grad f(x_{k+1})} &\leq \norm{\grad f(x_k)} + \norm{x_k - y_k}
-        = 2 \norm{x_k - y_k},
+    \norm{\grad f(x_k) - \grad f(x_{k+1})} \leq \norm{x_k - x_{k+1}} \\
+    \norm{\grad f(x_{k+1})} &\leq \norm{\grad f(x_k)} + \norm{x_k - x_{k+1}}
+        = 2 \norm{x_k - x_{k+1}},
 \end{align*}
 which is one of the postulates needed to characterize slope descent sequences,
 as a differentiable convex function satisfies $\abs{\grad f}(x_+) =
@@ -204,15 +230,76 @@ which shows that both of the postulates for $\set{x_k}_{k \in \Nbb}$ to be a
 slope descent sequence are satisfied.
 
 \paragraph{3.}
-Denote $d \triangleq \max_i d_{C_i}(x)$ and set $u_i \triangleq P_{C_i}(x)$.
+Denote $d \triangleq 2 \max_i d_{C_i}(x)$ and set $u_i \triangleq P_{C_i}(x)$.
 We know that $\norm{u_i} \leq \norm{x}, \; \forall i$, since
 \[
     0 \in C_i \Rightarrow
     \norm{x - u_i} \leq \norm{x - \lambda u_i}, \; \forall \lambda \in [0, 1],
 \]
 which leads to $\norm{u_i} \leq \norm{x}$ after squaring and a limiting
-argument.
+argument. Take $v_1 := u_1 - u_2$, which satisfies
+\[
+    \norm{u_1 - u_2} = \norm{u_1 - x + x - u_2} \leq d.
+\]
+Then, $\frac{\delta}{d} v_1 \in \setI_{i=1}^m C_i$ since $\delta \mathbb{B} 
+\subset \setI_i C_i$. Moreover, the vector $p_1 = \frac{\delta}{\delta + d} u_1 
+= \frac{\delta}{\delta + d} u_1 + \frac{d}{\delta + d} 0 \in C_1$, by convexity
+of $C_1$. Moreover, $p_1 \in C_2$, appealing again to the convexity of $C_2$:
+\[
+    p_1 = \underbrace{\frac{d}{\delta + d} \frac{\delta}{d} (u_1 - u_2)}_{\in 
+    C_2} + \underbrace{\frac{\delta}{\delta + d} u_2}_{\in C_2} \in C_2
+\]
+Therefore
+\begin{align*}
+    \mathrm{dist}(x, C_1 \cap C_2) &\leq \mathrm{dist}(x, p_1)
+    = \norm{x - p_1} \leq \norm{x - u_1 + u_1 - p_1} \leq \frac{d}{2}
+    + \norm{\frac{d}{\delta + d} u_1} \\
+    &\leq \frac{d}{2} \left(1 + \frac{2 \norm{u}}{\delta + d}\right)
+     \leq \left(1 + \frac{2 \norm{x}}{\delta}\right) \max_i d_{C_i}(x).
+\end{align*}
+We repeat the above construction for $C_3, \dots, C_m$. Specifically, since
+$p_1 \in C_1 \cap C_2$, we seek a point $p_2 \in C_1 \cap C_2 \cap C_3$ 
+constructed in terms of $p_1, u_3$. We then argue that
+\[
+    \mathrm{dist}(x, \setI_{i=1}^3 C_i) \leq \norm{x - p_2} \leq
+    \norm{x - p_1 + p_1 - p_2} \leq \norm{x - p_1} + \norm{p_2 - p_1}.
+\]
+It suffices for $p_2$ to be such that $\norm{p_1 - p_2} \leq 2 \norm{x} 
+\delta^{-1} \left( \norm{x - p_1} \right)$ to make use of our result above.
 
+\paragraph{4.}
+This part is simple. From the form of the updates, we obtain that
+\begin{align*}
+    x_{k+1} &= \frac{1}{m} \sum_{i=1}^m P_{C_i}(x_k) =
+        \frac{1}{m} \sum_{i=1}^m P_{C_i}(x_k) - P_{C_i}(0) \quad (P_{C_i}(0) = 
+        0) \\
+    \norm{x_{k+1}} &\leq \frac{1}{m} \sum_{i=1}^m \norm{P_{C_i}(x_k) - 
+    P_{C_i}(0)} \leq \frac{1}{m} \sum_{i=1}^m \norm{x_k - 0} = \norm{x_k},
+\end{align*}
+where we used the $1$-Lipschitzness of projections to convex sets and the fact
+that $0 \in \setI_i C_i \Rightarrow P_{C_i}(0) = 0, \; \forall i$.
+
+\paragraph{5.}
+Pick a point $x \in \Rbb^n$ such that $\norm{x} \leq \norm{x_0}$. Combined with
+the bound from part (2.3), we obtain that
+\[
+    d_{\setI_i C_i}(x) \leq \left(1 + \frac{2 \norm{x}}{\delta}\right)^{m-1}
+    \max_i d_{C_i}(x) \leq \left(1 + \frac{2 \norm{x_0}}{\delta}\right)^{m-1}
+    \max_i d_{C_i}(x),
+\]
+since we assume $m \geq 2$. It remains to show that $\max_i d_{C_i}(x) \leq 
+\sqrt{2 m f(x)} = \sqrt{\sum_{i=1}^m d_{C_i}^2(x)}$. However, this follows
+since the RHS satisfies
+\begin{align*}
+    \sqrt{\sum_{i=1}^m d_{C_i}^2(x)} &\geq \sqrt{d_{C_j}^2(x)}, \; \forall j
+    \Rightarrow \sqrt{\sum_{i=1}^m d_{C_i}^2(x)} \geq \max_j \sqrt{d_{C_j}^2(x)}
+    = \max_i d_{C_i}(x).
+\end{align*}
+
+\paragraph{6.}
+Like we did in class, we deduce the KL property from the error bound and the
+slope descent sequence properties, along with the fact that $\norm{x_{k+1}}
+\leq \norm{x_{k}}, \; \forall k$.
 \section*{Problem 3}
 \paragraph{1.}
 For this part, notice that if we assume $f: \Hbb \to \overline{\Rbb}$ with
@@ -253,6 +340,33 @@ on a slice $U(\epsilon_*)$ in the neighbourhood $\mathbb{B}(\bar{x},
     \kappa^{-1} \kappa \geq 1.
 \]
 
+\paragraph{2.}
+Given our discussion about semialgebraic functions, we must restrict ourselves
+to functions with non-semialgebraic graphs. That automatically excludes all
+polynomial or piecewise polynomial functions.
+Moreover, we must restrict ourselves to the family of functions that satisfy
+$f(0) = 0, \;  \grad f(0) = 0$, otherwise $0$ is a non-critical point and part
+(a) applies. Fortunately the condition $f(x) \geq x^4$ takes care of this.
+
+Consider $f(x) = e^{cx^4} - 1, c \geq 1$ as the function of interest. 
+Obviously, we have that $f(0) = 1 - 1  = 0$ and also $e^{cx^4} \geq 1 + cx^4 
+\Rightarrow f(x) \geq x^4, \; \forall x \in \Rbb$ by the fundamental inequality
+$1 + x \leq e^x$. Finally, $0$ is a critical point for $f$ since $e^{cx^4} \geq 
+1, \; \forall x \in \Rbb$ and the minimum is attained for $x = 0$. Assume, for
+the sake of contradiction, that there exists a desingularizer $\phi: [0, \rho) 
+\to \Rbb_+$ with $\phi' > 0$ for some $\rho > 0$ such that
+\[
+    \abs{\grad (\varphi \circ f)}(x) \geq 1, \; \forall x: 0 < f(x) 
+    < \rho.
+\]
+Here, $f$ is $C^1$ and $\varphi$ is also $C^1$. By the chain rule, we have that
+\[
+    \abs{\grad \varphi \circ f}(x) = \varphi'(f(x) )\abs{\grad f}(x) \geq 1
+    \Leftrightarrow \varphi'(f(x)) c e^{cx^4} \abs{x}^3 \geq 1,
+\]
+where the latter follows since $\abs{\grad f}(x) = \norm{\grad f(x)}$ by our
+results from HW1.
+
 \section*{Problem 4}
 Consider $\cZ = \set{\bar{z} \in \Rbb^n \mmid \lim_{k \in K \subset \Nbb} z_{k}
 = \bar{z}}$, where $\set{z_k}$ is an arbitrary bounded sequence that satisfies
@@ -271,10 +385,18 @@ $\set{z_k}$ with the aforementioned properties, hence itself closed.
 a connected set. This means that there exists a pair of open sets $U, V$ such
 that $\cZ = U \cup V$ with $U \cap V = \emptyset$. This implies that
 $\exists \epsilon: \inf_{u \in U, v \in V} \norm{u - v} > \epsilon$. However,
-this means that there exist two subsequences of $\set{z_k}$,
+this means that there exist two subsequences of $\set{z_k}$, such that
 \[
-    u_{k} \to u, \; v_{n} \to v, \; \norm{u - v} > \epsilon.
+    u_{k} \to u, \; v_{k} \to v, \; \norm{u - v} > \epsilon.
 \]
+However that implies
+\[
+    \epsilon < \norm{u_k - u} + \norm{v_k - v} + \norm{u_k - v_k} \Rightarrow
+    \epsilon < \lim_{k \to \infty} \norm{u_k - v_k} = 0
+\]
+since $v_k = z_{k + i_k}, u_k = z_{k + j_k}$ for some $i_k, j_k$ and in the 
+limit we make use of the property that $\lim_{k \to \infty} \norm{z_{k+1} - 
+z_k} = 0$.
 
 \end{itemize}
 Finally, we prove that $d_{\cZ}(z_k) \to 0$. We write
@@ -347,11 +469,13 @@ of regular subdifferentials $\partial f(0, v_k) = [-1, 1] \times \set{1}, \;
 For the limiting slope, we know that
 \[
     \overline{\abs{\grad f}}(0, 0) = \liminf_{\substack{u \to (0, 0) \\ f(u)
-    \to f(0, 0)}} \abs{\grad f}(u).
+    \to f(0, 0)}} \abs{\grad f}(u) = \liminf_{\substack{u \to (0, 0) \\ f(u)
+    \to 0}} \abs{\grad f}(u).
 \]
 For any point $u \neq (0, 0)$, we have $\abs{\grad f}(u) =
-\limsup_{u \to 0} \frac{f(u) - f(0)}{\norm{u - 0}} = \limsup_{u \to 0}
-\frac{\abs{u_1} - \abs{u_2}}{\norm{u}}$.
+\limsup_{z \to u} \frac{f(u) - f(z)}{\norm{u - z}} = \lim_{\epsilon \to 0}
+\sup_{z : \norm{z - u} \leq \epsilon}
+\frac{\abs{u_1} - \abs{u_2} - \abs{z_1} + \abs{z_2}}{\norm{u - z}}$.
 
 \section*{Problem 6}
 Consider the unconstrained low-rank matrix factorization problem:
@@ -399,7 +523,7 @@ Notice that the gradient is separately Lipschitz since we have
 and similarly for $\grad_Y$. Setting $\lambda = \sigma_{\max}^2(Y_k), \nu =
 \sigma_{\max}^2(X_{k+1})$, we obtain the convergence plots shown
 in~\cref{fig:rankA-15,fig:rankA-30}, where all matrices are initialized as
-Gaussian ensembles. The full code can be found in Listing~\ref{code:p6}.
+Gaussian ensembles. The full code can be found in Listing~\ref{p6code}.
 
 \begin{figure}[h]
     \centering
@@ -449,10 +573,10 @@ iterations to converge to a solution. However, given enough iterations, it
 always seems to produce a global minimizer since the final error is close to
 $0$.
 
-\begin{longlisting}
+\begin{longlisting} \label{p6code}
 	\inputminted{python}{hw2_p6.py}
 	\caption{Script for Problem 6}
-	\label{code:p6}
+	% \label{p6code}
 \end{longlisting}
 
 \end{document}

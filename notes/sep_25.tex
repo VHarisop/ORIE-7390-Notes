@@ -1,0 +1,131 @@
+\section{Alternating Proximal Gradient for Nonconvex Minimization}
+We now consider the proximal gradient algorithm applied to a nonconvex 
+minimization problem, in an alternating function. Define
+\begin{align}
+    \inf_{x, y \in \Rbb^n \times \Rbb^m}
+    \Psi(x, y) := f(x) + g(y) + H(x, y), \label{eq:nonconvex-prob}
+\end{align}
+where we assume that:
+\begin{itemize}
+\item Functions $f: \Rbb^n \to \overline{\Rbb}, g : \Rbb^m \to \overline{\Rbb}$
+are closed and bounded below. They can be nonconvex and/or nonsmooth, but we
+assume they are ``proximable''.
+\item The ``coupling function'' $H: \Rbb^n \times \Rbb^m \to \Rbb$ is twice
+continuously differentiable ($H \in C^2$), and can be nonconvex as well.
+\item Additionally, $\Psi > -\infty$, i.e. it is bounded below.
+\end{itemize}
+
+We briefly recall the definition of the \textbf{proximal map}:
+
+\begin{cdefinition}{Proximal map}{proxmap}
+    For $\sigma: \Rbb^d \to \overline{\Rbb}$ closed and proper, we define its
+    proximal map by
+    \[
+        \prox{\sigma}{x} = \argmin_{y \in \Rbb^d} \set{\sigma(y) +
+        \frac{1}{2} \norm{x - y}^2}.
+    \]
+\end{cdefinition}
+
+\begin{exercise}{Proximal map is nonempty and compact}{prox-map-compact}
+    The proximal map of a closed and proper function $\sigma$ is nonempty
+    and compact.
+\end{exercise}
+
+The key idea of alternating proximal gradient is to alternate proximal steps on
+$\frac{1}{c_k}\Psi(\cdot, y_k), \; \frac{1}{d_k} \Psi(x_{k+1}, \cdot)$. This is
+similar to updates in a Gauss-Seidel scheme.
+
+\begin{algorithm}
+    \caption{Alternating Proximal Gradient}
+    \begin{algorithmic}
+        \Repeat{  for $k = 1, 2, \dots$ }
+            \State $x_{k+1} \in \prox{\frac{1}{c_k}f}{x_k - \frac{1}{c_k}
+                \grad_x H(x_k, y_k)}$
+            \State $y_{k+1} \in \prox{\frac{1}{d_k}g}{y_k - \frac{1}{d_k}
+                \grad_y H(x_{k+1}, y_k)}$
+        \Until{convergence.}
+    \end{algorithmic}
+    \label{alg:alternating-prox-grad}
+\end{algorithm}
+
+We now briefly record a property that we encountered previously regarding smooth
+convex functions, but is now generalized to any continuously differentiable 
+function:
+\begin{cproposition}{Quadratic Upper Bound}{quad-upper-bound}
+    For $h : \Rbb^d \to \Rbb, \; h \in C^1$ with a Lipschitz gradient $\grad h$
+    of modulus $L$, we have
+    \[
+        h(v) \leq h(u) + \ip{\grad h(u), v - u} + \frac{L}{2} \norm{u - v}^2,
+        \; \forall u, v.
+    \]
+\end{cproposition}
+
+Let us examine the proximal gradient step for $\sigma + h$ in greater detail. 
+We have
+\begin{align*}
+    u_+ \in \prox{\frac{1}{t} \sigma}{u - \frac{1}{t} \grad h(u)} &
+    \Leftrightarrow u_+ \in \argmin_{z} \set{ \frac{1}{t} \sigma(z) +
+        \frac{1}{2} \norm{z - \left(u - \frac{1}{t} \grad h(u)\right)}^2} \\
+    \frac{1}{t} \sigma(u_+) + \frac{1}{2} \norm{u_+ - \left( u - \frac{1}{t} 
+    \grad h(u)\right)}^2 &\leq \frac{1}{t} \sigma(v) + \frac{1}{2}
+    \norm{v - \left(u - \frac{1}{t} \grad h(u)\right)}^2, \; \forall v \\
+    \implies \mathrm{LHS} &\leq \frac{1}{t} \sigma(u) + \frac{1}{2}
+        \norm{u - \left(u - \frac{1}{t} \grad h(u)\right)}^2 \; (v = u) 
+        \Rightarrow \\
+    \sigma(u_+) + \frac{t}{2} \norm{u_+ - u}^2 + \ip{u_+ - u, \grad h(u)}
+    &\leq \sigma(u),
+\end{align*}
+where the last follows after expanding the quadratic term in the LHS. Applying
+the quadratic upper bound gives us
+\[
+    h(u_+) \leq h(u) + \ip{\grad h(u), u_+ - u} + \frac{L}{2} \norm{u_+ - u}^2,
+\]
+which we can add to the above inequality to obtain
+\begin{align}
+    \sigma(u_+) + h(u_+) + \cancel{\ip{u_+ - u, \grad h(u)}} + \frac{t}{2}
+    \norm{u_+ - u}^2 &\leq \sigma(u) + \cancel{\ip{\grad h(u), u_+ - u}} + 
+    \frac{L}{2} \norm{u_+ - u}^2
+    \label{eq:prox-grad-descent}.
+\end{align}
+\begin{lemma}[Descent for Proximal Gradient]
+    \label{lemma:proxgrad-descent}
+    For $h \in C^1$, it holds that
+    \[
+        (\sigma + h)(u) - \left( \sigma + h \right)(u_+) \geq
+        \frac{t - L}{2} \norm{u_+ - u}^2,
+    \]
+    so we obtain descent providing $\frac{t}{L} > 1$.
+\end{lemma}
+\begin{proof}
+    A simple rearrangement of~\cref{eq:prox-grad-descent}.
+\end{proof}
+
+In the sequel, we make the following two assumptions:
+\begin{assumption}
+\label{assumption:proxgrad-1}
+There exists $\gamma > 1$ such that 
+$\frac{c_k}{\gamma}$ is a Lipschitz constant for $\grad_x H(\cdot, y_k)$ and
+$\delta > 1$ such that $\frac{d_k}{\delta}$ is a Lipschitz constant for 
+$\grad_y H(x_{k+1}, \cdot)$.
+\end{assumption}
+
+\begin{assumption}
+\label{assumption:proxgrad-2}
+The coefficients $\set{c_k}, \set{d_k}$ lie in compact
+intervals of $\Rbb_{++}$, i.e. they are bounded away from $0$ and upper bounded
+by some finite constant $M$.
+\end{assumption}
+
+For example, given $H(x, y) = \frac{1}{2} \norm{x - y}^2$, whose gradients 
+$\grad_x H, \grad_y H$ are $1$-Lipschitz, we could pick $c_k, d_k = \lambda > 1$
+to satisfy~\cref{assumption:proxgrad-1,assumption:proxgrad-2}.
+
+We now focus on proving the latter postulate characterizing a slope descent 
+sequence:
+\begin{lemma}[Sufficient Decrease]
+    \label{lemma:suff-decr-proxgrad}
+    Write $z = \pmx{x \\ y}$. Then, $\exists \alpha > 0$ such that
+    \[
+        \Psi(z) - \Psi(z_+) \geq \frac{\alpha}{2} \norm{z - z_+}^2.
+    \]
+\end{lemma}
