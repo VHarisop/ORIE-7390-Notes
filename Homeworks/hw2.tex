@@ -159,12 +159,12 @@ For $z = \frac{x - t}{\norm{x - t}}$, we obtain $d_{C}(x) = \inf_{t \in C}
 (x - P_C(x))$.
 \end{itemize}
 \paragraph{4.}
-In HW1, we showed that a closed, proper, convex function $f$ is (Gateaux) 
-differentiable at a point $x \in \intr{\dom f}$ iff its 
+In HW1, we showed that a closed, proper, convex function $f$ is (Gateaux)
+differentiable at a point $x \in \intr{\dom f}$ iff its
 subdifferential is a singleton. Moreover, in that case, its gradient is equal
 to its Gateaux derivative. Now, $f(x) = \frac{1}{2} \norm{x - P_C(x)}^2$ is
 obviously proper since $f(x) \geq 0$ and closed as the product of two closed
-functions. Finally, it is convex as the composition of $x^2$ and $d_C(x)$. 
+functions. Finally, it is convex as the composition of $x^2$ and $d_C(x)$.
 This gives us
 \[
     d^2_C(\lambda x + (1 - \lambda) y) =
@@ -174,7 +174,7 @@ This gives us
 \]
 where in the above steps we made use of the fact that $x^2$ is nondecreasing on
 $[0, +\infty)$ and $d_C$ is convex for the first inequality, and the fact that
-$x^2$ is convex for the second inequality. This proves that $x \mapsto 
+$x^2$ is convex for the second inequality. This proves that $x \mapsto
 \frac{1}{2}d_C^2(x)$ is also convex.
 
 The Lipschitzness of the gradient follows since
@@ -186,7 +186,7 @@ The Lipschitzness of the gradient follows since
        + 2 \underbrace{\ip{x - P_C(x), P_C(y) - P_C(x)}}_{\leq 0} \\
     &\leq \norm{x - y},
 \end{align*}
-where in the above we've made use of the following fundamental 
+where in the above we've made use of the following fundamental
 property\footnote{Proved in HW1 of ORIE 6328, Spring 2018}:
 \[
     \ip{z - P_C(z), s - P_C(z)} \leq 0, \; \forall s \in C.
@@ -241,12 +241,12 @@ argument. Take $v_1 := u_1 - u_2$, which satisfies
 \[
     \norm{u_1 - u_2} = \norm{u_1 - x + x - u_2} \leq d.
 \]
-Then, $\frac{\delta}{d} v_1 \in \setI_{i=1}^m C_i$ since $\delta \mathbb{B} 
-\subset \setI_i C_i$. Moreover, the vector $p_1 = \frac{\delta}{\delta + d} u_1 
+Then, $\frac{\delta}{d} v_1 \in \setI_{i=1}^m C_i$ since $\delta \mathbb{B}
+\subset \setI_i C_i$. Moreover, the vector $p_1 = \frac{\delta}{\delta + d} u_1
 = \frac{\delta}{\delta + d} u_1 + \frac{d}{\delta + d} 0 \in C_1$, by convexity
 of $C_1$. Moreover, $p_1 \in C_2$, appealing again to the convexity of $C_2$:
 \[
-    p_1 = \underbrace{\frac{d}{\delta + d} \frac{\delta}{d} (u_1 - u_2)}_{\in 
+    p_1 = \underbrace{\frac{d}{\delta + d} \frac{\delta}{d} (u_1 - u_2)}_{\in
     C_2} + \underbrace{\frac{\delta}{\delta + d} u_2}_{\in C_2} \in C_2
 \]
 Therefore
@@ -258,22 +258,22 @@ Therefore
      \leq \left(1 + \frac{2 \norm{x}}{\delta}\right) \max_i d_{C_i}(x).
 \end{align*}
 We repeat the above construction for $C_3, \dots, C_m$. Specifically, since
-$p_1 \in C_1 \cap C_2$, we seek a point $p_2 \in C_1 \cap C_2 \cap C_3$ 
+$p_1 \in C_1 \cap C_2$, we seek a point $p_2 \in C_1 \cap C_2 \cap C_3$
 constructed in terms of $p_1, u_3$. We then argue that
 \[
     \mathrm{dist}(x, \setI_{i=1}^3 C_i) \leq \norm{x - p_2} \leq
     \norm{x - p_1 + p_1 - p_2} \leq \norm{x - p_1} + \norm{p_2 - p_1}.
 \]
-It suffices for $p_2$ to be such that $\norm{p_1 - p_2} \leq 2 \norm{x} 
+It suffices for $p_2$ to be such that $\norm{p_1 - p_2} \leq 2 \norm{x}
 \delta^{-1} \left( \norm{x - p_1} \right)$ to make use of our result above.
 
 \paragraph{4.}
 This part is simple. From the form of the updates, we obtain that
 \begin{align*}
     x_{k+1} &= \frac{1}{m} \sum_{i=1}^m P_{C_i}(x_k) =
-        \frac{1}{m} \sum_{i=1}^m P_{C_i}(x_k) - P_{C_i}(0) \quad (P_{C_i}(0) = 
+        \frac{1}{m} \sum_{i=1}^m P_{C_i}(x_k) - P_{C_i}(0) \quad (P_{C_i}(0) =
         0) \\
-    \norm{x_{k+1}} &\leq \frac{1}{m} \sum_{i=1}^m \norm{P_{C_i}(x_k) - 
+    \norm{x_{k+1}} &\leq \frac{1}{m} \sum_{i=1}^m \norm{P_{C_i}(x_k) -
     P_{C_i}(0)} \leq \frac{1}{m} \sum_{i=1}^m \norm{x_k - 0} = \norm{x_k},
 \end{align*}
 where we used the $1$-Lipschitzness of projections to convex sets and the fact
@@ -287,7 +287,7 @@ the bound from part (2.3), we obtain that
     \max_i d_{C_i}(x) \leq \left(1 + \frac{2 \norm{x_0}}{\delta}\right)^{m-1}
     \max_i d_{C_i}(x),
 \]
-since we assume $m \geq 2$. It remains to show that $\max_i d_{C_i}(x) \leq 
+since we assume $m \geq 2$. It remains to show that $\max_i d_{C_i}(x) \leq
 \sqrt{2 m f(x)} = \sqrt{\sum_{i=1}^m d_{C_i}^2(x)}$. However, this follows
 since the RHS satisfies
 \begin{align*}
@@ -348,15 +348,15 @@ Moreover, we must restrict ourselves to the family of functions that satisfy
 $f(0) = 0, \;  \grad f(0) = 0$, otherwise $0$ is a non-critical point and part
 (a) applies. Fortunately the condition $f(x) \geq x^4$ takes care of this.
 
-Consider $f(x) = e^{cx^4} - 1, c \geq 1$ as the function of interest. 
-Obviously, we have that $f(0) = 1 - 1  = 0$ and also $e^{cx^4} \geq 1 + cx^4 
+Consider $f(x) = e^{cx^4} - 1, c \geq 1$ as the function of interest.
+Obviously, we have that $f(0) = 1 - 1  = 0$ and also $e^{cx^4} \geq 1 + cx^4
 \Rightarrow f(x) \geq x^4, \; \forall x \in \Rbb$ by the fundamental inequality
-$1 + x \leq e^x$. Finally, $0$ is a critical point for $f$ since $e^{cx^4} \geq 
+$1 + x \leq e^x$. Finally, $0$ is a critical point for $f$ since $e^{cx^4} \geq
 1, \; \forall x \in \Rbb$ and the minimum is attained for $x = 0$. Assume, for
-the sake of contradiction, that there exists a desingularizer $\phi: [0, \rho) 
+the sake of contradiction, that there exists a desingularizer $\phi: [0, \rho)
 \to \Rbb_+$ with $\phi' > 0$ for some $\rho > 0$ such that
 \[
-    \abs{\grad (\varphi \circ f)}(x) \geq 1, \; \forall x: 0 < f(x) 
+    \abs{\grad (\varphi \circ f)}(x) \geq 1, \; \forall x: 0 < f(x)
     < \rho.
 \]
 Here, $f$ is $C^1$ and $\varphi$ is also $C^1$. By the chain rule, we have that
@@ -382,27 +382,25 @@ would imply the existence of an unbounded subsequence $\set{z_{j_k}} \to
 Additionally, $\cZ$ is defined as the closure of all convergent subsequences of
 $\set{z_k}$ with the aforementioned properties, hence itself closed.
 \item connectedness: assume, for the sake of contradiction, that $\cZ$ was not
-a connected set. This means that there exists a pair of open sets $U, V$ such
+a connected set. This means that there exists a pair $U, V$ such
 that $\cZ = U \cup V$ with $U \cap V = \emptyset$. This implies that
 $\exists \epsilon: \inf_{u \in U, v \in V} \norm{u - v} > \epsilon$. However,
 this means that there exist two subsequences of $\set{z_k}$, such that
-\[
-    u_{k} \to u, \; v_{k} \to v, \; \norm{u - v} > \epsilon.
-\]
-However that implies
-\[
+\begin{align*}
+    u_{k} \to u, \; v_{k} \to v, \; \norm{u - v} > \epsilon, \text{ so} \\
     \epsilon < \norm{u_k - u} + \norm{v_k - v} + \norm{u_k - v_k} \Rightarrow
     \epsilon < \lim_{k \to \infty} \norm{u_k - v_k} = 0
-\]
-since $v_k = z_{k + i_k}, u_k = z_{k + j_k}$ for some $i_k, j_k$ and in the 
-limit we make use of the property that $\lim_{k \to \infty} \norm{z_{k+1} - 
-z_k} = 0$.
+\end{align*}
+since $v_k = z_{k + i_k}, u_k = z_{k + j_k}$ for some $i_k, j_k$ and in the
+limit we make use of the property that $\lim_{k \to \infty} \norm{z_{k+1} -
+z_k} = 0$. This is a clear contradiction.
 
 \end{itemize}
 Finally, we prove that $d_{\cZ}(z_k) \to 0$. We write
-\[
-    d_{\cZ}(z_k) = \inf_{z \in \cZ} \norm{z - z_k}
-\]
+\begin{align*}
+    \lim_{k \to \infty} d_{\cZ}(z_k) &=
+        \lim_{k \to \infty} \inf_{z \in \cZ} \norm{z - z_k}
+\end{align*}
 
 \section*{Problem 5}
 \paragraph{Limiting Subdifferential.}
@@ -517,13 +515,15 @@ We write
 Notice that the gradient is separately Lipschitz since we have
 \begin{align*}
     \norm{\grad_{X} \Psi(X_1, Y) - \grad_X \Psi(X_2, Y)}_F &=
-        \norm{X_1 Y Y^\top - X_2 Y Y^\top}_F \leq \opnorm{YY^\top}
-        \norm{X_1 - X_2}_F = \sigma_{\max}^2(Y) \norm{X_1 - X_2}_F
+        \norm{X_1 Y Y^\top - X_2 Y Y^\top}_F \leq \norm{YY^\top}_F
+        \norm{X_1 - X_2}_F = \norm{Y}_F^2 \norm{X_1 - X_2}_F
 \end{align*}
-and similarly for $\grad_Y$. Setting $\lambda = \sigma_{\max}^2(Y_k), \nu =
-\sigma_{\max}^2(X_{k+1})$, we obtain the convergence plots shown
-in~\cref{fig:rankA-15,fig:rankA-30}, where all matrices are initialized as
-Gaussian ensembles. The full code can be found in Listing~\ref{p6code}.
+and similarly for $\grad_Y$. Setting $\lambda = \gamma \max\set{\kappa_1,
+\norm{Y_k}_F^2}, \nu = \gamma \max\set{\kappa_2,
+\norm{X_{k+1}}_F^2}$, with $\kappa_1 > 0, \kappa_2 > 0, \gamma > 1$, we
+obtain the convergence plots shown in~\cref{fig:rankA-15,fig:rankA-30}, where
+all matrices are initialized as Gaussian ensembles. The full code can be found
+in Listing~\ref{p6code}.
 
 \begin{figure}[h]
     \centering
@@ -578,5 +578,37 @@ $0$.
 	\caption{Script for Problem 6}
 	% \label{p6code}
 \end{longlisting}
+
+To deduce the rate of convergence, we assume that $\set{Z_k}_{k=1}^{\infty}$ is
+a bounded sequence of points, so that the sufficient decrease and approximate
+criticality properties follow. Let $\tau_1 = \sup_{k} \norm{X_k}_F, \;
+\tau_2 = \sup_{k} \norm{Y_k}_F$ be the corresponding upper bounds.
+\begin{itemize}
+\item The sufficient decrease property is satisfied by the Lemma shown in class.
+Specifically, the quantity $\max\set{\norm{Y_k}_F^2, \kappa_1}$ is a
+Lipschitz constant for $\grad_X H(\cdot, Y_k)$, and similarly $
+\max\set{\norm{X_{k+1}}_F^2, \kappa_2}$ is a Lipschitz constant for $\grad_Y
+H(\cdot, Y_k)$, with
+\[
+    \alpha := \min\set{\inf_k \left(1 - \frac{1}{\gamma}\right)
+        \max\set{\norm{Y_k}_F^2, \kappa_1},
+        \inf_k \left(1 - \frac{1}{\gamma}\right)
+        \max\set{\norm{X_{k+1}}_F^2, \kappa_2}} =
+   \left(1 - \frac{1}{\gamma}\right) \min \set{\kappa_1, \kappa_2}
+\]
+satisfying
+\[
+    \Psi(Z_{k+1}) - \Psi(Z_k) \geq \frac{\alpha}{2}
+    \norm{Z_{k+1} - Z_k}^2_F.
+\]
+\item We can also deduce approximate criticality since the gradient is
+Lipschitz. We have
+\begin{align*}
+    \norm{\grad \Psi(Z_k)} &= \norm{\pmx{
+        (X_k Y_k - A) Y_k^\top \\
+        X_{k+1}^\top (X_{k+1} Y_k - A)
+    }}
+\end{align*}
+\end{itemize}
 
 \end{document}
