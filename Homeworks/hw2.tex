@@ -174,10 +174,10 @@ This gives us
 \]
 where in the above steps we made use of the fact that $x^2$ is nondecreasing on
 $[0, +\infty)$ and $d_C$ is convex for the first inequality, and the fact that
-$x^2$ is convex for the second inequality. This proves that $x \mapsto
-\frac{1}{2}d_C^2(x)$ is also convex.
+$x^2$ is convex for the second inequality.
 
-The Lipschitzness of the gradient follows since
+Assuming that we've proved that $\grad \left(\frac{1}{2} d_C^2\right)(x) =
+x - P_C(x)$, verifying its $1$-Lipschitzness is simple:
 \begin{align*}
     \norm{\grad \frac{d_C^2}{2}(x) - \grad \frac{d_C^2}{2}(y)} &=
     \norm{x - P_C(x) - (y - P_C(y))} = \norm{x - y + (P_C(y) - P_C(x))} \\
@@ -191,6 +191,52 @@ property\footnote{Proved in HW1 of ORIE 6328, Spring 2018}:
 \[
     \ip{z - P_C(z), s - P_C(z)} \leq 0, \; \forall s \in C.
 \]
+In order to show that $\grad \frac{d_C^2}{2}(x) = x - P_C(x)$, we prove that
+\[
+    d_C^2(x + th) = d_C^2(x) + 2 \ip{\grad d_C(x), th} + o(th), \;
+    h \in \Sbb^{n_1}.
+\]
+We consider cases for $x$, but we first prove that $\partial d_C^2(x)
+\subseteq N_C(x)$ when $x \in C$. Assume that $\exists g \notin N_C(x)$ with $g
+\in \partial d_C^2(x)$, which implies that for some $t \in C$ it holds that
+$\ip{g, t - x} > 0$. However, this gives us
+\begin{align*}
+    d_C^2(x + h) &\geq d_C^2(x) + \ip{g, h} \Rightarrow
+    d_C^2(x + t - x) \geq d_C^2(x) + \ip{g, t - x} \Rightarrow \\
+    0 &\geq 0 + \ip{g, t - x} \Rightarrow \ip{g, t - x} \leq 0,
+\end{align*}
+which is a contradiction.
+\begin{itemize}
+\item $x \notin C$: in that case, we know from part (3) and the subgradient
+inequality that
+\begin{align*}
+    d_C(x + h) &\geq d_C(x) + \ip{\frac{1}{d_C(x)} x - P_C(x), h} \Rightarrow
+    d_C(x + h) d_C(x) \geq d^2_C(x) + \ip{x - P_C(x), h}.
+\end{align*}
+Moreover, since the subgradient is a singleton there, it follows that we
+can rewrite the above as an inequality modulo an $o(h)$ error term.
+It remains to write the LHS as something more ``friendly'' to $d_C^2(x + h)$.
+From the AM-GM inequality ($\sqrt{xy} \leq (x + y)/2$), we obtain
+\begin{align*}
+    \frac{d^2_C(x + h)}{2} + \frac{d_C^2(x)}{2} &\geq d_C^2(x) +
+    \ip{x - P_C(x), h} + o(h) \Rightarrow
+    \frac{d_C^2(x + h)}{2} \geq \frac{d_C^2(x)}{2} + \ip{x - P_C(x), h}
+    + o(h), \; \forall h.
+\end{align*}
+The above simply implies that $ x - P_C(x) \in \partial \left(
+\frac{d_C^2(x)}{2} \right), x \notin C$. However, we know that there are cases
+for which the AM-GM inequality is attained, and since we demand the above
+$\forall h$, this means that $\exists \bar{h}$ such that $d_C(x+\bar{h}) d_C(x)
+= \frac{d_C^2(x)}{2} + \frac{d_C^2(x + \bar{h})}{2}$. Therefore, it holds that
+\[
+    \frac{d_C^2(x + h)}{2} = \frac{d_C^2(x)}{2} + \ip{x - P_C(x), h}
+    + o(h), \; \forall h \in \Rbb^n, \; x \notin C.
+\]
+\item $x \in C$: First, notice that if $x \in \intr{C}$, $d_C$ is zero in
+an $\epsilon$-ball around $x$, which implies $d_C^2$ is differentiable
+with zero gradient at $x$. It thus suffices to consider $x \in C \setD
+\intr{C}$.
+\end{itemize}
 \section*{Problem 2}
 \paragraph{1.}
 We can write for the gradient of $f$ at iterate $x_k$:
@@ -610,5 +656,54 @@ Lipschitz. We have
     }}
 \end{align*}
 \end{itemize}
+\newcommand{\Xbar}{\bar{X}}
+\newcommand{\Ybar}{\bar{Y}}
+\newcommand{\Zbar}{\bar{Z}}
+We prove that $\Psi$ satisfies the KL property on a neighbourhood of a
+critical point $\bar{Z}$ with desingularizing function $\phi(s) = ks^{1/2}$.
+A critical point $\bar{Z} = (\Xbar, \Ybar)$ will satisfy
+
+\begin{align*}
+    \norm{\grad \Psi(\Zbar)} &= 0 \Leftrightarrow
+    \norm{\pmx{(\Xbar \Ybar - A) \Ybar^\top \\ \Xbar^\top (\Xbar \Ybar - A)}} =
+    0 \Rightarrow
+    \begin{cases}
+        (\Xbar \Ybar - A) \Ybar^\top = 0 \\
+        \Xbar^\top (\Xbar \Ybar - A) = 0
+    \end{cases} \\
+    \Rightarrow &
+        \Xbar \Ybar - A \in \mathrm{range}(\Xbar), (\Xbar \Ybar - A)^\top \in
+        \mathrm{Null}(\Ybar)
+\end{align*}
+Indeed, in a neighbourhood $U$ around $\Zbar$ with $
+\Psi(\Zbar) < \Psi(Z) < \Psi(\Zbar) + \eta$ for positive $\eta$ such that
+$Z \in U \cap \set{Z \mmid \Psi(\Zbar) < \Psi(Z) < \Psi(\Zbar) + \eta}$,
+we employ the fact that $\mathrm{dist}(0, \partial \Psi(Z)) =
+\mathrm{dist}(0, \grad \Psi(Z)) = \norm{\grad \Psi(Z)}$ to deduce
+\begin{align*}
+    \phi'(\Psi(Z) - \Psi(\Zbar)) \norm{\grad \Psi(Z)} &=
+    \frac{k}{2} \frac{\sqrt{2}}{\sqrt{\norm{A - XY}_F^2 - \norm{A - \Xbar
+    \Ybar}_F^2}}
+    \norm{\pmx{(X Y - A)Y^\top \\ X^\top (XY - A)}} \\
+    &= \frac{k}{\sqrt{2}} \frac{1}{\sqrt{\norm{A - XY}_F^2 - \norm{A - \Xbar
+    \Ybar}_F^2}} \sqrt{\norm{(XY - A)Y^\top}^2 + \norm{X^\top(XY - A)}^2}
+\end{align*}
+If we expand the denominator, we obtain from the criticality conditions
+\begin{align*}
+    \norm{A - \Xbar \Ybar}_F^2 &=
+    \mathrm{Tr}\left[ (A - \Xbar \Ybar)^\top A - \underbrace{(A -
+    \Xbar\Ybar)^\top X}_{= 0} Y \right]
+    = \mathrm{Tr}\left( A^\top A -\Ybar^\top \underbrace{\Xbar^\top A}_{=
+    \Xbar^\top \Xbar Y} \right) \\
+    &= \norm{A}_F^2 - \mathrm{Tr}(\Ybar^\top
+    \Xbar^\top \Xbar \Ybar) \Rightarrow \\
+    \norm{A - XY}_F^2 - \norm{A - \Xbar \Ybar}_F^2 &=
+    \norm{A - XY}_F^2 - \norm{A}^2 + \mathrm{Tr}(\Ybar^\top \Xbar^\top
+    \Xbar \Ybar) \\
+    &= \mathrm{Tr}(Y^\top X^\top X Y) - \mathrm{Tr}(A^\top XY) -
+       \mathrm{Tr}(Y^\top X^\top A) + \mathrm{Tr}(\Ybar^\top \Xbar^\top
+       \Xbar \Ybar) \\
+    &= \norm{XY}_F^2 + \norm{\Ybar \Xbar}_F^2 - 2 \mathrm{Tr}(A^\top XY)
+\end{align*}
 
 \end{document}
