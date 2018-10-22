@@ -565,10 +565,62 @@ For the limiting slope, we know that
     \to f(0, 0)}} \abs{\grad f}(u) = \liminf_{\substack{u \to (0, 0) \\ f(u)
     \to 0}} \abs{\grad f}(u).
 \]
-For any point $u \neq (0, 0)$, we have $\abs{\grad f}(u) =
+For any point $u \neq (0, 0)$, we have
+\begin{align*}
+\abs{\grad f}(u) &=
 \limsup_{z \to u} \frac{f(u) - f(z)}{\norm{u - z}} = \lim_{\epsilon \to 0}
 \sup_{z : \norm{z - u} \leq \epsilon}
-\frac{\abs{u_1} - \abs{u_2} - \abs{z_1} + \abs{z_2}}{\norm{u - z}}$.
+\frac{\abs{u_1} - \abs{u_2} - \abs{z_1} + \abs{z_2}}{\norm{u - z}},
+\end{align*}
+and, like before, we approach on a case-by-case basis, depending on which
+quadrant $u$ is located in. If both coordinates are nonzero, then $f$ is
+differentiable at $u$, which means that
+\[
+    \abs{\grad f}(u) = \norm{\grad f}(u) = \norm{\mathrm{sign}(u)} = \sqrt{2},
+    \; \text{when } u_1, u_2 \neq 0
+\]
+If $u_1 = 0, u_2 \neq 0$ we still know that $f$ is
+subdifferentiable in the Frech{\'e}t sense at $u$, which gives us
+\begin{align*}
+    \limsup_{z \to u} \frac{f(u) - f(z)}{\norm{u - z}} &\leq
+    \limsup_{z \to u} \frac{\ip{\regdiff f(u), u - z} + o(u - z)}{\norm{u - z}}
+    = \limsup_{z \to u} \frac{\ip{\regdiff f(u), u - z}}{\norm{u - z}} \\
+    \limsup_{z \to u} \frac{\pmx{[-1, 1] \\ \pm 1}^\top (u - z)}{\norm{u - z}}
+    &= \limsup_{z \to u} \frac{[-1, 1] (u_1 - z_1) \pm (u_2 - z_2)}{\norm{u -
+    z}} \leq \frac{\norm{u - z} \cdot \norm{g}}{\norm{u - z}} = \norm{g}, \;
+    \forall g \in \regdiff f(u).
+\end{align*}
+The shortest subgradient in the above is $g = 0 \times \set{\pm 1}$ with
+$\norm{g} = 1$, so $\abs{\grad f}(u) \leq 1, $ when $u_1 = 0, u_2 \neq 0$. At
+the same time, we know that $\abs{\grad f}(u) \geq -f'(u; h) = \lim_{t \to 0}
+\frac{f(u) - f(u + th)}{t}$ for every direction $h \in \mathbb{B}_2$. Choosing
+$h = (0, 1)$ gives us $-f'(u; h) = 1$, which shows that $\abs{\grad f}(u) = 1$
+when $u_1 = 0, u_2 \neq 0$.
+
+If $u_1 \neq 0, u_2 = 0$, $f$ is not Frech{\'e}t subdifferentiable at $u$, so
+we cannot resort to the subgradient inequality. However, we still know that the
+slope dominates the negative of the directional derivative, so
+\begin{align*}
+    \abs{\grad f}((u_1, 0)) &\geq \lim_{t \dto 0}
+    \frac{f(u) - f(u + th)}{t} = \lim_{t \dto 0} \frac{\abs{u_1} - \abs{u_1 +
+    th_1} + \abs{th_2}}{t} \geq 1,
+\end{align*}
+where the last part follows if we choose $h = (\pm 1, 0)$, which implies that
+$\abs{u_1 + th_1}$ has the same sign as $\abs{u_1}$ for small enough $t$,
+leading to $\abs{u_1} - \abs{u_1 + th_1} = \pm t h_1 = \pm t$, depending on the
+sign of $u_1$.
+
+All of the approaches to $u$ above result in slopes lower bounded by $1$.
+Therefore, we conclude that
+\[
+    \liminf_{\substack{u \to (0, 0) \\ f(u) \to 0}} \abs{\grad f}(u) \geq 1
+    = \norm{0 \times \set{\pm 1}}
+\]
+which is attained if we choose the approaching sequence to be $u_n := (0,
+u_2^n), \; u_2^n \to 0$ with slopes $\abs{\grad f}(u_n) = 1$ and function
+values approaching $f(0, 0) = 0$. This agrees with
+the fact stated in class, i.e. that the limiting slope is equal to the norm of
+the shortest limiting subgradient.
 
 \section*{Problem 6}
 Consider the unconstrained low-rank matrix factorization problem:
@@ -724,6 +776,10 @@ A critical point $\bar{Z} = (\Xbar, \Ybar)$ will satisfy
         \Xbar \Ybar - A \in \mathrm{range}(\Xbar), (\Xbar \Ybar - A)^\top \in
         \mathrm{Null}(\Ybar)
 \end{align*}
+The composition $\phi \circ (\Psi(Z) - \Psi(\Zbar))$ is equal to
+\[
+    \frac{k}{\sqrt{2}} \sqrt{\norm{A - XY}_F^2 - \norm{A - \Xbar \Ybar}_F^2}
+\]
 Indeed, in a neighbourhood $U$ around $\Zbar$ with $
 \Psi(\Zbar) < \Psi(Z) < \Psi(\Zbar) + \eta$ for positive $\eta$ such that
 $Z \in U \cap \set{Z \mmid \Psi(\Zbar) < \Psi(Z) < \Psi(\Zbar) + \eta}$,
