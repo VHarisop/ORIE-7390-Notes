@@ -235,7 +235,43 @@ $\forall h$, this means that $\exists \bar{h}$ such that $d_C(x+\bar{h}) d_C(x)
 \item $x \in C$: First, notice that if $x \in \intr{C}$, $d_C$ is zero in
 an $\epsilon$-ball around $x$, which implies $d_C^2$ is differentiable
 with zero gradient at $x$. It thus suffices to consider $x \in C \setD
-\intr{C}$.
+\intr{C}$. Since $x = P_C(x)$, we write
+\begin{align*}
+    d_C^2(x + th) - \cancelto{0}{d_C^2(x)} &= \left( x + th - P_C(x + th)
+        - x + P_C(x) \right)^\top \left(x + th - P_C(x + th) - x +
+        P_C(x)\right)\\
+      &= \left(th - P_C(x + th) + P_C(x)\right)^\top \left(x + th - P_C(x + th)
+        +x - P_C(x) \right) \\
+      &= t h^\top (x - P_C(x)) + th^\top (x - P_C(x + th)) + t^2 h^\top h \\
+      &+ \left[ P_C(x + th) - P_C(x) \right]^\top \left(x + th - P_C(x + th)
+         - x + P_C(x) \right)
+\end{align*}
+Break up the last summand into two terms:
+\[
+    (P_C(x + th) - P_C(x))^\top \left(P_C(x) - P_C(x + th)\right), \;
+    (P_C(x + th) - P_C(x))^\top th
+\]
+We have
+\begin{align*}
+    \lim_{t \dto 0} \frac{(P_C(x + th) - P_C(x))^\top th}{t} &=
+        \lim_{t \dto 0} \left( P_C(x + th) - P_C(x) \right)^\top h = 0, \\
+    0 \geq \lim_{t \dto 0} \frac{(P_C(x + th) - P_C(x))^\top \left(P_C(x) -
+    P_C(x +
+    th)\right)}{t} &\geq \lim_{t \dto 0} -\frac{t^2 \norm{h}^2}{t} = 0
+\end{align*}
+Therefore, taking the directional derivative we have
+\begin{align*}
+    \lim_{t \dto 0} \frac{d_C^2(x + th) - d_C^2(x)}{t} &=
+    \lim_{t \dto 0} \frac{t h^\top(x - P_C(x)) + t h^\top (x - P_C(x + th))
+        + t^2 \norm{h}^2}{t} \\ &=
+    h^\top (x - P_C(x)) + \lim_{t \dto 0}  h^\top (x - P_C(x + th)) +
+        t \norm{h}^2 \\
+    &= 2 h^\top (x - P_C(x)),
+\end{align*}
+where we used the fact that $t \mapsto P_C(x + th)$ is a continuous function
+by the continuity of projection. Since the directional derivative is a
+singleton, it must hold that $\grad d_C^2(x) = 2(x - P_C(x)) \Rightarrow
+\grad \left( \frac{d_C^2(x)}{2}\right) = x - P_C(x)$, which completes the claim.
 \end{itemize}
 \section*{Problem 2}
 \paragraph{1.}
