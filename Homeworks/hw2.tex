@@ -430,12 +430,15 @@ Moreover, we must restrict ourselves to the family of functions that satisfy
 $f(0) = 0, \;  \grad f(0) = 0$, otherwise $0$ is a non-critical point and part
 (a) applies. Fortunately the condition $f(x) \geq x^4$ takes care of this.
 
-Consider $f(x) = e^{cx^4} - 1, c \geq 1$ as the function of interest.
-Obviously, we have that $f(0) = 1 - 1  = 0$ and also $e^{cx^4} \geq 1 + cx^4
-\Rightarrow f(x) \geq x^4, \; \forall x \in \Rbb$ by the fundamental inequality
-$1 + x \leq e^x$. Finally, $0$ is a critical point for $f$ since $e^{cx^4} \geq
-1, \; \forall x \in \Rbb$ and the minimum is attained for $x = 0$. Assume, for
-the sake of contradiction, that there exists a desingularizer $\phi: [0, \rho)
+Consider $f(x) = \begin{cases}
+    0, & x = 0 \\
+    x^4(2 + \sin(1/x)), & x \neq 0
+\end{cases}$. We have $0$ is a critical point for $f$ since $f(x) \geq f(0) =
+0, \; \forall x$. Additionally, we know that $f(x)$ is differentiable for $x
+\neq 0$ and differentiable at $0$ after taking the limit-theoretic definition
+of the derivative. Finally $\abs{\sin(1/x)} \leq 1$ so it follows that $f(x)
+\geq x^4$, as required. Assume, for the sake of contradiction, that there
+exists a desingularizer $\phi: [0, \rho)
 \to \Rbb_+$ with $\phi' > 0$ for some $\rho > 0$ such that
 \[
     \abs{\grad (\varphi \circ f)}(x) \geq 1, \; \forall x: 0 < f(x)
@@ -444,7 +447,6 @@ the sake of contradiction, that there exists a desingularizer $\phi: [0, \rho)
 Here, $f$ is $C^1$ and $\varphi$ is also $C^1$. By the chain rule, we have that
 \[
     \abs{\grad \varphi \circ f}(x) = \varphi'(f(x) )\abs{\grad f}(x) \geq 1
-    \Leftrightarrow \varphi'(f(x)) c e^{cx^4} \abs{x}^3 \geq 1,
 \]
 where the latter follows since $\abs{\grad f}(x) = \norm{\grad f(x)}$ by our
 results from HW1.
@@ -483,6 +485,17 @@ Finally, we prove that $d_{\cZ}(z_k) \to 0$. We write
     \lim_{k \to \infty} d_{\cZ}(z_k) &=
         \lim_{k \to \infty} \inf_{z \in \cZ} \norm{z - z_k}
 \end{align*}
+Assume for the sake of contradiction that the above quantity was strictly
+positive, i.e. $\lim_{k \to \infty} \inf_{z \in \cZ} \norm{z - z_k} > \epsilon$.
+However, by construction of $\cZ$, $z$ has to be a limit point of a convergent
+subsequence $\set{z_k}_{k \in K \subseteq \Nbb}$. This implies that (using the
+continuity of $x \mapsto \| \lim_{k \in K} z_k - x \|$):
+\[
+    \lim_{i \to \infty} \norm{\lim_{k \in K} z_k - z_i} > \epsilon \Rightarrow
+    \norm{\lim_{k \in K} z_k - \lim_{i \to \infty} z_i} > \epsilon,
+\]
+a clear contradiction to the fact that $\lim_{k \to \infty} \norm{z_k - z_{k+1}}
+= 0$.
 
 \section*{Problem 5}
 \paragraph{Limiting Subdifferential.}
