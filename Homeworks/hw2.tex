@@ -379,9 +379,74 @@ since the RHS satisfies
 \end{align*}
 
 \paragraph{6.}
-Like we did in class, we deduce the KL property from the error bound and the
-slope descent sequence properties, along with the fact that $\norm{x_{k+1}}
-\leq \norm{x_{k}}, \; \forall k$.
+Like we did in class, we deduce the KL property from the error bound above.
+Take $y = \mathrm{proj}_{\setI_i C_i} (x)$. Obviously, $f(y) = 0$ so $y \in
+\argmin f$. Then, using the subgradient inequality, we obtain
+\begin{align*}
+    f(y) - f(x) &\geq \ip{\grad f(x), y - x} \Rightarrow
+    f(x) \leq \norm{\grad f(x)} \norm{x - y} = \norm{\grad f(x)}
+    \mathrm{dist}(x, \argmin f),
+\end{align*}
+which follows since $y$ is the projection of $x$ to the set of minimizers of
+$f$, which is precisely the set of points in $\setI_i C_i$. By the bound from
+part (2.5), and the fact that $\abs{\grad f}(u) = \norm{\grad f(u)}$ for $C^1$
+functions, the above becomes
+\begin{align}
+    \begin{aligned}
+    f(x) &\leq \norm{\grad f(x)} \mathrm{dist}(x, \argmin f) \leq
+    \abs{\grad f}(x) \left(1 + \frac{2 \norm{x_0}}{\delta}\right)^{m-1}
+    \sqrt{2m f(x)} \Rightarrow \\
+    1 &\leq \abs{\grad f}(x) \left(1 + \frac{2 \norm{x_0}}{\delta}\right)^{m-1}
+        \sqrt{\frac{2m}{f(x)}},
+    \end{aligned} \label{eq:KL-prop}
+\end{align}
+which is \textbf{almost} the KL property with desingularizing function
+$\varphi(s) = 2 \left(1 + \frac{2 \norm{x_0}}{\delta}\right)^{m-1} \sqrt{2m}
+\sqrt{s}$. It is easy to verify that $\varphi(s)$ is concave on $(0, +\infty)$
+and increasing as a scalar multiple of the $\sqrt{~}$ function. Moreover, if
+we extend it so that
+\begin{align*}
+    \varphi(s) &= \begin{cases}
+        0, & s = 0 \\
+        2\left(1 + \frac{2 \norm{x_0}}{\delta}\right)^{m-1} \sqrt{\frac{2m}{s}},
+        & s > 0
+    \end{cases},
+\end{align*}
+we obtain $\varphi(0) = 0$, concave and increasing on $\Rbb_{++}$, as the KL
+property demands. Since $\varphi(s) = ks^{1/2}$, we expect the algorithm to
+converge linearly to a minimizer $x_* \in \setI_i C_i$.
+
+Starting from the error bound obtained in part (2.5), we assume that we have
+a bounded sequence $\set{x_k}$ starting from $x_0$. Indeed, we proved in (2.4)
+that the sequence of iterates satisfies $\norm{x_{k+1}} \leq \norm{x_k}, \;
+\forall k$, which verifies our assumption. By arguments presented in lecture,
+specifically during the part about KL and complexity, we know that $\set{x_k}
+\overset{\text{norm}}{\to} x^*$, where $x^*$ is a minimizer of $f$, i.e.
+$x_* \in \setI_{i=1}^m C_i$. Denote
+\(
+    q := \left(1 + \frac{2 \norm{x_0}}{\delta}\right)^{m-1} \sqrt{2m}
+\) and write
+\begin{align*}
+    \norm{x_k - x_*}^2 &\leq \sum_{t=k}^{\infty} \norm{x_t - x_{t + 1}}^2
+    \leq 2 \sum_{t=k}^{\infty} f(x_t) - f(x_{t+1}) = 2 (f(x_k) -
+    \cancelto{0}{f(x_*)}) \\
+    &\leq 2 \set{ \abs{\grad f}(x_k) q }^2 \leq 4q^2 \norm{x_k -
+    x_{k-1}}^2,
+\end{align*}
+by virtue of being a slope descent sequence. However, if we write $g_k =
+\sum_{t=k}^{\infty} \norm{x_t - x_{t+1}}^2$, the above recurrence reads
+\[
+    g_k \leq 4 q^2 \left(g_{k-1} - g_{k}\right) \Rightarrow
+    g_k \leq \frac{4q^2}{1 + 4q^2} g_{k-1} \Rightarrow
+    g_k \leq \left(\frac{4q^2}{1 + 4q^2}\right)^k g_0
+\]
+where $g_0 = \sum_{t=0}^{\infty} \norm{x_t - x_{t+1}}^2$ is \textbf{finite} by
+the arguments presented in lecture. Therefore, it holds that
+\[
+    \norm{x_k - x_*} \leq \sqrt{g_0} \left( \frac{4q^2}{1 + 4 q^2}
+    \right)^{k/2},
+\]
+which is linear convergence with rate $\sqrt{\frac{4q^2}{1 + 4q^2}}$.
 \section*{Problem 3}
 \paragraph{1.}
 For this part, notice that if we assume $f: \Hbb \to \overline{\Rbb}$ with
