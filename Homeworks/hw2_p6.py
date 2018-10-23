@@ -4,20 +4,23 @@
 import argparse
 import numpy as np
 
-def gradient_updates(A, Xk, Yk):
+def gradient_updates(A, Xk, Yk, gamma, kappa):
     """
     Computes the gradient updates with respect to X, Y, given the target matrix
-    A and the iterates Xk, Yk.
+    A and the iterates Xk, Yk. gamma, kappa are positive parameters with gamma
+    > 1.
     """
     cost = lambda X, Y: (X @ Y - A)
-    lipX = max(np.linalg.svd(Yk, compute_uv=False)) ** 2
+    xFro = max(np.linalg.svd(Yk, compute_uv=False)) ** 2
+    lipX = gamma * max(kappa, xFro)
     Xnew = Xk - (1 / lipX) * cost(Xk, Yk) @ Yk.T
-    lipY = max(np.linalg.svd(Xk, compute_uv=False)) ** 2
+    yFro = max(np.linalg.svd(Xk, compute_uv=False)) ** 2
+    lipY = gamma * max(kappa, yFro)
     Ynew = Yk - (1 / lipY) * Xnew.T @ cost(Xnew, Yk)
     return Xnew, Ynew
 
 
-def prox_gradient(A, r, iters):
+def prox_gradient(A, r, iters, gamma=1.5, kappa=1.0):
     """
     Implements the proximal gradient method for unconstrained matrix
     factorization.
@@ -30,6 +33,9 @@ def prox_gradient(A, r, iters):
         The rank of the desired factorization
     iters : int
         The number of iterations to run for
+    gamma, kappa : float
+        Step size parameters. `gamma > 1` and `kappa > 0` to be amenable to a
+        KL-based convergence analysis.
 
     Returns
     -------
@@ -45,7 +51,7 @@ def prox_gradient(A, r, iters):
     dists = np.zeros(iters)
     dists[0] = cost(Xk, Yk)
     for i in range(1, iters):
-        Xk[:], Yk[:] = gradient_updates(A, Xk, Yk)
+        Xk[:], Yk[:] = gradient_updates(A, Xk, Yk, gamma, kappa)
         dists[i] = cost(Xk, Yk)
     return dists
 
@@ -81,10 +87,15 @@ if __name__ == "__main__":
                         type=int, default=15)
     parser.add_argument("--iters", help="The number of iterations",
                         type=int, default=100)
+    parser.add_argument("--gamma", help="The parameter gamma of the algorithm",
+                        type=float, default=1.5)
+    parser.add_argument("--kappa", help="The parameter kappa of the algorithm",
+                        type=float, default=0.5)
     args = vars(parser.parse_args())
     dim, rank, iters = args['dim'], args['rank'], args['iters']
+    gamma, kappa = args['gamma'], args['kappa']
     A = np.random.randn(dim, rank) @ np.random.randn(rank, dim)
-    dists = prox_gradient(A, rank, iters)
+    dists = prox_gradient(A, rank, iters, gamma, kappa)
     np.savetxt("prox_dim_{}_rank_{}.csv".format(dim, rank), dists,
                delimiter=",", comments="")
     err_svd = svd_approx(A, rank)

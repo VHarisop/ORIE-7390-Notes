@@ -348,6 +348,7 @@ constructed in terms of $p_1, u_3$. We then argue that
 \]
 It suffices for $p_2$ to be such that $\norm{p_1 - p_2} \leq 2 \norm{x}
 \delta^{-1} \left( \norm{x - p_1} \right)$ to make use of our result above.
+Unfortunately, we could not iterate this construction to completion here.
 
 \paragraph{4.}
 This part is simple. From the form of the updates, we obtain that
@@ -438,12 +439,13 @@ by virtue of being a slope descent sequence. However, if we write $g_k =
 \[
     g_k \leq 4 q^2 \left(g_{k-1} - g_{k}\right) \Rightarrow
     g_k \leq \frac{4q^2}{1 + 4q^2} g_{k-1} \Rightarrow
-    g_k \leq \left(\frac{4q^2}{1 + 4q^2}\right)^k g_0
+    g_k \leq \left(\frac{4q^2}{1 + 4q^2}\right)^k g_0,
 \]
-where $g_0 = \sum_{t=0}^{\infty} \norm{x_t - x_{t+1}}^2$ is \textbf{finite} by
-the arguments presented in lecture. Therefore, it holds that
+where $g_0 = \sum_{t=0}^{\infty} \norm{x_t - x_{t+1}}^2
+\leq 2 \sum_{t=0} f(x_t) - f(x_{t+1}) = 2 (f(x_0) - \inf f)$ by the sufficient
+decrease property of the slope descent sequence. Therefore, it holds that
 \[
-    \norm{x_k - x_*} \leq \sqrt{g_0} \left( \frac{4q^2}{1 + 4 q^2}
+    \norm{x_k - x_*} \leq \sqrt{2 f(x_0)} \left( \frac{4q^2}{1 + 4 q^2}
     \right)^{k/2},
 \]
 which is linear convergence with rate $\sqrt{\frac{4q^2}{1 + 4q^2}}$.
@@ -734,7 +736,8 @@ and similarly for $\grad_Y$. Setting $\lambda = \gamma \max\set{\kappa_1,
 \norm{Y_k}_F^2}, \nu = \gamma \max\set{\kappa_2,
 \norm{X_{k+1}}_F^2}$, with $\kappa_1 > 0, \kappa_2 > 0, \gamma > 1$, we
 obtain the convergence plots shown in~\cref{fig:rankA-15,fig:rankA-30}, where
-all matrices are initialized as Gaussian ensembles. The full code can be found
+all matrices are initialized as Gaussian ensembles. The dashed lines indicate
+the quality of the SVD solution. The full code can be found
 in Listing~\ref{p6code}.
 
 \begin{figure}[h]
@@ -744,12 +747,18 @@ in Listing~\ref{p6code}.
     \begin{tikzpicture}% table
     \begin{axis}[xlabel=$k$,ylabel={$\Psi(X_k, Y_k)$}, ymode=log,
                  legend pos=north east, width=\linewidth]
-    \addplot+[no markers, thick] table[x expr=\coordindex+1, y index=0, col
+    \addplot+[blue, no markers, thick] table[x expr=\coordindex+1, y index=0,
+    col
     sep=comma] {prox_dim_50_rank_15.csv};
-    \addplot+[no markers, thick] table[x expr=\coordindex+1, y index=0, col
+    \addplot+[brown, no markers, thick] table[x expr=\coordindex+1, y index=0,
+    col
     sep=comma] {prox_dim_100_rank_15.csv};
-    \addplot+[no markers, thick] table[x expr=\coordindex+1, y index=0, col
+    \addplot+[magenta, no markers, thick] table[x expr=\coordindex+1, y
+    index=0, col
     sep=comma] {prox_dim_150_rank_15.csv};
+    \addplot[dashed, blue, domain=0:300] {3.712e-13};
+    \addplot[dashed, brown, domain=0:300] {1.187e-12};
+    \addplot[dashed, magenta, domain=0:300] {1.853e-12};
     \legend{\scalebox{0.75}{$n = 50$}, \scalebox{0.75}{$n = 100$},
             \scalebox{0.75}{$n = 150$}};
     \end{axis}
@@ -762,12 +771,18 @@ in Listing~\ref{p6code}.
     \begin{tikzpicture}% table
     \begin{axis}[xlabel=$k$,ylabel={$\Psi(X_k, Y_k)$}, ymode=log,
                  legend pos=south west, width=\linewidth]
-    \addplot+[no markers, thick] table[x expr=\coordindex+1, y index=0, col
+    \addplot+[blue, no markers, thick] table[x expr=\coordindex+1, y index=0,
+    col
     sep=comma] {prox_dim_50_rank_30.csv};
-    \addplot+[no markers, thick] table[x expr=\coordindex+1, y index=0, col
+    \addplot+[brown, no markers, thick] table[x expr=\coordindex+1, y index=0,
+    col
     sep=comma] {prox_dim_100_rank_30.csv};
-    \addplot+[no markers, thick] table[x expr=\coordindex+1, y index=0, col
+    \addplot+[magenta, no markers, thick] table[x expr=\coordindex+1, y
+    index=0, col
     sep=comma] {prox_dim_150_rank_30.csv};
+    \addplot[dashed, blue, domain=0:300] {2.173e-12};
+    \addplot[dashed, brown, domain=0:300] {1.029e-12};
+    \addplot[dashed, magenta, domain=0:300] {5.275e-13};
     \legend{\scalebox{0.75}{$n = 50$}, \scalebox{0.75}{$n = 100$},
             \scalebox{0.75}{$n = 150$}};
     \end{axis}
@@ -785,16 +800,20 @@ iterations to converge to a solution. However, given enough iterations, it
 always seems to produce a global minimizer since the final error is close to
 $0$.
 
-\begin{longlisting} \label{p6code}
+\begin{longlisting}
+    \vspace{2em}
+    \hrule
 	\inputminted{python}{hw2_p6.py}
+    \hrule \vspace{1em}
 	\caption{Script for Problem 6}
-	% \label{p6code}
+	\label{p6code}
 \end{longlisting}
+
+\vspace{2em}
 
 To deduce the rate of convergence, we assume that $\set{Z_k}_{k=1}^{\infty}$ is
 a bounded sequence of points, so that the sufficient decrease and approximate
-criticality properties follow. Let $\tau_1 = \sup_{k} \norm{X_k}_F, \;
-\tau_2 = \sup_{k} \norm{Y_k}_F$ be the corresponding upper bounds.
+criticality properties follow.
 \begin{itemize}
 \item The sufficient decrease property is satisfied by the Lemma shown in class.
 Specifically, the quantity $\max\set{\norm{Y_k}_F^2, \kappa_1}$ is a
@@ -813,67 +832,45 @@ satisfying
     \Psi(Z_{k+1}) - \Psi(Z_k) \geq \frac{\alpha}{2}
     \norm{Z_{k+1} - Z_k}^2_F.
 \]
-\item We can also deduce approximate criticality since the gradient is
-Lipschitz. We have
+\item We can also deduce approximate criticality. Notice that the optimality
+conditions leading to the updates of the alternating method dictate
 \begin{align*}
-    \norm{\grad \Psi(Z_k)} &= \norm{\pmx{
-        (X_k Y_k - A) Y_k^\top \\
-        X_{k+1}^\top (X_{k+1} Y_k - A)
-    }}
+    \left\{ \begin{aligned}
+    \lambda \left(X_k - X_{k+1} \right) - \grad_X H(X_k, Y_k) &= 0 \\
+    \nu \left(Y_k - Y_{k+1} \right) - \grad_Y H(X_{k+1}, Y_k) &= 0
+    \end{aligned} \right. \Rightarrow \\
+    \norm{\grad \Psi(Z_{k+1})} = \norm{\pmx{
+        \lambda (X_k - X_{k+1}) + \grad_X H(X_{k+1}, Y_{k+1}) - \grad_X
+        H(X_k, Y_k) \\
+        \nu (Y_k - Y_{k+1}) + \grad_Y H(X_{k+1}, Y_{k+1}) - \grad_Y
+        H(X_{k+1}, Y_k) \\
+    }} \\
+    \leq \lambda \norm{X_k - X_{k+1}} + \norm{\grad_X H(X_{k+1}, Y_{k+1})
+    - \grad_X H(X_k, Y_k)} + \nu \norm{Y_k - Y_{k+1}} + \norm{X_{k+1}}_F^2
+    \norm{Y_k - Y_{k+1}}
 \end{align*}
-\end{itemize}
-\newcommand{\Xbar}{\bar{X}}
-\newcommand{\Ybar}{\bar{Y}}
-\newcommand{\Zbar}{\bar{Z}}
-We prove that $\Psi$ satisfies the KL property on a neighbourhood of a
-critical point $\bar{Z}$ with desingularizing function $\phi(s) = ks^{1/2}$.
-A critical point $\bar{Z} = (\Xbar, \Ybar)$ will satisfy
-
-\begin{align*}
-    \norm{\grad \Psi(\Zbar)} &= 0 \Leftrightarrow
-    \norm{\pmx{(\Xbar \Ybar - A) \Ybar^\top \\ \Xbar^\top (\Xbar \Ybar - A)}} =
-    0 \Rightarrow
-    \begin{cases}
-        (\Xbar \Ybar - A) \Ybar^\top = 0 \\
-        \Xbar^\top (\Xbar \Ybar - A) = 0
-    \end{cases} \\
-    \Rightarrow &
-        \Xbar \Ybar - A \in \mathrm{range}(\Xbar), (\Xbar \Ybar - A)^\top \in
-        \mathrm{Null}(\Ybar)
-\end{align*}
-The composition $\phi \circ (\Psi(Z) - \Psi(\Zbar))$ is equal to
+The second term in the expression above is Lipschitz for some modulus $L_1$
+on any compact set containing $\set{Z_k}_{k \in \Nbb}$. Similarly, the term
+$\set{X_{k+1}}_F^2$ is uniformly bounded. Combining the two implies that
 \[
-    \frac{k}{\sqrt{2}} \sqrt{\norm{A - XY}_F^2 - \norm{A - \Xbar \Ybar}_F^2}
+    \norm{\grad \Psi(Z_{k+1})} \leq \beta \norm{Z_{k} - Z_{k+1}},
 \]
-Indeed, in a neighbourhood $U$ around $\Zbar$ with $
-\Psi(\Zbar) < \Psi(Z) < \Psi(\Zbar) + \eta$ for positive $\eta$ such that
-$Z \in U \cap \set{Z \mmid \Psi(\Zbar) < \Psi(Z) < \Psi(\Zbar) + \eta}$,
-we employ the fact that $\mathrm{dist}(0, \partial \Psi(Z)) =
-\mathrm{dist}(0, \grad \Psi(Z)) = \norm{\grad \Psi(Z)}$ to deduce
-\begin{align*}
-    \phi'(\Psi(Z) - \Psi(\Zbar)) \norm{\grad \Psi(Z)} &=
-    \frac{k}{2} \frac{\sqrt{2}}{\sqrt{\norm{A - XY}_F^2 - \norm{A - \Xbar
-    \Ybar}_F^2}}
-    \norm{\pmx{(X Y - A)Y^\top \\ X^\top (XY - A)}} \\
-    &= \frac{k}{\sqrt{2}} \frac{1}{\sqrt{\norm{A - XY}_F^2 - \norm{A - \Xbar
-    \Ybar}_F^2}} \sqrt{\norm{(XY - A)Y^\top}^2 + \norm{X^\top(XY - A)}^2}
-\end{align*}
-If we expand the denominator, we obtain from the criticality conditions
-\begin{align*}
-    \norm{A - \Xbar \Ybar}_F^2 &=
-    \mathrm{Tr}\left[ (A - \Xbar \Ybar)^\top A - \underbrace{(A -
-    \Xbar\Ybar)^\top X}_{= 0} Y \right]
-    = \mathrm{Tr}\left( A^\top A -\Ybar^\top \underbrace{\Xbar^\top A}_{=
-    \Xbar^\top \Xbar Y} \right) \\
-    &= \norm{A}_F^2 - \mathrm{Tr}(\Ybar^\top
-    \Xbar^\top \Xbar \Ybar) \Rightarrow \\
-    \norm{A - XY}_F^2 - \norm{A - \Xbar \Ybar}_F^2 &=
-    \norm{A - XY}_F^2 - \norm{A}^2 + \mathrm{Tr}(\Ybar^\top \Xbar^\top
-    \Xbar \Ybar) \\
-    &= \mathrm{Tr}(Y^\top X^\top X Y) - \mathrm{Tr}(A^\top XY) -
-       \mathrm{Tr}(Y^\top X^\top A) + \mathrm{Tr}(\Ybar^\top \Xbar^\top
-       \Xbar \Ybar) \\
-    &= \norm{XY}_F^2 + \norm{\Ybar \Xbar}_F^2 - 2 \mathrm{Tr}(A^\top XY)
-\end{align*}
+for a sufficiently large constant $\beta$.
+\end{itemize}
+The points above imply that any bounded sequence $\set{Z_k}$ will converge to
+a critical point, by arguments presented in Lecture. Finally, we can show that
+the graph of $\norm{A - XY}_F^2$ is semialgebraic, since the following equality
+\[
+    \norm{A - XY}_F^2 = c \Rightarrow
+    \mathrm{Tr}(A^\top A - (XY)^\top A - A^\top XY + (XY)^\top XY) = c
+\]
+consists of a sum of monomials with respect to the individual elements of $X,
+Y$, and is therefore a polynomial equality. Therefore, standard results in the
+literature suggest that it admits a desingularizer of the form $\phi(s) = ks^{1
+- \theta}$, which then leads to linear convergence to a critical
+point~\cite[Theorem 5]{AttBolRedSou10}. This is precisely the type of
+convergence shown in~\cref{fig:rankA-15,fig:rankA-30}.
 
+\bibliographystyle{plain}
+\bibliography{references}
 \end{document}
