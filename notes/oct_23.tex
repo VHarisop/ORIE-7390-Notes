@@ -1,0 +1,93 @@
+\section{Sequential Quadratic Programming}
+
+In this section, we examine methods for nonlinear programming under certain
+assumptions. We follow closely the \textbf{moving balls}
+method~\cite{AusShefTeb10}. Consider the following problem:
+\begin{align}
+	\tag{\textsc{NonLin}}
+	\begin{aligned}
+		\inf \quad & p(x) \\
+		\mbox{s.t } & q_i(x) \leq 0, \; i = 1, \dots, m
+	\end{aligned}
+	\label{eq:nonlinear-prog}
+\end{align}
+We assume that $p, q_i : \Rbb^n \to \Rbb$, all $C^2$, with Lipschitz gradients
+of moduli $L, L_i, \; i = 1, \dots, m$. The way this problem is attacked is
+by employing the quadratic upper bounds, so that
+\begin{align}
+	\begin{aligned}
+	x_{k+1} &= \inf \set{ p(x_k) + \ip{\grad p(x_k), x - x_k} +
+			\frac{L}{2} \norm{x - x_k}^2 } \\
+	\mbox{s.t. } & q_i(x_k) + \ip{\grad q_i(x_k), x - x_k} +
+		\frac{L_i}{2} \norm{x - x_k}^2, \quad i = 1, \dots, m
+	\end{aligned}
+	\label{eq:moving-balls-iterates}
+\end{align}
+Intuitively, the update in~\cref{eq:moving-balls-iterates} is projecting the
+point $x_k - \frac{1}{L} \grad p(x_k)$ onto the intersection of balls
+approximating the feasible region around the current iterate.
+
+The program described in~\cref{eq:moving-balls-iterates} is a second-order cone
+program, amenable to:
+\begin{itemize}
+	\item interior point methods, and
+	\item applying Nesterov accelerated gradient to the dual problem.
+\end{itemize}
+
+We frame this problem as a majorization-minimization problem, using the model
+function
+\begin{align*}
+	h(x, y) &= \begin{cases}
+		p(x) + \ip{\grad p(x), y - x} + \frac{L}{2} \norm{y - x}^2, & \text{ if
+		} q_i(x) + \ip{\grad q_i(x), y - x} + \frac{L_i}{2} \norm{y - x}^2
+		\leq 0, \; \forall i \\
+		+\infty, & \text{ otherwise}
+	\end{cases} \\
+		& \geq \begin{cases}
+		p(y), & \text{ if } q_i(y) \leq 0, \; \forall i \\
+		+\infty, & \text{ otherwise}
+	\end{cases}.
+\end{align*}
+We will consider the general setting where $ \inf_{x \in \cX} > -\infty$, with
+$f: \Rbb^n \to \Rbb$ closed, continuous and semialgebraic, and $\cX$ closed and
+semialgebraic. Specifically:
+\begin{itemize}
+	\item we model $f$ using $h: \Rbb^{n} \times \Rbb^n \to \Rbb$,
+	continuous, semialgebraic, satisfying
+	\[
+		f(y) \leq h(x, y) = f(y) + o(\norm{y - x}), \; \text{ as } y \to x.
+	\]
+	Additionally, $y \mapsto h(x, y)$ is assumed to be $\mu$-strongly convex.
+	\item we model $\cX$ using $D: \Rbb^n \multo \Rbb^n$ (set-valued),
+		semialgebraic in the sense that $\set{(x, y) \mmid y \in D(x)}$ is a
+		semialgebraic set, and is \textit{continuous as a set-valued map}.
+		Additionally, we assume that $D(x) \subseteq \cX$ is closed, convex for
+		any $x \in \cX$, and $N_{D(x)}(x) = \hat{N}_{\cX}(x) = \regdiff
+		\delta_{\cX}(x)$.
+\end{itemize}
+
+\begin{cdefinition}{Continuity of map}{map-continuity}
+	We call a set-valued map $D: \Rbb^n \multo \Rbb^n$ \textit{continuous} if
+	the following conditions hold:
+	\begin{enumerate}
+		\item $\gph(D) := \set{(x, y) \mmid y \in D(x)}$ is closed, and
+		\item given $\set{x_k} \to x, \; x_k \in \cX$, with $y \in D(x)$, there
+			exists $\set{y_k} \in D(x_k)$ with $y_k \to y$.
+	\end{enumerate}
+\end{cdefinition}
+
+An example of a discontinuous map is the subdifferential. For example, we know
+that
+\[
+	\partial \abs{\cdot} = \begin{cases}
+		-1, & x < 0 \\
+		1, & x > 0 \\
+		[-1, 1], & x = 0
+	\end{cases},
+\]
+which ``breaks'' because of the ways we can approach $0$ from right and left.
+
+Let us now take a brief pause to recall some facts about \textbf{tangent
+cones}.
+
+% TODO: Complete
