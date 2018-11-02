@@ -1,0 +1,171 @@
+\section{Bundle Methods}
+Let us return to the familiar setting of convex optimization. Consider convex
+$f: \Rbb^n \to \overline{\Rbb}, \; x \in \intr{\dom f}$. Recall the
+max-formula, which gives us
+\[
+	f'(x; d) := \inf_{t > 0} \frac{f(x + td) - f(x)}{t} = \lim_{t \dto 0}
+	\frac{f(x + td) - f(x)}{t} = \max_{y \in \partial f(x)} \ip{y, d}.
+\]
+If we assume that $x$ is not a minimizer, which is equivalent to $0 \notin
+\partial f(x)$, we have
+\[
+	\min_{d \in \mathbb{B}_2} f'(x; d) = -\mathrm{dist}_{\partial f(x)}(0)
+	= - \abs{\grad f}(x),
+\]
+attained uniquely by $d = - \frac{g}{\norm{g}}$, with $g =
+\mathrm{proj}_{\partial f(x)}(0)$.
+
+In \textit{discrete time}, steepest descent with exact line search repeats the
+following:
+\[
+	x_{k+1} \gets x_k - t_k \mathrm{proj}_{\partial f(x)}(0), \;
+	t_k := \argmin_{t \geq 0} f\left(x_k - t \mathrm{proj}_{\partial
+	f(x)}(0)\right).
+\]
+Notice that, generically, this \textbf{may not converge} to a non-optimal
+point!
+
+\paragraph{Example.} Consider $f(u, v) = \begin{cases}
+	\sqrt{u^2 + 2v^2}, & u \geq \frac{\abs{v}}{2} \\
+\frac{1}{3} (u + 4 \abs{v}), & u < \frac{\abs{v}}{2} \end{cases}$. If one
+initiates the steepest descent algorithm at $u = \pm \frac{\abs{v}}{2}$, it
+will converge to $0$, which is not optimal.
+
+\textbf{Why?} The proof for steepest descent is inapplicable here, since the
+gradient is not Lipschitz.
+
+\textbf{Key difficulty:} $\partial f$ is not continuous.
+
+The proximal point algorithm works, since it's effectively minimizing
+the Moreau envelope of $f$. However, it's often impractical since it assumes we
+can compute the proximal point at every iteration.
+
+\paragraph{Idea of bundle methods:} We replace $\partial f$ by the
+$\epsilon$-subdifferential, which is defined below.
+
+\begin{cdefinition}{$\epsilon$-subdifferential}{eps-subdiff}
+	Given $\epsilon \geq 0$, we say $y \in \partial_{\epsilon} f(x)$ when
+	\[
+		\ip{y, z - x} \leq f(z) - f(x) + \epsilon, \; \forall z.
+	\]
+	Notice that $\partial_{\epsilon} f(x)$ grows in size as $\epsilon$
+	increases, with $\partial_0 f(x) = \partial f(x)$.
+\end{cdefinition}
+
+We list some properties of the $\epsilon$-subdifferential:
+\begin{enumerate}[label=(\alph*)]
+	\item $x \in \intr{\dom f} \Rightarrow \partial_{\epsilon} f(x) \neq
+		\emptyset$
+	\item $\partial_{\epsilon} f(x)$ is closed and convex for convex $f$.
+	\item for ``small'' $\delta > 0$, we have
+		\begin{align*}
+			\delta \norm{y} &= \ip{y, x + \delta \frac{y}{\norm{y}} - x}
+			\leq f\left(x + \delta \frac{y}{\norm{y}}\right) - f(x) + \epsilon
+			\\
+			&\leq L \delta + \epsilon \Rightarrow \norm{y} \leq L +
+			\frac{\epsilon}{\delta},
+		\end{align*}
+		where the inequality follows from the fact that convex functions are
+		locally Lipschitz in a neighbourhood around $x \in \intr{\dom f}$.
+		Moreover, this implies that $\partial_{\epsilon} f(x)$ is compact,
+		since we just proved it's bounded.
+\end{enumerate}
+
+\textbf{Note}: if $\bar{x} \in \intr{\dom f}$ and $x \in \bar{x} + \delta
+\mathbb{B}$, we know that for $y \in \partial f(x)$ we have
+\begin{align*}
+	\ip{y, z - x} &\leq f(z) - f(x), \; \forall z \Rightarrow
+	\ip{y, z - \bar{x}} = \ip{y, z - x} + \ip{y, x - \bar{x}} \\
+	&\leq f(z) - f(x) + \norm{y} \norm{x - \bar{x}} \leq f(z) - f(\bar{x}) +
+	L\norm{x - \bar{x}} + L \norm{x - \bar{x}} \leq f(z) - f(\bar{x}) + 2 L \delta
+\end{align*}
+where we used the Cauchy-Schwarz inequality, the fact that $f$ is locally
+Lipschitz to deduce that $f(x) \geq f(\bar{x}) - L \norm{x - \bar{x}}$, and the
+previous bound on $\norm{y}$. This implies that $y \in \partial_{2 L \delta}$.
+
+\begin{exercise}{}{small-eps-subdiff}
+	For $\bar{x} \in \intr{\dom f}$, $\exists K > 0$ such that
+	$\partial_{\epsilon} f(u) \subset \partial_{\epsilon} f(v) + K \norm{u - v}
+	\mathbb{B}$, where the latter denotes a scaled version of the ball of
+	radius $\norm{u - v}$, $\forall u, v$ near $\bar{x}$.
+\end{exercise}
+
+\paragraph{Next step.} We now imitate the approach we followed for steepest
+descent.
+
+\begin{cdefinition}{$\epsilon$-directional derivative}{eps-dir-deriv}
+	Consider $\epsilon > 0$, and define the $\epsilon$-directional derivative
+	as
+	\begin{align*}
+		f'_{\epsilon}(x; d) &= \inf_{t > 0} \frac{f(x + td) - f(x) +
+		\epsilon}{t},
+	\end{align*}
+	which is \textbf{not the same} as $\lim_{t \dto 0} \frac{f(x+td) - f(x) +
+	\epsilon}{t}$ as the limit ``blows up'' to $+\infty$ as $t \dto 0$.
+\end{cdefinition}
+
+Just like the ordinary directional derivative, $f'_{\epsilon}(x; d)$ is finite,
+positively homogeneous, and convex as a function of $d$, with
+\[
+	\partial \left( f'_{\epsilon}(x; d) \right)(0) = \partial_{\epsilon} f(x),
+\]
+which follows by convexity.
+
+\begin{exercise}{}{eps-dir-deriv-lipschitz}
+	Prove that $f'_{\epsilon}(\cdot; d)$, using the conclusion of
+	Exercise~\ref{exc:small-eps-subdiff}.
+\end{exercise}
+
+As before, we have a corresponding max-formula, with
+\[
+	f'_{\epsilon}(x; d) = \max_{y \in \partial_{\epsilon} f(x)}, \;
+	0 \in \partial_{\epsilon} f(x) \Rightarrow
+	0 \leq f(z) - f(x) + \epsilon, \; \forall z \Leftrightarrow
+	f(x) \leq \inf f + \epsilon.
+\]
+If $0 \in \partial_{\epsilon} f(x)$, then we have $\min_{d \in \mathbb{B}_2}
+f'_{\epsilon}(x; d) = -\mathrm{dist}_{\partial_{\epsilon} f(x)}(0)$, attained
+uniquely by $d = -\frac{g}{\norm{g}}$, where $g$ is the projection.
+
+The bundle algorithm is formally described in Algorithm~\ref{alg:bundle}.
+\begin{algorithm}[h!]
+	\centering
+	\begin{algorithmic}
+		\Repeat{for $k = 1, 2, \dots$}
+		\If{$0 \in \partial_{\epsilon} f(x_k)$}
+			\State \Return $x_k$ \Comment{$\epsilon$-optimal}
+		\Else
+			\State $g_k \gets \mathrm{proj}_{\partial_{\epsilon} f(x_k)}(0)$
+			\State $d_k \gets - \frac{g_k}{\norm{g_k}}$
+			\State $
+				t_k \gets \argmin_{t > 0} \frac{f(x_k + td_k) - f(x_k) + \epsilon}{t}
+				= f'_{\epsilon}(x_k; d_k) = - \norm{g_k} $
+		\State $x_{k+1} \gets x_k + t_k d_k$
+			\Comment{$f(x_{k+1}) = f(x_k) - \epsilon - t_k \norm{g_k} \leq
+			f(x_k) - \epsilon$ }
+		\EndIf
+		\Until convergence.
+	\end{algorithmic}
+	\caption{Bundle method}
+	\label{alg:bundle}
+\end{algorithm}
+
+The \textbf{key challenge} is obtaining $\partial_{\epsilon} f(x_k)$ at each
+step. To that end, consider this slightly more generic formulation: we have $Q$
+compact, convex (i.e. $\partial_{\epsilon} f(x)$) and \textit{suppose we can
+compute} its support function
+\[
+	\delta^*_{Q}(d) = \max_{y \in Q} \ip{y, d} \quad (= f'_{\epsilon}(x; d)).
+\]
+Then the problem becomes:
+\begin{itemize}
+	\item either find $d$ with $\delta_Q^*(d) < 0$, \textit{or}
+	\item conclude $0 \in Q$.
+\end{itemize}
+
+\noindent \textbf{Idea}: iteratively build an \textit{inner approximation} of
+$Q$, starting from some $\hat{Q}$. Set $g = \mathrm{proj}_{\hat{Q}}(0)$, try $d
+= -g$. If $\delta_Q^*(d) < 0$, then stop. Otherwise \textbf{update}:
+\[
+	\hat{Q} \gets \convhull\set{\hat{Q} \cup \set{\argmax \delta_Q^*(d)}}.
+\]
