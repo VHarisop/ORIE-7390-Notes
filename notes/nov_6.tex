@@ -1,0 +1,139 @@
+\section{Oracles for Convex Sets}
+
+\paragraph{Question:} Given a compact convex set $Q \neq \emptyset$, decide
+whether $0 \in Q$?
+
+\textbf{Oracle}: Given a vector $g \in \Rbb^n$, returns $q \in Q$ such that
+$\ip{g, q} \leq 0$, if there is one, or returns ``None''.
+
+\paragraph{Algorithm:} Maintain a current finite $F \subset Q$, so that
+$\convhull{F}$ is an approximation of $Q$.
+
+\begin{algorithm}
+	\caption{Finding if $0 \in Q$ via a separation oracle}
+	\begin{algorithmic}
+		\Repeat
+			\State $g \gets \mathrm{proj}_{\convhull{F}}(0)$
+			\If { $\norm{g} = 0$ }
+				\State \Return $0 \in Q$
+			\EndIf
+			\State Find $q \in Q$ with $\ip{g, q} \leq 0$
+			\If {$\nexists q$}
+				\State \Return $0 \notin Q$
+			\EndIf
+			\State $F_+ = F \cup \set{q}$
+		\Until stopping.
+	\end{algorithmic}
+	\label{alg:sep-oracle}
+\end{algorithm}
+
+\begin{figure}[h]
+	\centering
+	\newrgbcolor{ududff}{0.30196078431372547 0.30196078431372547 1}
+	\newrgbcolor{zzttqq}{0.6 0.2 0}
+	\newrgbcolor{xdxdff}{0.49019607843137253 0.49019607843137253 1}
+	\newrgbcolor{wwzzff}{0.4 0.6 1}
+	\psset{xunit=1cm,yunit=1cm,algebraic=true,dimen=middle,dotstyle=o,dotsize=5pt 0,linewidth=1.6pt,arrowsize=3pt 2,arrowinset=0.25}
+	\begin{pspicture*}(-9.78,-8.43)(9.779999999999873,3.87)
+		\pspolygon[linewidth=1pt,linecolor=zzttqq,fillcolor=zzttqq,fillstyle=solid,opacity=0.1](-3.02,1.93)(-4.66,-0.17)(-1,-0.19)
+		\pspolygon[linewidth=1pt,linecolor=wwzzff,fillcolor=wwzzff,fillstyle=solid,opacity=0.1](-4.66,-0.17)(-5.64,-4.17)(-1,-0.19)
+		\psline[linewidth=1pt,linecolor=zzttqq](-3.02,1.93)(-4.66,-0.17)
+		\psline[linewidth=1pt,linecolor=zzttqq](-4.66,-0.17)(-1,-0.19)
+		\psline[linewidth=1pt,linecolor=zzttqq](-1,-0.19)(-3.02,1.93)
+		\psline[linewidth=1pt,linestyle=dashed,dash=1pt 1pt](-2.8,-3.55)(-2.7995091071961777,-0.18016661690056734)
+		\psline[linewidth=1pt,linecolor=wwzzff](-4.66,-0.17)(-5.64,-4.17)
+		\psline[linewidth=1pt,linecolor=wwzzff](-5.64,-4.17)(-1,-0.19)
+		\psline[linewidth=1pt,linecolor=wwzzff](-1,-0.19)(-4.66,-0.17)
+		\psdots[dotsize=2pt 0,dotstyle=*,linecolor=ududff](-3.02,1.93)
+		\psdots[dotsize=2pt 0,dotstyle=*,linecolor=ududff](-4.66,-0.17)
+		\psdots[dotsize=2pt 0,dotstyle=*,linecolor=ududff](-1,-0.19)
+		\rput[bl](-3.8,0.61){\zzttqq{$ \mathrm{conv}(F) $}}
+		\psdots[dotstyle=*,linecolor=ududff](-2.8,-3.55)
+		\rput[bl](-2.72,-3.35){\ududff{$0$}}
+		\psdots[dotsize=2pt 0,dotstyle=*,linecolor=xdxdff](-2.7995091071961777,-0.18016661690056734)
+		\rput[bl](-2.56,-0.99){\xdxdff{\scalebox{0.75}{$ g :=
+		\mathrm{proj}_{\mathrm{conv}(F)}(0)$}}}
+		\psdots[dotsize=2pt 0,dotstyle=*,linecolor=ududff](-5.64,-4.17)
+		\rput[bl](-5.56,-4.05){\ududff{$ q $}}
+		\rput[bl](-4.72,-1.71){\wwzzff{$ \mathrm{conv}(F_+) $}}
+	\end{pspicture*}
+\end{figure}
+
+Is the above correct? The next theorem addresses that.
+
+\begin{ctheorem}{Correctness}{sep-oracle}
+	If Algorithm~\ref{alg:sep-oracle} does not terminate, then $g \to 0$, and
+	hence $0 \in Q$.
+\end{ctheorem}
+\begin{proof}
+	We know that $\ip{g, q} \leq 0$, denote $g_+ :=
+	\mathrm{proj}_{\convhull{F_+}}(0)$, and also note that $g, q \in
+	\convhull{F_+}$.
+
+	Therefore we obtain
+	\begin{align*}
+		\ip{-g_+, g - g_+} &\leq 0, \; \ip{-g_+, q - g_+} \leq 0 \\
+		\norm{g_+}^2 &\leq \min\set{\ip{g_+, g}, \ip{g_+, q}} \Rightarrow
+			\norm{g_+} \leq \norm{g}, \norm{q}.
+	\end{align*}
+	Clearly $\norm{g}$ converges to some limit, but
+	\begin{align*}
+		\norm{g_+ - g}^2 &= \norm{g_+}^2 + \norm{g}^2 - 2\ip{g_+, g} \leq
+		\norm{g}^2 - \norm{g_+}^2 \to 0 \\
+		\ip{q, g_+ - g} &= \ip{g_+, q} - \ip{q, g} \geq \ip{g_+, q} \geq
+		\ip{g_+}^2.
+	\end{align*}
+	However, $g_+ - g \to 0$ and $q$ stay uniformly bounded since $Q$ is
+	compact, therefore $\ip{q, g_+ - g} \to 0 \Rightarrow \norm{g_+}^2 \to 0$.
+\end{proof}
+
+\subsection{Back to bundle methods}
+Consider convex $f : \Rbb^n \to \overline{\Rbb}$, $\bar{x} \in \intr{\dom f}$.
+Suppose we know a current \textit{bundle} of subgradients, which is a finite
+set $F \subset \partial f(\bar{x})$, so $\convhull{F}$ approximates $\partial
+f(\bar{x})$, which implies that $\mathrm{proj}_{\convhull{F}}(0)$ approximates
+the negative steepest descent direction.
+
+Define a \textit{search direction} $d = -\mathrm{proj}_{\convhull{F}}(0)$.
+We have two cases:
+\begin{itemize}
+	\item $f'(\bar{x}; d) < 0 \Rightarrow \inf_{t > 0} \frac{f(\bar{x} + td) -
+		f(\bar{x})}{t}$. Then a backtracking line search will succeed at
+		finding $\bar{t} > 0$ with $\frac{f(\xbar + \tbar d) - f(\xbar)}{\tbar}
+		< 0$. In that case, set $\xbar \gets \xbar + \tbar d$ and repeat.
+		This is called a \textbf{serious step}.
+	\item $f'(\bar{x}; d) \geq 0$. In this case, we can either be at a
+		minimizer of have a poor approximation of the steepest descent
+		direction. We have
+		\begin{align*}
+			0 &\leq f'(\xbar; d) = \max_{g \in \partial f(x)} \ip{g, d}
+			\Rightarrow \exists g \in \partial f(x) : \ip{g, d} \geq 0.
+		\end{align*}
+		Replace current bundle, $F_+ \gets F \cup \set{g}$ or
+		$F_+ \gets F \cup \set{g, -d}$. \textbf{Repeat}. This is called a
+		\textbf{null step}.
+\end{itemize}
+
+\paragraph{Question:} Can we make infinitely many null steps?
+\textbf{Only} if $\xbar$ is a minimizer. Proof by
+applying~\cref{thm:sep-oracle} with $Q = \partial f(\xbar)$.
+
+The last ingredient required to implement this algorithm is finding $g \in
+\partial f(x)$. This subgradient is coming from the line search $\inf_{t > 0}
+\frac{f(\xbar + td) - f(\xbar)}{t}$. Since the line search fails, it generates
+a sequence of steps $\set{t_k} \to 0$, with $f(\xbar + t_k d) \geq f(\xbar)$.
+Since our oracle returns pairs $x \mapsto (f(x), \partial f(x))$, we are also
+getting $g_k \in \partial f(\xbar + t_k d)$, for which we have
+\begin{align*}
+	\ip{g_k, \xbar - (\xbar + t_k d)} &\leq f(\xbar) - f(\xbar + t_k d)
+	\leq 0 \Rightarrow \ip{g_k, d} \geq 0.
+\end{align*}
+Furthermore, $\set{g_k}$ are uniformly bounded since $f$ is Lipschitz, so the
+sequence $\set{g_k} \to g$ with $g \in \partial f(\xbar)$ and $\ip{g, d} \geq
+0$.
+Hence in principle we find $g$ in the limit.
+
+\paragraph{Fundamental flow:} We are essentially approximating steepest descent
+with a line search, which we know \textit{does not work} for nonsmooth functions.
+The way to fix this is to \textit{repeat the reasoning above using the
+$\epsilon$-subdifferential.}
