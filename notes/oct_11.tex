@@ -1,0 +1,101 @@
+\section{Composite Optimization}
+We focus on the setting of \textit{composite optimization}, where we are
+solving the following problem:
+\begin{align}
+    \inf_{x \in \Rbb^m} f(x) := g(H(x)), \; g: \Rbb^n \mapsto \Rbb \text{
+    finite }, \; H: \Rbb^m \mapsto \Rbb^n, \text{ convex, ``simple'', $C^2$
+    smooth}.
+    \label{eq:comp-prob}
+\end{align}
+Set $H(x) = \pmx{p(x) \\ q_1(x) \\ \vdots \\ q_m(x)}$ and $g\left(\pmx{p \\
+q}\right) = p + \sum_i q_i^+$, where $q_i$ are convex, nonlinear functions.
+
+We examine so-called \textbf{prox-descent}:
+\begin{align*}
+    \inf_x \set{\pbar(x) + \sum_i \bar{q}_i(x) + \frac{\lambda}{2} \norm{x -
+    x_k}^2},
+\end{align*}
+with $\bar{p}, \bar{q}_i$ linear approximations of $p, q_i$, which we can
+formulate as
+\begin{align}
+    \begin{aligned}
+        \inf_x & \set{\bar{p}(x) + \sum_{i=1}^m y_i + \frac{\lambda}{2} \norm{x
+        -
+        x_k}^2} \\
+        \mbox{s.t.} & y_i \geq 0 \\
+                    & y_i \geq \bar{q}_i(x)
+    \end{aligned}
+    \label{eq:lcqp}
+\end{align}
+Unfortunately, the generated sequences may not be slope descent sequences. But
+they satisfy an analogous property allowing a KL-approach, and extends to
+understand sequential quadratic programming and majorization-minimization
+techniques.
+
+\paragraph{Assumptions.} In the sequel, we assume that $\inf_{x \in \Rbb^m}
+f(x) > -\infty$. We demand $f$ to be closed and proper. Additionally, suppose
+we have a bounded sequence $\set{x_k} \in \Rbb^m$, satisfying
+\begin{enumerate}
+\item $f(x_{k-1}) - f(x_k) \geq \alpha \norm{x_k - x_{k+1}}^2$, and
+\item $\mathrm{dist}_{\partial f(x_k)}(0) \leq \beta \norm{x_k - x_{k+1}}$.
+\end{enumerate}
+
+As we argued before, the first property along with the lower boundedness of $f$
+implies that $\norm{x_k - x_{k+1}} \to 0$, so since $\set{x_k}$ is bounded the
+set of limit points $\cX$ is nonempty, compact and $\mathrm{dist}_{\cX}(x_k)
+\to 0$. Now, consider a limit point $\xbar \in \cX$, so that $\exists K \subset
+\Nbb$ with $x_k \overset{K}{\to} \xbar$.
+
+The second assumption implies that $\exists y \in \partial f(x_k), y_k
+\overset{K}{\to} 0$ along the subsequence above.
+
+\paragraph{Question:} Does $f(x_k) \overset{K}{\to} f(\xbar)$?
+\begin{itemize}
+\item if $f$ is continuous, then \textbf{true} (at least on its domain).
+\item if $f$ \textit{convex \& closed}, then again true.
+\end{itemize}
+
+However, in general, convergence in $\gph{(\partial f)}$ does \textbf{not}
+guarantee convergence in function values. Hence we have to impose another
+assumption: $f$ must be \textbf{subdifferentially continuous}.
+
+\begin{cdefinition}{Subdifferential continuity}{subdiff-cont}
+    A function is called subdifferentially continuous when convergence of
+    $\gph{(\partial f)}$ implies convergence in function values.
+\end{cdefinition}
+
+
+By Property~\ref{defn:subdiff-cont} and our assumption, we deduce that $f(x_k)
+\to f(\xbar)$, so $\xbar$ is a critical point. As argued before, $f(x)$ is
+constant on the set of limit points $\cX$, so it is everywhere critical there.
+
+We further assume that \textbf{the KL property holds at critical points} (e.g.
+$f$ is semialgebraic).
+
+As before, there exists a desingularizer $\phi$, which is continuous and
+concave on some interval $[0, \rho)$ with $\phi(0) = 0, \; \phi' > 0$ on $(0,
+\rho)$, and $\abs{\grad (\phi \circ f)}(x) \geq 1$, or equivalently
+\[
+    \phi'(f(x)) \mathrm{dist}_{\partial f(x)}(0) \geq 1,
+\]
+for all $x$ near $\cX$ in an upper slice. In particular, this means that this
+also holds for $x_k$ for a sufficiently large $k$. Since $\phi$ is concave, we
+have
+\begin{align*}
+    \phi'(f(x_k)) (f(x_k) - f(x_{k-1})) &\geq \phi(f(x_k)) - \phi(f(x_{k-1}))
+    \Rightarrow \phi'(f(x_k)) \left( f(x_{k-1}) - f(x_k) \right) \leq
+    \phi(f(x_{k-1})) - \phi(f(x_k)) \\
+    \phi(f(x_{k-1})) - \phi(f(x_k)) &\geq \frac{f(x_{k-1}) -
+    f(x_k)}{\mathrm{dist}_{\partial f(x_{k-1}}(0)}
+    \geq \frac{\alpha}{2 \beta} \frac{\norm{x_k - x_{k+1}}^2}{\norm{x_{k-1} -
+    x_k}} \geq \frac{\alpha}{2 \beta} \left(2 \norm{x_k - x_{k+1}} - \norm{x_k
+    - x_{k-1}} \right).
+\end{align*}
+Define $\gamma_k = \phi(f(x_k)) + \frac{\alpha}{2 \beta} \norm{x_k - x_{k+1}}
+    \geq 0$, so combined with the inequality above we obtain
+\[
+    \gamma_{k-1} - \gamma_k \geq \frac{\alpha}{2 \beta} \norm{x_k - x_{k+1}},
+\]
+so $\sum_{k} \norm{x_k - x_{k+1}} < \infty$ by our usual telescoping trick.
+Hence $\norm{x_k - x_{k+1}}$ is Cauchy, with rate depending on our choice of
+$\phi$.

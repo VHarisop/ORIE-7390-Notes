@@ -27,6 +27,8 @@ $\convhull{F}$ is an approximation of $Q$.
 	\label{alg:sep-oracle}
 \end{algorithm}
 
+An example of the algorithm is shown in~\cref{fig:bundle-aug}.
+
 \begin{figure}[h]
 	\centering
 	\newrgbcolor{ududff}{0.30196078431372547 0.30196078431372547 1}
@@ -35,8 +37,8 @@ $\convhull{F}$ is an approximation of $Q$.
 	\newrgbcolor{wwzzff}{0.4 0.6 1}
 	\psset{xunit=1cm,yunit=1cm,algebraic=true,dimen=middle,dotstyle=o,dotsize=5pt 0,linewidth=1.6pt,arrowsize=3pt 2,arrowinset=0.25}
 	\begin{pspicture*}(-9.78,-8.43)(9.779999999999873,3.87)
-		\pspolygon[linewidth=1pt,linecolor=zzttqq,fillcolor=zzttqq,fillstyle=solid,opacity=0.1](-3.02,1.93)(-4.66,-0.17)(-1,-0.19)
-		\pspolygon[linewidth=1pt,linecolor=wwzzff,fillcolor=wwzzff,fillstyle=solid,opacity=0.1](-4.66,-0.17)(-5.64,-4.17)(-1,-0.19)
+		\pspolygon[linewidth=1pt,linecolor=zzttqq,fillcolor=zzttqq,fillstyle=solid,opacity=0.2](-3.02,1.93)(-4.66,-0.17)(-1,-0.19)
+		\pspolygon[linewidth=1pt,linecolor=wwzzff,fillcolor=wwzzff,fillstyle=solid,opacity=0.2](-4.66,-0.17)(-5.64,-4.17)(-1,-0.19)
 		\psline[linewidth=1pt,linecolor=zzttqq](-3.02,1.93)(-4.66,-0.17)
 		\psline[linewidth=1pt,linecolor=zzttqq](-4.66,-0.17)(-1,-0.19)
 		\psline[linewidth=1pt,linecolor=zzttqq](-1,-0.19)(-3.02,1.93)
@@ -54,9 +56,11 @@ $\convhull{F}$ is an approximation of $Q$.
 		\rput[bl](-2.56,-0.99){\xdxdff{\scalebox{0.75}{$ g :=
 		\mathrm{proj}_{\mathrm{conv}(F)}(0)$}}}
 		\psdots[dotsize=2pt 0,dotstyle=*,linecolor=ududff](-5.64,-4.17)
-		\rput[bl](-5.56,-4.05){\ududff{$ q $}}
+		\rput[bl](-5.56,-4.55){\ududff{$ q $}}
 		\rput[bl](-4.72,-1.71){\wwzzff{$ \mathrm{conv}(F_+) $}}
 	\end{pspicture*}
+	\caption{Augmenting the current bundle}
+	\label{fig:bundle-aug}
 \end{figure}
 
 Is the above correct? The next theorem addresses that.
@@ -116,7 +120,7 @@ We have two cases:
 
 \paragraph{Question:} Can we make infinitely many null steps?
 \textbf{Only} if $\xbar$ is a minimizer. Proof by
-applying~\cref{thm:sep-oracle} with $Q = \partial f(\xbar)$.
+applying Theorem~\ref{thm:sep-oracle} with $Q = \partial f(\xbar)$.
 
 The last ingredient required to implement this algorithm is finding $g \in
 \partial f(x)$. This subgradient is coming from the line search $\inf_{t > 0}
@@ -133,7 +137,7 @@ sequence $\set{g_k} \to g$ with $g \in \partial f(\xbar)$ and $\ip{g, d} \geq
 0$.
 Hence in principle we find $g$ in the limit.
 
-\paragraph{Fundamental flow:} We are essentially approximating steepest descent
+\paragraph{Fundamental flaw:} We are essentially approximating steepest descent
 with a line search, which we know \textit{does not work} for nonsmooth functions.
 The way to fix this is to \textit{repeat the reasoning above using the
 $\epsilon$-subdifferential.}

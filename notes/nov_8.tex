@@ -1,0 +1,128 @@
+\section{Bundle Method - continued}
+
+Let us go back to the bundle method. Suppose $f: \Rbb^n \mapsto \Rbb$, $\xbar
+\in \intr{\dom f}$, $y \in \epsdiff f(\bar{x})$. The last is equivalent to
+\[
+	\ip{y, x - \xbar} \leq f(x) - f(\xbar) + \varepsilon.
+\]
+We also recall the definition of the $\varepsilon$-directional derivative:
+\begin{align*}
+	f'_{\varepsilon}(x; d) & := \inf_{t > 0} \frac{f(\xbar + td) - f(\xbar) +
+	\varepsilon}{t} = \max_{y \in \epsdiff f(\xbar)} \ip{y, d}.
+\end{align*}
+
+As before, suppose we have a current finite ``bundle'' of subgradients in
+$\epsdiff f$, $F \subset \epsdiff f(\xbar)$, such that $\convhull(F)$
+approximates the $\varepsilon$-subdifferential. Hence the next step is
+computing $d = -\proj_{\convhull(F)}(0)$, which should approximate a steepest
+descent direction.
+
+Let us calculate $f'_{\varepsilon}(x; d) = \frac{f(\xbar + \tbar d) - f(\xbar)
++ \varepsilon}{\tbar}$, for some $\tbar$ attaining the infimum in the
+definition of $f'$. We now proceed case by case:
+\begin{itemize}
+	\item $f'_{\varepsilon}(x; d) < 0$: this implies that \(
+		f(\xbar + \tbar d) \leq f(\xbar) - \varepsilon \), which is a decrease
+		in the objective value, so we set $\xbar \gets \xbar + \tbar d$ and
+		repeat. (\textbf{serious} step)
+	\item $f'_{\varepsilon}(x; d) \geq 0$: in this case, we can either be
+		optimal, or have an inaccurate bundle $F$. Since $f(\xbar + \tbar d)
+		\geq f(\xbar) - \varepsilon$, that implies by definition that
+		\begin{align*}
+			\frac{f(\xbar + t d) - f(\xbar) + \varepsilon}{t} &\geq
+			\frac{f(\xbar + \tbar d) - f(\xbar) + \varepsilon}{\tbar} \\
+			g(t) &:= f(\xbar + td) - f(\xbar) + \varepsilon - \frac{t}{\tbar}
+			\left( f(\xbar + \tbar d) - f(\xbar) + \varepsilon \right) \geq 0,
+		\end{align*}
+		with equality at $t = \tbar$. This means that $\tbar \in \argmin g(t)$,
+		so $0 \in \partial g(\tbar)$. By convex (subdifferential) calculus,
+		$\exists s \in \partial f(\xbar + \tbar d)$ such that
+		\begin{align}
+			\ip{s, d} - \frac{1}{\tbar} \left(f(\xbar + \tbar d) - f(\xbar) +
+			\varepsilon \right) &= 0 \Rightarrow
+			\ip{s, d} = f'_{\varepsilon}(x; d).
+			\label{eq:s-charact}
+		\end{align}
+		Notice that we assume that our line search procedure somehow
+		``discovers'' $s$, which we can argue for via limiting argument or by
+		observing that probing for function values during the line search also
+		gives us subdifferentials via our first order oracle. We can then prove
+		the following claim:
+		\begin{claim}
+			We have that $s \in \epsdiff f(\xbar)$.
+		\end{claim}
+		\begin{proof}
+			Observe the following chain of equalities:
+			\begin{align*}
+				f(x) - f(\xbar) + \varepsilon &= f(x) - f(\xbar + \tbar d) +
+				f(\xbar + \tbar d) - f(\xbar) + \varepsilon 
+				\geq \ip{s, x - (\xbar + \tbar d)} + \tbar \ip{s, d}
+				= \ip{s, x - \xbar} - \ip{s, \tbar d} + \ip{s, \tbar d} \\
+				&= \ip{s, x - \xbar},
+			\end{align*}
+			as desired. In the above, we made use of the fact that $s \in
+			\partial f(\xbar + \tbar d)$ and~\cref{eq:s-charact}.
+		\end{proof}
+		It remains to update our bundle $F \gets F \cup {s}$. (\textbf{null}
+		step)
+\end{itemize}
+
+\noindent \textbf{Question:} Could we do infinitely many null steps?
+
+\noindent \textbf{Answer}: No, since (as we proved last time in
+Theorem~\ref{thm:sep-oracle}) we are strictly decreasing the distance to $0$ at
+every null step, unless we are at an $\varepsilon$-optimal point ($0 \in
+\epsdiff f(\xbar)$).
+
+\noindent \textbf{Note}: it suffices to keep the last two points of $F$, namely
+$\set{\proj_{\epsdiff f(\xbar)}(0), s}$, or any finite subset of $F$ that
+includes those two points, for the method to still work. This way we are
+avoiding increasing the complexity of projecting to $\convhull(F)$.
+
+A final observation is that, presumably, using more old subgradients enhances
+our knowledge of $\epsdiff f(\xbar)$ and hence reduces the number of old steps.
+This leads to a discussion about the \textbf{cutting planes} method.
+
+\section{Cutting planes method}
+Recall our definition of a first order oracle: given a query point $x$, it
+returns a tuple $(f(x), g)$ with $g \in \partial f(x)$. Suppose we have $f:
+\Rbb^n \mapsto \Rbb$ and a closed, convex feasible region $\cX \subset \Rbb^n$.
+
+Given points $\set{x_j}, \; j \leq k$ and a set of subgradients $\set{g_j} \in
+\partial f(x_j)$, we set
+\[
+	x_{k+1} \gets \argmin_x f_k(x) :=
+	\max_j \set{ f(x_j) + \ip{g_j, x - x_j} }.
+\]
+We have the following theoretical guarantee:
+\begin{ctheorem}{~}{cutting-planes-limits}
+	Any limit point of a convergent subsequence of $\set{x_j}$ is optimal.
+\end{ctheorem}
+\begin{proof}
+	Suppose that $x_k \overset{K}{\to} \xbar$, where $K \subset \Nbb$ is a
+	subsequence index set. Then, $\forall x \in \cX$, we have
+	\begin{align}
+		f(x_j) + \ip{g_j, x_k - x_j} &\leq f_{k-1}(x_k) \leq f_{k-1}(x)
+		\leq f(x) \label{eq:cutting-planes-limits}
+	\end{align}
+	The first inequality in~\cref{eq:cutting-planes-limits} follows from the
+	definition of $f_{k-1}$, the second inequality from the definition of $x_k$
+	with respect to $f_{k-1}$, and the last inequality from the fact that
+	$f_{k-1}$ minorizes $f$ from the subgradient identity.
+
+	Now, plug in $x = \xbar$ and consider the $\limsup_{\substack{j < k \\ j, k
+	\overset{K}{\to} \infty}}$. Then:
+	\begin{itemize}
+		\item $f(x_j) \to f(\xbar)$, since $f$ is convex and hence continuous
+		\item $\norm{g_j}$ is uniformly bounded from the Lipschitzness of $f$
+		\item $x_k - x_j \to 0$.
+	\end{itemize}
+	We then deduce that $\limsup_{k \overset{K}{\to} \infty} f_{k-1}(x_k) =
+	f(\xbar)$, from~\cref{eq:cutting-planes-limits} and the ``sandwich''
+	theorem for limits. However, since $f_{k-1}(x_k) \leq f(\xbar), \; \forall
+	x$, this implies that $\xbar$ is optimal.
+\end{proof}
+
+In practice, the cutting planes method takes big steps and oscillates. We can
+remedy that by stabilizing, using quadratic penalization for big steps. At the
+same time, there is no reasonable complexity analysis for the method.
