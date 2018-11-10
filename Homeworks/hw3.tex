@@ -1,0 +1,116 @@
+\documentclass[10pt]{article}
+
+\input{preamble}
+\usepackage{latex-macros}
+\usepackage{todonotes}
+\usepackage{tikz,pgfplots}
+\pgfplotsset{compat=1.12}
+\usepackage{algorithm, algpseudocode}
+\usepackage[margin=1in]{geometry}
+\usetikzlibrary{shapes.geometric}
+\usepackage[capitalize]{cleveref}
+\usepackage{exercise}
+\usepackage{svg}
+\setminted{
+    linenos=true,
+    autogobble,
+}
+\usepackage{todonotes}
+
+\newcommand{\regdiff}{\hat{\partial}}
+\newcommand{\bd}[1]{\mathrm{bd}\left( #1 \right)}
+
+\begin{document}
+
+\allowdisplaybreaks
+\everymath{\displaystyle}
+\newenvironment{longlisting}{\captionsetup{type=listing}}{}
+
+\homework{Vasileios Charisopoulos}{Homework 3}{vc333}
+
+\begin{Exercise}
+	Consider a closed proper function $f: \Rbb^n \to \Rbb$ with the property
+	that the function $f - \norm{\cdot}^2$ is convex. Prove that $f$ has a
+	unique minimizer.
+\end{Exercise}
+\begin{Answer}
+	We first give an elementary proof of the fact that $f$ is strongly convex.
+	Applying the algebraic criterion of convexity to $f - \norm{\cdot}^2$ gives
+	us, for $\lambda \in (0, 1), \; x \neq y$:
+	\begin{align*}
+		f(\lambda x + (1 - \lambda) y) - \norm{\lambda x + (1 - \lambda) y}^2
+		&\leq \lambda f(x) + \lambda \norm{x}^2 + (1 - \lambda) f(y) + (1 -
+		\lambda) \norm{y}^2 \nonumber \\
+		f(\lambda x + (1 - \lambda) y) - \lambda^2 \norm{x}^2 + (1 - \lambda)^2
+		\norm{y}^2 - 2 \lambda(1 - \lambda) \ip{x, y} &\leq
+			\lambda f(x) + (1 - \lambda) f(y) - \lambda \norm{x}^2 - (1 -
+			\lambda) \norm{y}^2,
+	\end{align*}
+	so we arrive at
+	\begin{align}
+		f(\lambda x + (1 - \lambda) y) &\leq
+		\lambda f(x) + (1 - \lambda) f(y) - (\lambda - \lambda^2) \norm{x}^2
+		- \left( (1 - \lambda) - (1 - \lambda)^2 \right) \norm{y}^2
+		+ 2 \lambda (1 - \lambda) \ip{x, y}.
+		\label{eq:f-ineq}
+	\end{align}
+	Now, notice that we can simplify $(1 - \lambda) - (1 - \lambda)^2 =
+	(1 - \lambda)( 1 - (1 - \lambda)) = \lambda(1 - \lambda)$ and also $\lambda
+	- \lambda^2 = \lambda(1 - \lambda)$, so that
+	\begin{align*}
+		-(\lambda - \lambda^2) \norm{x}^2 - \left( (1 - \lambda) - (1 -
+		\lambda)^2 \right) \norm{y}^2 + 2 \lambda(1 - \lambda) \ip{x, y} &=
+		-\lambda (1 - \lambda) \left(\norm{x}^2 + \norm{y}^2 - 2 \ip{x,
+		y}\right) \\
+			&= -\lambda(1 - \lambda) \norm{x - y}^2,
+	\end{align*}
+	which is strictly negative when $x \neq y$ and $\lambda \in (0, 1)$. This
+	implies the following, when combined with~\cref{eq:f-ineq}:
+	\[
+		f(\lambda x + (1 - \lambda) y) < \lambda f(x) +
+		(1 - \lambda) f(y), \; \forall x \neq y, \; \lambda \in (0, 1).
+	\]
+	Now, we will prove that $f$ has \textit{at most} one minimizer. Suppose
+	that $\exists x_1 \neq x_2$ such that $f(x_1) = f(x_2) \leq f(z), \;
+	\forall z \in \Rbb^n$ (it is clear that minimizers have the same function
+	value due to the fact that $f$ is convex).
+	Then, for some $0 < t < 1$, set $z := t x_1 + (1 - t) x_2$, for which we
+	know:
+	\begin{align*}
+		f(t x_1 + (1 - t) x_2) & < t f(x_1) + (1 - t) f(x_2) = t f(x_1) + (1 - t)
+		f(x_1) = f(x_1) \Rightarrow f(z) < f(x_1),
+	\end{align*}
+	a clear contradiction to our assumption. Therefore, $f$ has \textbf{at
+	most} one minimizer.
+
+	It remains to prove that $f$ attains a minimizer. Assume, on the contrary,
+	that $f$ does not attain a minimizer. Given the convexity of $f -
+	\norm{\cdot}^2$, we have that
+	\begin{align*}
+		f(x) - \norm{x}^2 &\geq \ip{\partial \left(f - \norm{\cdot}^2
+		\right)(0), x - 0} = \ip{\partial f(0), x} - 2 \ip{0, x} =
+		\ip{\partial f(0), x},
+	\end{align*}
+	where the existence of $\partial g$ follows from the fact that its domain
+	is the whole underlying space and we use the sum rule of subdifferential
+	calculus for the sum of a convex ($f$) and a differentiable
+	($\norm{\cdot}^2$) function. This means that
+	\[
+		f(x) \geq \norm{x}^2 + \ip{\partial f(0), x}, \; \forall x \in \Rbb^n.
+	\]
+	Moreover, the above implies that $\lim_{x: \norm{x} \to \infty}
+	f(x) = \infty$, so in particular the sublevel sets of $f$,
+	$S_{\alpha}(f) := \set{x \mmid f(x) \leq \alpha}$ are bounded;
+	since if they were not, we would be able to find a sequence $\set{x_k}$
+	with $\lim_{k \to \infty} \norm{x_k} = +\infty$ with $f(x_k) \leq \alpha$,
+	a clear contradiction. Now, it is clear that $\inf_x f(x) = \inf_{x \in
+	S_{f(0)}(f)}$, which is the infimum of a convex (hence continuous) function
+	on a bounded set. Since $f$ is closed, it follows that its sublevel sets
+	are also closed, hence compact. An appeal to the Bolzano-Weierstrass
+	Theorem implies that $f$ attains its minimum.
+\end{Answer}
+
+
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}
