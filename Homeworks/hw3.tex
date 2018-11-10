@@ -19,6 +19,7 @@
 
 \newcommand{\regdiff}{\hat{\partial}}
 \newcommand{\bd}[1]{\mathrm{bd}\left( #1 \right)}
+\newcommand{\eps}{\varepsilon}
 
 \begin{document}
 
@@ -27,6 +28,73 @@
 \newenvironment{longlisting}{\captionsetup{type=listing}}{}
 
 \homework{Vasileios Charisopoulos}{Homework 3}{vc333}
+
+\begin{Exercise}
+	Consider a closed, proper, convex function $f: \Rbb^n \to \Rbb$. If a
+	sequence $\set{(x^k, y^k)}$ converges in the graph of the subdifferential
+	$\partial f$, prove that the function values also converge. Are all the
+	assumptions about $f$ necessary?
+\end{Exercise}
+\begin{Answer}
+	Convergence in the graph of the subdifferential implies that $\exists
+	\set{x^k} \to \xbar$ and $\set{y^k} \to g \in \partial f(\xbar)$ such that
+	$y^k \in \partial f(x^k)$. Notice that $\partial f(\xbar) \neq \emptyset$
+	since the $\dom f = \Rbb^n$. We now assume that the function values do not
+	converge, i.e. $\exists \eps > 0$ such that $\abs{f(x^k) - f(\xbar)} \geq
+	\eps$, for all $k \in \Nbb$. Notice that $f$ is assumed to be closed, so
+	lower semicontinuous, which implies that $\forall \delta > 0$, there exists
+	a ball of radius $\rho > 0$ with $f(x) > f(\xbar) - \delta, \; \forall x \in
+	\xbar + \rho \mathbb{B}$. Unfolding the divergence hypothesis means that
+	\[
+		\abs{f(x^k) - f(\xbar)} \geq \eps \Rightarrow
+		\begin{cases}
+			f(x^k) \geq f(\xbar) + \eps, & \text{ or } \\
+			f(x^k) \leq f(\xbar) - \eps
+		\end{cases},
+	\]
+	but appealing to lower semicontinuity of $f$ with $\delta := \eps$ makes
+	the second of the above possibilities not applicable. It remains to show
+	that $f(x^k) \geq f(\xbar) + \eps$ is impossible. Notice the following
+	chain of inequalities:
+	\begin{align*}
+		f(x^k) &\geq f(\xbar) + \eps \geq f(x^k) + \ip{y^k, \xbar - x^k} + \eps
+			    \geq f(x^k) - \norm{y^k}_2 \norm{\xbar - x^k}_2 + \eps,
+	\end{align*}
+	where the penultimate inequality is the subgradient inequality with $y^k \in
+	\partial f(x^k)$ and the last inequality follows from Cauchy-Schwarz. Now,
+	convergence in the subdifferential graph implies that
+	\begin{itemize}
+		\item $\forall \eps_1, \; \exists K_1$ such that $\norm{x^k - \xbar}
+			\leq \eps_1, \; \forall k \geq K_1$, and
+		\item $\forall \eps_2, \; \exists K_2$ such that $\norm{y^k - g}
+			\leq \eps_2, \; \forall k \geq K_2$, where $g \in \partial
+			f(\xbar)$.
+	\end{itemize}
+	Finally, an appeal to local Lipschitzness of $f$, which follows since $f$ is
+	convex, implies that $\exists \eta > 0$ such that $\norm{g} \leq L$ for
+	some $L > 0$, which is identified by the local Lipschitz modulus.
+	Therefore:
+	\[
+		\norm{y^k} \leq \norm{y^k - g} + \norm{g} \leq \norm{y^k - g} + L,
+	\]
+	and we can set $\eps_2 := \kappa, \; \eps_1 := \frac{\eps}{2 (\kappa + L)}$,
+	so that for large enough $k$, we have
+	\begin{align*}
+		\norm{y^k} \norm{x^k - \xbar} &\leq \eps_1 \eps_2 \leq
+		\frac{\eps}{2 (\kappa + L)} \cdot (\kappa + L) \leq \frac{\eps}{2} \\
+		\Rightarrow f(x^k) \geq f(x^k) - \frac{\eps}{2} + \eps = f(x^k) +
+		\frac{\eps}{2},
+	\end{align*}
+	which is a contradiction since $\eps > 0$. Therefore, $f$ must converge in
+	function value. Notice that we have used the fact that $f$ is proper
+	implicitly in the sense that our $f(x^k)$ are finite.
+
+	We could follow the same reasoning without explicitly requiring $f$ to be
+	closed; since $\dom f = \Rbb^n$, our point $\xbar \in \intr{\dom f}$, otherwise an
+	``approaching'' sequence $\set{x_k}$ must, in fact, diverge. This
+	immediately implies that $f$ is lower semicontinuous around $\xbar$ by
+	virtue of being locally Lipschitz continuous.
+\end{Answer}
 
 \begin{Exercise}
 	Consider a closed proper function $f: \Rbb^n \to \Rbb$ with the property
