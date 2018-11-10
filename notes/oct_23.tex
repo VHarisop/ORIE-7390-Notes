@@ -90,4 +90,73 @@ which ``breaks'' because of the ways we can approach $0$ from right and left.
 Let us now take a brief pause to recall some facts about \textbf{tangent
 cones}.
 
-% TODO: Complete
+\subsection{Tangent Cones}
+
+Recall the definition of a tangent cone, given below:
+\begin{cdefinition}{Tangent Cone}{tangent-cone}
+	The tangent cone to a set $X$ at a point $x \in X$, denoted by
+	$T_{X}(x)$, is given by
+	\[
+		T_{X}(x) = \set{\lim_{r} d_r \mmid d_r \to d, \; t_r \to 0, \; x + t_r
+		d_r \in X}.
+	\]
+\end{cdefinition}
+A closely related object is the normal cone to $X$ at x.
+\begin{cdefinition}{Normal Cones}{normal-cones}
+	The normal cone to $X$ at $x$ is $N_X(x) := \partial \delta_X(x)$. The
+	\textit{regular} normal cone to $X$ at $x$ is $\hat{N}_{X}(x) := \regdiff
+	\delta_X(x)$.
+\end{cdefinition}
+
+\begin{remark}
+	A set is called (Clarke) regular at $x$ if $N_X(x) = \hat{N}_X(x)$.
+\end{remark}
+
+\begin{exercise}{Polar of tangent cone}{tangent-polar}
+	Prove that $\hat{N}_X(x) = \left(T_X(x)\right)^{\circ}$ (polar).
+\end{exercise}
+
+\paragraph{Examples of regular sets.}
+\begin{enumerate}
+	\item A closed, convex $X$ is Clarke regular.
+	\item $X = \set{x \in \Rbb^n \mmid q_i(x) \leq 0, \; i \in [m]}$, 
+		with $q_i \in C^1$ and the \textit{Mangasarian-Fromowitz} constraint
+		qualification holds:
+		\begin{definition}[Mangasarian-Fromowitz constraint qualification]
+			\label{defn:mang-from}
+			There exists a direction $d$ such that $\ip{\grad q_i(x), d} < 0$,
+			$\forall i$ such that $q_i(x) = 0$ (active inequalities).
+		\end{definition}
+		In this case, we have
+		\[
+			N_X(x) = \set{ \sum_{i: q_i(x) = 0} \lambda_i \grad q_i(x), \;
+			\lambda \geq 0}.
+		\]
+\end{enumerate}
+
+In general, if $X$ is regular at $x$, the condition $N_{D(x)}(x) =
+\hat{N}_X(x)$ becomes
+\[
+	N_{D(x)}(x) = \hat{N}_X(x) \Leftrightarrow
+	\left( T_{D(x)}(x) \right)^{\circ} = \left( T_{X}(x)\right)^{\circ}
+	\Leftrightarrow T_{D(x)}(x) = T_X(x),
+\]
+by taking polars again, since tangent and normal cones are mutually polar.
+
+\paragraph{Sketching a KL argument.} We will use the iteration
+\[
+	x_+ \gets p(x) := \argmin_{D(x)} h(x, \cdot).
+\]
+A similar argument to our previous ones shows that $p$ is well-defined and
+unique, with $p: X \to X$ continuous. \textit{If it converges}, the limit is a
+fixed point of $p$. Then, by definition:
+\begin{align*}
+	0 &\in \partial (h(x, \cdot) + \delta_{D(x)})(p(x)) = \partial(h(x, \cdot)
+	+ \delta_D(x))(x) \quad (\text{since } p(x) = x) \\
+	  &= \partial h(x, x) + N_{D(x)}(x) = \regdiff f(x) + \hat{N}_X(x)
+		 \subset \regdiff(f + \delta_X)(x) \\
+	0 &\in \regdiff (f + \delta_X)(x),
+\end{align*}
+so $x$ is also a critical point.
+
+It now remains to prove convergence.
