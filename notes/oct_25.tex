@@ -1,0 +1,19 @@
+As in the unconstrained case, convergence follows by a KL type of argument
+appied to $F(x) := \inf_{D(x)} h(x, \cdot)$, which we assume is semialgebraic,
+since
+\begin{itemize}
+	\item $F(x_k) - F(x_{k+1}) \geq \frac{\mu}{2} \norm{x_k - x_{k+1}}^2$,
+		which is easy to check, and
+	\item $\abs{\grad f}(x_k) \leq \beta \norm{x_k - x_{k+1}}$
+\end{itemize}
+
+To guarantee this, we impose an additional assumption. First, let us define
+\[
+	\bar{h}(x, y) := \begin{cases}
+		h(x, y), & y \in D(x) \\
+		+\infty, & \text{ otherwise}
+	\end{cases}.
+\]
+We assume that $(v, 0) \in \regdiff \bar{h}(x, y), x \in X, y \in D(x)
+\Rightarrow \norm{v} \leq K \norm{x - y}$, as long as $x, y$ vary over bounded
+sets.
