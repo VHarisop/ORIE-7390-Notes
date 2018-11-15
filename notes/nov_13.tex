@@ -1,0 +1,102 @@
+\section{Bundle and Cutting Plane Methods}
+Recall we are dealing with $f: \Rbb^n \to \Rbb$ convex. The
+$\epsilon$-subdifferential is given by
+\[
+	\epsdiff f(x) := \set{g \mmid \ip{g, z - x} \leq f(z) - f(x) +
+	\varepsilon}.
+\]
+Bundle methods form finite ``bundle'' approximations to $\epsdiff$ in null
+steps, and then if $P \subset \epsdiff f(x)$ is the corresponding approximating
+polytope, searches for an approx. steepest descent direction as $\proj_{P}(0)$.
+
+If we can retain more information about $\epsdiff f(x)$ we hope to obtain
+faster descent. Suppose we know $f(x_j), g_j \in \partial f(x_j), \; j = 1,
+\dots, k$. Define the \textbf{error}: $p_j = f(x_k) - f(x_j) - \ip{g_j, x_k -
+x_j} \geq 0$.
+
+\begin{cproposition}{}{epsdiff-convhull}
+	It holds that
+	\[
+		P := \set{\sum_{j \in [k]} \lambda_j g_j \mmid
+			\lambda \geq 0, \; \sum_j \lambda_j = 1, \; \sum_j p_j \lambda_j
+		\leq \varepsilon} \subset \epsdiff f(x_k).
+	\]
+\end{cproposition}
+\begin{proof}
+	For $\lambda$ satisfying the constraints we get
+	\begin{align*}
+		\ip{\sum_j \lambda_j g_j, x - x_k} &=
+		\sum_j \lambda_j \left( \ip{g_j, x - x_j} + \ip{x_j - x_k, g_j}\right)
+		\\
+										   &\leq
+		\sum_j \lambda_j (f(x) - f(x_j)) + \sum_j \lambda_j \ip{g_j, x_j - x_k}
+		= f(x) + \sum_j \lambda_j (p_j - f(x_k))
+		= f(x) - f(x_k) - \sum_j \lambda_j p_j \\
+										   &\leq f(x) - f(x_k) + \varepsilon.
+	\end{align*}
+\end{proof}
+
+So then our natural search direction comes from solving
+\begin{align}
+	\begin{aligned}
+		\min & \norm{\sum_{j \in [k]} \lambda_j g_j} \\
+		\mbox{s.t. } & \lambda \geq 0, \; \sum_i \lambda_i = 1 \\
+					 & \sum_j p_j \lambda_j \leq \varepsilon
+	\end{aligned}
+	\label{eq:primal-epsdiff-view}
+\end{align}
+
+\subsection{Cutting Plane Methods}
+For the cutting plane method, we update
+\begin{align*}
+	x_{k+1} & \in \argmin \hat{f}_k(x) = \max_{j \in [k]} \set{
+	f(x_j) + \ip{g_j, x - x_j} } = \max_{j \in [k]}
+	\set{f(x_j) + \ip{g_j, x_k - x_j} + \ip{g_j, x - x_k}} \\
+			&= \max_{j \in [k]} \set{f(x_k) - p_j + \ip{g_j, x - x_k}}
+\end{align*}
+Therefore, the cutting plane method moves from $x_k$ to $x_k + v$, where the
+step $v$ solves
+\[
+	v := \argmin \max_{j \in [k]} \set{\ip{g_j, v} - p_j}.
+\]
+In practice (and complexity-wise), cutting plane method performs poorly,
+seemingly because steps $v$ are large and hence cause oscillation, moving us
+away from areas where the model is accurate.
+
+Let us try to fix this by adding a quadratic penalty to the model. The
+stabilized cutting plane step $v$ solves
+\[
+	\min_v \max_{j \in [k]} \set{\ip{g_j, v} - p_j} + \frac{\mu}{2} \norm{v}^2,
+\]
+or equivalently
+\begin{align}
+	\begin{aligned}
+		\min & t + \frac{\mu}{2} \norm{v}^2 \\
+		\mbox{s.t. } & t \geq \ip{g_j, v} - p_j, \; \forall j \in [k]
+	\end{aligned}
+	\label{eq:epsdiff-dual}
+\end{align}
+The Lagrange dual of~\ref{eq:epsdiff-dual} is
+\begin{align*}
+	L(v, t, \lambda) &= t + \frac{\mu}{2} \norm{v}^2 + \sum_j \lambda_j
+	\left( \ip{g_j, v} - p_j - t \right),
+\end{align*}
+so we are solving
+\begin{align*}
+	\max_{\lambda \geq 0} \min_{t, v} t + \frac{\mu}{2} \norm{v}^2 +
+		\sum_j \lambda_j \left(\ip{g_j, v} - p_j - t\right) \\
+	= \max_{\substack{\lambda \geq 0 \\ \sum_i \lambda_i = 1}}
+	  \min_{v} \set{\frac{\mu}{2} \norm{v}^2 + \ip{\sum_j \lambda_j g_j, v}
+	  - \sum_j \lambda_j p_j } \\
+	= \max_{\substack{\lambda \geq 0 \\ \sum_i \lambda_i = 1}}
+	\set{-\sum_j \lambda_j p_j - \frac{1}{2 \mu} \norm{\sum_j \lambda_j
+	g_j}^2}.
+\end{align*}
+Equivalently:
+\[
+	\min_{\substack{\lambda \geq 0 \\ \sum_j \lambda_j = 1}}
+	\frac{1}{2} \norm{\sum_j \lambda_j g_j}^2 + \mu\left(
+	\sum_j \lambda_j p_j \right),
+\]
+which is equivalent to Problem~\ref{eq:primal-epsdiff-view} with a Lagrange
+multiplier attached.

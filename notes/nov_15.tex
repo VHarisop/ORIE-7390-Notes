@@ -1,0 +1,125 @@
+\section{Level Set Method}
+Consider $f: \Rbb^n \to \Rbb$ finite, convex, $M$-Lipschitz on $Q \subseteq
+\Rbb^n$ (or an open set containing $Q$) where $Q$ is convex and compact.
+
+We have successive affine approximations to $f$ and iterates
+$\set{x_j}_{i=1}^k$ at $k$-th step, with
+\[
+	\hat{f}_k(x) = \max_{j} \set{f(x_j) + \ip{g_j, x - x_j}},
+\]
+with $f^*$ unknown and $f_k^*$ denoting the best value found so far.
+Define
+\[
+	\hat{f}_k^* := \min_{x} \hat{f}_k(x) :=
+	\min_{x} \max_{j} \set{f(x_j) + \ip{g_j, x - x_j}}.
+\]
+Clearly, $f_k^* \dto \geq f^* \geq \hat{f}_k^* \uparrow$. We take some fixed
+fraction $\beta \in (0, 1)$ and $(1 - \beta) f_k^* + \beta \hat{f}_k^*$, with
+\[
+	L_k = \set{x \in Q \mmid \hat{f}_k(x) \leq (1 - \beta) f_k^* + \beta
+	\hat{f}_k^* }.
+\]
+Notice that $x_k \notin L_k$, since we chose $\beta \in (0, 1)$,
+and we thus set $x_{k+1} \gets \proj_{L_k}(x_k)$.
+
+\paragraph{Idea.} The minimizer of $\hat{f}_k$ over $Q$ is very unstable with
+respect to small changes in the data ($x_i, g_i$). On the other hand, the level
+set $L_k$ is more stable.
+
+\begin{ctheorem}{Convergence}{level-set-conv}
+	After at most $\frac{M^2 (\mathrm{diam}(Q))^2}{\varepsilon^2 \beta^2 (1 -
+	\beta)^2}$, the gap satisfies $(f_k^* - \hat{f}_k^*) \leq \varepsilon$.
+\end{ctheorem}
+
+\begin{lemma}[Steps are not too small] \label{lemma:A-levelset}
+	We have $\norm{x_{k+1} - x_k} \geq \frac{\beta}{M} \delta_k, \; \forall k$,
+	where $\delta_k = f_k^* - \hat{f}_k^*$.
+\end{lemma}
+\begin{proof}
+	\begin{align*}
+		\beta \delta_k &= \beta f_k^* - \beta \hat{f}_k^* =
+			f_k^* - \left[(1 - \beta) f_k^* + \beta \hat{f}_k^* \right] \\
+					   &\leq f_k^* - \hat{f}_k (x_{k+1}) \leq
+					   	f(x_k) - \hat{f}_k(x_{k+1}) \leq
+						f(x_k) - \left(f(x_k) + \ip{g_k, x_k - x_{k+1}}\right)
+						\\
+			& = \ip{g_k, x_k - x_{k+1}} \leq \norm{g_k} \norm{x_k - x_{k+1}}
+			\leq M \norm{x_{k} - x_{k+1}},
+	\end{align*}
+	where we used the fact that $(1 - \beta) f_k^* + \beta \hat{f}_k^*
+	\geq \hat{f}_k (x_{k+1})$ from the definition of $x_{k+1}$ with respect to
+	the level set, and the definition of $\hat{f}_k$.
+\end{proof}
+
+\begin{lemma}[Gap can't stay large for too long]
+	\label{lemma:B-levelset}
+	If $\delta_p \geq \beta \delta_k$ for some $p \geq k$, then $p - k + 1
+	\leq \left( \frac{MD}{\beta \delta_p} \right)^2$, where $D :=
+	\mathrm{diam}(Q)$.
+\end{lemma}
+\begin{proof}
+	We first claim that $\hat{f}_p^* \leq (1 - \beta) {f}_i^* + \beta
+	\hat{f}_i^*, \; \forall i \leq p$. To see this, note
+	\begin{align*}
+		\delta_p &\geq \beta \delta_k \geq \beta \delta_i \\
+		(1 - \beta) f_i^* + \beta \hat{f}_i^* &= f_i^* - \beta \delta_i
+		\geq f_p^* - \beta \delta_i \\
+											  &= \hat{f}_p^* + \delta_p - \beta
+											  \delta_i \geq \hat{f}_p^*.
+	\end{align*}
+	Recall that $x_p^*$ minimizes $\hat{f}_p$ over $Q$, so we have shown that
+	$x_p^* \in L_i, \; i = k, \dots, p$. By the projection property,
+	\[
+		\norm{x_{i+1} - x_i}^2 + \norm{x_{i+1} - x_p^*}^2 \leq
+		\norm{x_{i} - x_p^*}^2.
+	\]
+	That implies
+	\begin{align*}
+		\norm{x_{i+1} - x_p^*}^2 &\leq \norm{x_i - x_p^*}^2
+			- \left( \frac{\beta \delta_i}{M} \right)^2 \quad
+			\text{(\cref{lemma:A-levelset})} \\
+		&\leq \norm{x_i - x_p^*}^2 - \left( \frac{\beta \delta_p}{M}\right)^2,
+	\end{align*}
+	all to obtain
+	\[
+		0 \leq \norm{x_{p+1} - x_p^*}^2 \leq \norm{x_k - x_p^*}^2
+		- (p - k + 1) \left( \frac{\beta \delta_p}{M} \right)^2 \leq
+		D^2 - (p - k + 1) \left(\frac{\beta \delta_p}{M}\right)^2.
+	\]
+\end{proof}
+
+We are now in place to state the main convergence theorem.
+\begin{ctheorem}{Termination}{levelset-convergence}
+	We terminate in less than $\frac{M^2 D^2}{\varepsilon^2 \beta^2 (1 -
+	\beta)^2}$.
+\end{ctheorem}
+\begin{proof}
+	Recall that $\delta_k = f_k^* - \hat{f}_k^*$.
+	Suppose $\delta_N \geq \varepsilon$. Define $p_0 = N$ and
+	$k_0 = \min\set{k \mmid \beta \delta_k \leq \delta_{p_0}}$. Then, define
+	\begin{align*}
+		p_1 &= k_0 - 1 \\
+		k_1 &= \min\set{k \mmid \beta \delta_k \leq \delta_{p_1}}
+	\end{align*}
+	and so on. Then $\delta_{p_0} = \delta_N \geq \varepsilon$. Then
+	$\delta_{p_1} = \delta_{k_0 - 1} > \frac{\delta_{p_0}}{\beta} >
+	\frac{\varepsilon}{\beta}$, by definition. By induction, we obtain
+	\[
+		\delta_{p_j} > \frac{\varepsilon}{\beta^j}, \;
+		\beta \delta_{k_j} \leq \delta_{p_j},
+	\]
+	and now an appeal to~\cref{lemma:B-levelset} gives us that
+	$p_j - k_j + 1 - (p_j - p_{j+1}) \leq \left(\frac{M D}{\beta
+			\delta_{p_j}}\right)^2$, which is less than $\left( \frac{MD}{\varepsilon
+	\beta^{1-j}} \right)^2$. Adding gives us
+	\begin{align*}
+		N &= \sum_j \left(p_j - p_{j-1}\right) <
+		\left(\frac{MD}{\varepsilon\beta}\right)^2 \sum \beta^{-2j},
+	\end{align*}
+	as required.
+\end{proof}
+
+So, in particular, setting $\beta = \frac{1}{\sqrt{2}}$ gives a bound of
+$\frac{4 M^2 D^2}{\varepsilon^2} = \left(\frac{2 MD}{\varepsilon}\right)^2$
+iterations to reduce the gap to $\varepsilon$. This is optimal (like the
+subgradient method) for dimension-independent methods, up to a constant factor.
