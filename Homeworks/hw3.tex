@@ -24,7 +24,6 @@
 \begin{document}
 
 \allowdisplaybreaks
-\everymath{\displaystyle}
 \newenvironment{longlisting}{\captionsetup{type=listing}}{}
 
 \homework{Vasileios Charisopoulos}{Homework 3}{vc333}
@@ -155,14 +154,17 @@
 	that $f$ does not attain a minimizer. Given the convexity of $f -
 	\norm{\cdot}^2$, we have that
 	\begin{align*}
-		f(x) - \norm{x}^2 &\geq \ip{\partial \left(f - \norm{\cdot}^2
-		\right)(0), x - 0} = \ip{\partial f(0), x} - 2 \ip{0, x} =
-		\ip{\partial f(0), x},
+		f(x) - \norm{x}^2 &\geq f(0) + \ip{\partial \left(f - \norm{\cdot}^2
+		\right)(0), x - 0} = f(0) + \ip{\partial f(0), x} - 2 \ip{0, x} =
+		f(0) + \ip{\partial f(0), x},
 	\end{align*}
 	where the existence of $\partial g$ follows from the fact that its domain
 	is the whole underlying space and we use the sum rule of subdifferential
 	calculus for the sum of a convex ($f$) and a differentiable
-	($\norm{\cdot}^2$) function. This means that
+	($-\norm{\cdot}^2$) function\footnote{In fact, in ORIE 6328, we proved this
+	rule for the regular subdifferential. Since $f - \norm{\cdot}^2$ is convex,
+    the regular subdifferential coincides with the convex subdifferential}.
+    This means that
 	\[
 		f(x) \geq \norm{x}^2 + \ip{\partial f(0), x}, \; \forall x \in \Rbb^n.
 	\]
@@ -177,6 +179,144 @@
 	are also closed, hence compact. An appeal to the Bolzano-Weierstrass
 	Theorem implies that $f$ attains its minimum.
 \end{Answer}
+
+\begin{Exercise}
+    Consider the problem
+    \[
+        \inf_{x \in \Rbb^n} \max_{i \in I} f_i(x), \;
+        f_i : \Rbb^n \to \Rbb,
+    \]
+    where $I$ is finite and each $f_i$ is convex and $C^2$-smooth. Suppose
+    furthermore that the function $\sum_i f_i$ is strongly convex. By
+    considering the problem in the framework of composite optimization, design
+    a majorization - minimization algorithm, and prove that it converges under
+    reasonable conditions. Try out your algorithm for functions of the form
+    \[
+        f_i(x) = g_i^\top x + x^\top H_i x, \quad \text{with }
+        \sum_i g_i = 0, \; H_i \in \Sbb_{++}^n.
+    \]
+\end{Exercise}
+\begin{Answer}
+    Since each $f_i$ is $C^2$-smooth, that means it is twice continuously
+    differentiable and $\norm{\grad f_i (y) - \grad f_i (x)} \leq L_i \norm{x -
+    y}$. We define the auxiliary functions
+    \[
+        g\left(
+            \pmx{y_1 \\ \vdots \\ y_{\abs{I}}}
+        \right) = \max_{i=1, \dots, \abs{I}} y_i, \quad
+        H(x) = \pmx{
+            f_1(x) \\ \vdots \\ f_{\abs{I}}(x)}
+    \]
+    Then we can write our problem as a composite optimization problem, since
+    $\inf_{x \in \Rbb^n} \max_{i \in I} f_i(x) = \inf_{x \in \Rbb^n} g(H(x))$.
+    As discussed in class, a natural candidate for this type of Problem is
+    prox-descent, in which we repeat the following iteration:
+    \[
+        x_{k+1} \in \arg \inf_{x \in \Rbb^n} \max_{i \in I} \bar{f}_i(x, x_k) +
+        \frac{\lambda}{2} \norm{x - x_k}^2.
+    \]
+    We denote $\bar{f}_i(x, x_k) = f_i(x_k) + \ip{g_k, x - x_k}$, for $g_k \in
+    \partial f_i(x_k)$. Since $f_i \in C^2$, we know that $\partial f_i(x_k)
+    = \set{\grad f_i(x_k)}$, which makes things simpler for us.
+
+    To prove that the above iteration converges to a minimizer, it will suffice
+    to show that it converges to a critical point, since the function at hand
+    is the maximum of a collection of convex functions, hence itself convex. We
+    will verify that $\max_{i \in I} f_i(x)$ and its linearization satisfies
+    the assumptions we employed when dealing with the moving balls method.
+
+    \paragraph{1. Existence of a critical point.}
+    We first prove that $F(x) := \max_{i \in I} f_i(x)$ has a critical point.
+    We claim that $F(x)$ has a minimizer, and since the only critical points of
+    convex functions are minimizers, we are then done. Notice that
+    \[
+        F(x) \geq f_i(x), \; \forall i \Rightarrow
+        F(x) \geq \frac{1}{\abs{I}} \sum_i f_i(x)
+    \]
+    However, we know that $\sum_i f_i$ is strongly convex from the problem
+    statement, which is equivalent to $\sum_i f_i - \mu \norm{\cdot}^2$ being
+    convex for some scalar $\mu > 0$. Then by Problem 2 we deduce that $\sum_i
+    f_i $ has a (unique) minimizer, so it is bounded from below. Consequently,
+    $F$ is also bounded from below, and therefore attains a minimizer, since it
+    is continuous (piecewise maxima of continuous functions are continuous) and
+    its sublevel sets are compact (trivial to see they are bounded, closed by
+    an argument about intersections of closed sets, since $f_i$ are $C^2$,
+    therefore closed).
+
+    \paragraph{2. The local model is strongly convex.}
+    We argue that $h(x, x_k) := \max_{i \in I} f_i(x_k) + \ip{\grad f_i(x_k),
+    x - x_k} + \frac{\lambda}{2} \norm{x - x_k}^2$ is strongly convex as a
+    function of $x$. This is trivial to show, since $h(x, x_k) -
+    \frac{\lambda}{2} \norm{x}^2 = \max_{i \in I} f_i(x_k) +
+    \ip{\grad f_i (x_k), x - x_k}$, which is convex as a piecewise maximum of
+    affine functions. Appealing to the proof we presented in Problem 2 gives us
+    strong convexity of $x \mapsto h(x, x_k)$.
+
+    \paragraph{3. The local model grows quadratically.}
+    This is a simple consequence of strong convexity. Since $x_{k+1}
+    \in \arg \min_{x \in \Rbb^n} h(x, x_k)$, it must also minimize $h(x, x_k) -
+    \frac{\lambda}{2} \norm{x - x_{k+1}}^2$, as the latter is convex. This
+    implies that
+    \[
+        h(x, x_k) - \frac{\lambda}{2} \norm{x - x_{k+1}}^2
+        \geq h(x_{k+1}, x_k) - \frac{\lambda}{2} \norm{x_{k+1} - x_{k+1}}^2
+        \Rightarrow h(x, x_k) - h(x_{k+1}, x_k) \geq \frac{\lambda}{2}
+        \norm{x - x_{k+1}}^2.
+    \]
+    \paragraph{4. Bounded subgradient.}
+    It suffices to show that if $(0, v) \in \partial h(x, y)$ and $x, y$ vary
+    in a bounded subset $\cX$, then $\norm{v} \leq K \norm{x - y}$. This
+    means that (in an abuse of notation, where we drop the first coordinate):
+    \begin{align*}
+        v & \in \partial_y \left(\max_{i \in I} \set{  f_i(x, y) + \ip{\grad
+        f_i(y),x - y} } + \frac{\lambda}{2} \norm{x - y}^2 \right)
+        = \partial \left(
+        \max_{i \in I} \set{  f_i(x, x_k) + \ip{\grad
+            f_i(x_k),x - x_k} }
+        \right) + \lambda (x - y) \\
+        &= \lambda (x - y) + \mathrm{conv}\left(
+            \partial_y \left( f_i (y) + \ip{\grad f_i(y), x - y} \right)
+            \mmid f_i(y) + \ip{\grad f_i(y), x - y} = \max_j
+                f_j(y) + \ip{\grad f_j(y), x - y}\right).
+    \end{align*}
+    The subgradient rule for taking the convex hull was also briefly mentioned
+    in one of the ORIE 6328 Homeworks. We now give an explicit formula for the
+    subgradients of $f_i(y) + \ip{\grad f_i(y), x - y}$. Since $f_i$ are all
+    $C^2$, we write
+    \begin{align*}
+        \partial \left( f_i(y) + \ip{\grad f_i(y), x - y} \right) &=
+        \grad f_i(y) + \grad_y \left( \ip{\grad f_i(y), x - y} \right)
+        = \grad f_i(y) - \grad^2 f_i(y)^\top (x - y) - \grad f_i(y) \\
+        &= -\grad^2 f_i(y)^\top (x - y)
+    \end{align*}
+    As $\cX$ is assumed to be bounded, set $K := \max_j \max_{y \in \cX}
+    \opnorm{\grad^2 f_j(y)}$. We then have
+    \begin{align*}
+        \norm{v} &= \norm{\lambda(x - y) - \mathrm{conv}
+        \left( \grad^2 f_i(y)^\top (x - y) \mmid f_i(y) = \max_j f_j(y)
+        \right)}
+        \leq \lambda \norm{x - y} + \max_j \opnorm{\grad^2 f_i(y)}
+        \norm{x - y} \\
+        &= \left( \lambda + K \right)\norm{x - y}.
+    \end{align*}
+
+    Having verified the above assumptions, we conclude that our
+    majorization-minimization scheme will converge to a critical point of the
+    original problem, by arguments outlined during lecture. Since the original
+    problem is convex, this critical point will be a minimizer.
+\end{Answer}
+
+\begin{Exercise}
+    Consider an oracle associated with a compact set $Q \in \Rbb^n$: given any
+    vector $g \in \Rbb^n$, the oracle returns an element of the set
+    \[
+        \argmin_{Q} \ip{g, \cdot}.
+    \]
+    Suppose I claim that the convex hull of $Q$ does not contain $0$. How could
+    you verify my claim, using the bundle technique we described in class? How
+    could you use the subgradient method instead? Compare the two methods on
+    some random finite sets $Q$.
+\end{Exercise}
 
 
 \bibliographystyle{plain}

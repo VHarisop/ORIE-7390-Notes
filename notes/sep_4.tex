@@ -27,7 +27,7 @@ times speed.
 			\phi'(f(X(t))) \frac{\dd{~}^{+}}{\dd{t}} f(X(t)) \\
 			&= -\phi'(f(X(t))) \cdot \abs{\grad f}(X(t))
 			   \norm{\frac{\dd{~}^{+}}{\dd{t}} X(t)} \\
-			&\overset{\cref{prop:slope-chain-rule}}{=}
+			&\overset{(\text{Prop.}~\ref{prop:slope-chain-rule})}{=}
 			-\grad(\phi \circ f)(X(t)) \norm{\frac{\dd{~}^{+}}{\dd{t}} X(t)},
 	\end{align*}
 	which concludes that
@@ -42,15 +42,15 @@ Now, let us suppose that $f$ is \textbf{sharp} along $X(t)$, i.e. $\exists
 for any $0 \leq t < s$, the length of the curve $\ell(X(\cdot), t, s)$ satisfies
 \begin{align*}
 	\ell(X, t, s) &= \int_t^s \norm{\dot{x}}
-	\overset{\cref{eq:steepest-descent-trajectory}}{=}
-	\int_t^s -\frac{\frac{\dd{~}^{+}}{\dd{\tau}} f(X(\tau))}{\abs{\grad 
+	\overset{\text{\cref{eq:steepest-descent-trajectory}}}{=}
+	\int_t^s -\frac{\frac{\dd{~}^{+}}{\dd{\tau}} f(X(\tau))}{\abs{\grad
 	f}(X(t))}
 		\dd{\tau} \\
 		&\leq \frac{1}{\varepsilon} \int_t^s
 			-\frac{\dd{~}^+}{\dd{\tau}} f(X(\tau)) \dd{\tau} \\
 		&=\frac{1}{\varepsilon} \left(f(X(t)) - f(X(s))\right),
 \end{align*}
-where in the above we've made use of the fact that $\frac{\dd{~}^{+}}{\dd{t}} 
+where in the above we've made use of the fact that $\frac{\dd{~}^{+}}{\dd{t}}
 f(X(t))
 = \frac{\dd{~}}{\dd{t}} f(X(t))$ \textit{almost everywhere} to perform the
 integration, by replacing the integral with the one involving the ordinary
