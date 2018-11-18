@@ -317,6 +317,65 @@
     could you use the subgradient method instead? Compare the two methods on
     some random finite sets $Q$.
 \end{Exercise}
+\begin{Answer}
+	In class, we effectively answered the first part of this question when $Q$
+	is assumed convex and compact. Here, $Q$ is not necessarily convex, but is
+	still compact. Even then, since we are interested in the convex hull
+	of $Q$, our oracle is ``sufficient'' in the sense that
+	\[
+		q \in \argmin_{Q} \ip{g, \cdot}, \; v \in \argmin_{\convhull(Q)} \ip{g,
+		\cdot} \Rightarrow \ip{g, q} = \ip{g, v}.
+	\]
+	If $Q$ is a polytope (or union of polytopes), then the result is immediate
+	by the fundamental theorem of linear programming. If not, assume that
+	$\exists v \in \convhull(Q), v \notin Q$, such that $\ip{g, v} < \ip{g,
+	q}$. However, since $v \in \convhull(Q)$, there must exist elements
+	$v^1, \dots, v^m \in Q, \; \sum_{i=1}^m \lambda_i v^i = v, \; \lambda \geq
+	0, \; \bm{1}^\top \lambda = 1$. Then we can write
+	\begin{align*}
+		\ip{g, v} &= \sum_{i=1}^{m} \lambda_i \ip{g, v^i}
+		> \sum_{i=1}^m \lambda_i \ip{g, v} = \ip{g, v},
+	\end{align*}
+	a contradiction. Then, we can design an algorithm for deciding whether $0
+	\in \convhull(Q)$ by adapting the procedure we discussed in lecture using
+	the ``modified'' oracle. We denote \textsc{Oracle}($g$) for a call to the
+	oracle using the vector $g$.
+
+	\begin{algorithm}
+		\caption{Answering $0 \in Q$ using a modified oracle}
+		\begin{algorithmic}
+			\State $\hat{q} \gets \mathsc{Oracle}(0)$; $\hat{Q} =
+			\set{\hat{q}}$ \Comment{Initial set}
+			\Repeat
+				$g \gets \proj_{\convhull(\hat{Q})}(0)$
+				\If{$\norm{g} = 0$}
+					\State \Return ``$0 \in \convhull(Q)$''
+				\Else
+					\State $\hat{Q} \gets \hat{Q} \cup \set{g}$
+				\EndIf
+				\State $q \gets \mathsc{Oracle}(g)$
+				\If{$\ip{g, q} > 0$}
+					\State \Return ``$0 \notin \convhull(Q)$''
+				\EndIf
+				\State $\hat{Q} \gets \hat{Q} \cup \set{q}$
+				\Comment{Optional: only keep $\set{g, q}$ at this step}
+			\Until stopping.
+		\end{algorithmic}
+		\label{alg:modified-oracle}
+	\end{algorithm}
+	Note that~\cref{alg:modified-oracle} is essentially the same algorithm we
+	discussed in lecture. There, the critical step is checking if $\exists v:
+	\ip{g, v} \leq 0$, which we can do using our oracle. It holds that
+	\[
+		\ip{g, q} \leq \ip{g, v}, \; \forall v \in \convhull(Q),
+	\]
+	so it suffices to check if $\ip{g, q} > 0$; if that is the case, then
+	obviously there is no such $v$, so we have found a separating hyperplane
+	between $0$ and $\convhull(Q)$. If not, then we have to repeat the
+	procedure. Appealing to a Lemma proven in lecture, we know that the
+	iterates are stricly decreasing in magnitude, so if $0 \in \convhull(Q)$,
+	algorithm will eventually return a positive answer.
+\end{Answer}
 
 
 \bibliographystyle{plain}
