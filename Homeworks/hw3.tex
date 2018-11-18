@@ -329,7 +329,8 @@
 	If $Q$ is a polytope (or union of polytopes), then the result is immediate
 	by the fundamental theorem of linear programming. If not, assume that
 	$\exists v \in \convhull(Q), v \notin Q$, such that $\ip{g, v} < \ip{g,
-	q}$. However, since $v \in \convhull(Q)$, there must exist elements
+	q}, \; \forall q \in Q$.
+	However, since $v \in \convhull(Q)$, there must exist elements
 	$v^1, \dots, v^m \in Q, \; \sum_{i=1}^m \lambda_i v^i = v, \; \lambda \geq
 	0, \; \bm{1}^\top \lambda = 1$. Then we can write
 	\begin{align*}
@@ -341,25 +342,25 @@
 	the ``modified'' oracle. We denote \textsc{Oracle}($g$) for a call to the
 	oracle using the vector $g$.
 
-	\begin{algorithm}
-		\caption{Answering $0 \in Q$ using a modified oracle}
+	\begin{algorithm}[H]
+		\caption{Answering $0 \in \convhull(Q)$ using a modified oracle}
 		\begin{algorithmic}
-			\State $\hat{q} \gets \mathsc{Oracle}(0)$; $\hat{Q} =
+			\State $\hat{q} \gets \textsc{Oracle}(0)$; $\hat{Q} =
 			\set{\hat{q}}$ \Comment{Initial set}
 			\Repeat
-				$g \gets \proj_{\convhull(\hat{Q})}(0)$
+				\State $g \gets \mathrm{proj}_{\convhull(\hat{Q})}(0)$
 				\If{$\norm{g} = 0$}
 					\State \Return ``$0 \in \convhull(Q)$''
 				\Else
 					\State $\hat{Q} \gets \hat{Q} \cup \set{g}$
 				\EndIf
-				\State $q \gets \mathsc{Oracle}(g)$
+				\State $q \gets \textsc{Oracle}(g)$
 				\If{$\ip{g, q} > 0$}
 					\State \Return ``$0 \notin \convhull(Q)$''
 				\EndIf
 				\State $\hat{Q} \gets \hat{Q} \cup \set{q}$
-				\Comment{Optional: only keep $\set{g, q}$ at this step}
-			\Until stopping.
+			\Comment{Optional: only keep $\set{g, q}$ at this step}
+			\Until Stopping.
 		\end{algorithmic}
 		\label{alg:modified-oracle}
 	\end{algorithm}
@@ -375,6 +376,15 @@
 	procedure. Appealing to a Lemma proven in lecture, we know that the
 	iterates are stricly decreasing in magnitude, so if $0 \in \convhull(Q)$,
 	algorithm will eventually return a positive answer.
+
+	\paragraph{Performing the projection step.} The projection
+	step in the loop can be performed by solving a linear program using some
+	interior point method. Note that the Lemma we mentioned above shows that
+	successive iterates $g$ are decreasing in norm, so then keeping the last
+	iterate $g$ and the result $q := \textsc{Oracle}(g)$ will suffice for
+	computing the correct projection of $0$ to $\convhull(\hat{Q})$, as this
+	projection is effectively calculating the minimum-norm element of
+	$\hat{Q}$.
 \end{Answer}
 
 
