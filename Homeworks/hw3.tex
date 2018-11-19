@@ -212,7 +212,7 @@
     As discussed in class, a natural candidate for this type of Problem is
     prox-descent, in which we repeat the following iteration:
     \[
-        x_{k+1} \in \arg \inf_{x \in \Rbb^n} \max_{i \in I} \bar{f}_i(x, x_k) +
+        x_{k+1} \in \arg \min_{x \in \Rbb^n} \max_{i \in I} \bar{f}_i(x, x_k) +
         \frac{\lambda}{2} \norm{x - x_k}^2.
     \]
     We denote $\bar{f}_i(x, x_k) = f_i(x_k) + \ip{g_k, x - x_k}$, for $g_k \in
@@ -300,6 +300,21 @@
         &= \left( \lambda + K \right)\norm{x - y}.
     \end{align*}
 
+    \paragraph{5. KL property.}
+    Finally, we need to verify that both the original function as well as the
+    local upper model satisfy the KL property. This is easy to see for the
+    local upper model, which is defined as
+    \[
+        \max_{i \in I} \set{f_i(x_k) + \ip{\grad f_i(x_k), x - x_k}
+        + \frac{\lambda}{2} \norm{ x - x_k}^2}.
+    \]
+    The graph of the above is the union of at most $\abs{I}$ graphs, one for
+    each dominating term. Every individual graph is the graph of an affine plus
+    quadratic term, which is a second order polynomial in $\Rbb[x_1, \dots,
+    x_n]$, therefore semialgebraic. We conclude that the local upper model
+    is semialgebraic and therefore satisfies the KL property around its
+    minimizers, as shown e.g. in~\cite{BolDanLew07}.
+
     Having verified the above assumptions, we conclude that our
     majorization-minimization scheme will converge to a critical point of the
     original problem, by arguments outlined during lecture. Since the original
@@ -385,6 +400,82 @@
 	computing the correct projection of $0$ to $\convhull(\hat{Q})$, as this
 	projection is effectively calculating the minimum-norm element of
 	$\hat{Q}$.
+
+
+    \paragraph{Using the subgradient method.}
+    Denote $\bar{Q} = \convhull(Q)$. Let us consider minimizing the following
+    convex program
+    \begin{align*}
+        \left\{
+        \begin{aligned}
+        \min & \norm{x}_2 \\
+        \mbox{s.t. } & x \in \convhull(Q)
+        \end{aligned} \right\}
+        = \inf_{x} \set{\norm{x}_2 + \delta_{\bar{Q}}(x)}.
+    \end{align*}
+    Using Fenchel duality, since $\dom{\norm{\cdot}} = \Rbb^n$, we have that
+    \[
+        \inf_{x}\set{\norm{x}_2 + \delta_{\bar{Q}}(x)}
+        = \sup_{y} \set{- \delta_{\mathbb{B}_2}(y)
+        - \sup_{z \in \bar{Q}} \ip{z, -y}  }
+        = \sup_{y : \norm{y} \leq 1} \min_{z \in \convhull(Q)} \ip{z, y},
+    \]
+    where we used the fact that the Fenchel dual of the $\ell_2$ norm is
+    the indicator function of the unit ball, and $\left(\delta_{C}\right)^*
+    = \sup_{z \in C} \ip{z, \cdot}$, both known from ORIE 6328.
+    We can solve the latter problem using the subgradient method. First, we
+    reformulate it as $\inf_{y : \norm{y} \leq 1} - \min_{z \in \convhull(Q)}
+    \ip{y, z} = \inf_{y : \norm{y} \leq 1} \max_{z \in \convhull(Q)}
+    \ip{-y, z}$ which is the same as
+    $\min_{y : \norm{y} \leq 1} \max_{z \in \convhull(Q)} \ip{y, z}$ due to
+    symmetry of the domain of $y$.
+
+    Furthermore, notice that our oracle is equivalent to an oracle that acts as
+    \[
+        \textsc{MaxOracle}: g \mapsto \argmax_{q \in \convhull(Q)} \ip{g, q},
+    \]
+    since $\textsc{Oracle}(-g)$ will return $\argmin_{q \in \convhull{Q}}
+    \ip{q, -g}$, which implies
+    \[
+        \ip{q, -g} \leq \ip{v, -g}, \; \forall v \in \convhull(Q)
+        \Rightarrow \ip{q, g} \geq \ip{v, g}, \; \forall v \in \convhull(Q).
+    \]
+    We showed it suffices to solve the following problem:
+    \begin{align}
+        \tag{\textsc{MinSupp}}
+        \begin{aligned}
+            \min & \max_{q \in \convhull(Q)} \ip{g, q} =: f(g) \\
+            \mbox{s.t. } & \norm{g} \leq 1.
+        \end{aligned}
+        \label{prob:minsupp}
+    \end{align}
+    By Fenchel duality, if $0 \in Q$, the optimal value of the ``primal''
+    problem is $0$, so we should expect~\eqref{prob:minsupp} to also have
+    zero optimal value. If $0 \notin Q$, the primal problem has strictly
+    positive optimal value. The way we transformed the dual problem:
+    \[
+        \sup \min \dots \Rightarrow - \inf -\min \dots =  -
+        \inf \max \dots,
+    \]
+    reveals that, in that case, the optimal value of~\eqref{prob:minsupp}
+    should be strictly negative. This agrees with our previous intuition
+    from the bundle method, where we identify a separating hyperplane.
+    We can solve Problem~\eqref{prob:minsupp} using the projected subgradient
+    method. Obviously, projecting to the unit ball is trivial (a simple scaling
+    argument). We can obtain a subgradient using \textsc{MaxOracle}. Notice that
+    \begin{align*}
+        f(x) &= \max_{q \in \convhull(Q)} \ip{q, x} =
+        \max_{q \in \convhull(Q)} \set{\ip{q, x - g} + \ip{q, g}} \geq
+        \ip{y, x - g} + \ip{y, g}, \; y \in \argmax_{q \in \convhull(Q)}
+        \ip{g, q} \\
+        &= f(g) + \ip{y, x - g}, \; \forall x \in \Rbb \Rightarrow
+           y \in \partial f(g).
+    \end{align*}
+    Therefore, we iterate
+    \[
+        x_{k+1} \gets \mathrm{proj}_{\mathbb{B}_2} \set{
+            x_k - \eta \cdot \textsc{MaxOracle}(x_k) }.
+    \]
 \end{Answer}
 
 
