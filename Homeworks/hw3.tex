@@ -92,7 +92,9 @@
 	closed; since $\dom f = \Rbb^n$, our point $\xbar \in \intr{\dom f}$, otherwise an
 	``approaching'' sequence $\set{x_k}$ must, in fact, diverge. This
 	immediately implies that $f$ is lower semicontinuous around $\xbar$ by
-	virtue of being locally Lipschitz continuous.
+	virtue of being locally Lipschitz continuous. The assumption that $f$ is
+	convex might also be unnecessary; as mentioned in class, continuous
+	functions are  subdifferentially regular without other explicit assumptions.
 \end{Answer}
 
 \begin{Exercise}
@@ -213,11 +215,20 @@
     prox-descent, in which we repeat the following iteration:
     \[
         x_{k+1} \in \arg \min_{x \in \Rbb^n} \max_{i \in I} \bar{f}_i(x, x_k) +
-        \frac{\lambda}{2} \norm{x - x_k}^2.
+        \frac{\lambda}{2} \norm{x - x_k}^2, \; \lambda \geq \max_i
+        \frac{L_i}{2},
     \]
     We denote $\bar{f}_i(x, x_k) = f_i(x_k) + \ip{g_k, x - x_k}$, for $g_k \in
     \partial f_i(x_k)$. Since $f_i \in C^2$, we know that $\partial f_i(x_k)
-    = \set{\grad f_i(x_k)}$, which makes things simpler for us.
+    = \set{\grad f_i(x_k)}$, which makes things simpler for us. Notice that
+    \[
+        \max_i f_i(x_k) + \ip{g_k, x - x_k} + \frac{\lambda}{2}
+        \norm{x - x_k}^2 \geq \max_i f_i(x_k) + \ip{g_k, x - x_k}
+        + \frac{L_i}{2} \norm{x - x_k}^2 \geq \max_i f_i(x),
+    \]
+    by virtue of $f_i$ being $L_i$-smooth, and thus amenable to quadratic upper
+    bounds. Therefore our algorithm indeed falls within the scope of
+    majorization-minimization algorithms.
 
     To prove that the above iteration converges to a minimizer, it will suffice
     to show that it converges to a critical point, since the function at hand
@@ -314,6 +325,10 @@
     x_n]$, therefore semialgebraic. We conclude that the local upper model
     is semialgebraic and therefore satisfies the KL property around its
     minimizers, as shown e.g. in~\cite{BolDanLew07}.
+    On the other hand, the original function is bounded below by a strongly
+    convex function, and is itself convex, which means that it admits a
+    quadratic minorant. Therefore, we expect it to satisfy the KL property as
+    well.
 
     Having verified the above assumptions, we conclude that our
     majorization-minimization scheme will converge to a critical point of the
