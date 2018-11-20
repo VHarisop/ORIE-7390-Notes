@@ -1,0 +1,133 @@
+\section{Line Search}
+Classical unconstrained optimization (dates since the 1970s). Let us introduce
+the setting: we wish to minimize $f: \Rbb^n \to \Rbb, \; f \in C^1$, with
+compact level set $\set{x \mmid f(x) \leq f(x_0)}$. Denote our iterates
+$\set{x_k}_{k=1}^{\infty}$ with $x_0$ our starting point.
+
+At current $x_k$, we calculate a descent direction $p_k \in \Rbb^n$ satisfying
+$\ip{\grad f(x_k), p_k} < 0$. From now on, denote $\grad f_k = \grad f(x_k)$.
+
+E.g. one could choose $p_k = -\grad f_k$, assuming we are not at a stationary
+point.
+
+\subsection{Inexact line search}
+Fix a step size $\alpha_k > 0$ satisfying 2 conditions that will follow. First,
+denote $h: \Rbb \to \Rbb, \; h(\alpha) = f(x_k + \alpha p_k) - f(x_k)$.
+Additionally, fix constants $0 < c_1 < c_2 < 1$. We require $\alpha_k$ to
+satisfy:
+\begin{itemize}
+	\item \textit{Armijo condition}: $h(\alpha_k) < c_1 \alpha_k h'(0)$.
+	\item \textit{Wolfe condition}: $h'(\alpha_k) > c_2 h'(0)$.
+\end{itemize}
+Intuitively, the Armijo condition ensures that the steps are not too big, while
+the Wolfe condition ensures the steps are not too small.
+
+There are $3$ questions to ask here:
+\begin{enumerate}
+	\item Do such steps exist?
+	\item If so, how can we find one?
+	\item Is there an algorithm based on inexact line search that converges?
+\end{enumerate}
+
+Let us first present an algorithm for finding an appropriate step size. The
+algorithm is shown in~\cref{alg:step-size}.
+\begin{algorithm}
+	\caption{Inexact line search}
+	\begin{algorithmic}
+		\State Initialize left endpoint $\gamma = 0$, right endpoint $\beta =
+		+\infty$, trial point $\alpha = 1$.
+		\Repeat
+			\If{\textsc{Armijo}($\alpha$) fails}
+				\State $\beta \gets \alpha$
+			\Else
+				\If{\textsc{Wolfe}($\alpha$) fails}
+					\State $ \gamma \gets \alpha $
+				\Else
+					\State \Return $\alpha$ \Comment{conditions satisfied}
+				\EndIf
+			\EndIf
+			\If{$\beta < +\infty$}
+				\State $\alpha \gets \frac{\gamma + \beta}{2}$
+				\Comment{Bisection}
+			\Else
+				\State $\alpha \gets 2 \alpha$
+				\Comment{Doubling}
+			\EndIf
+		\Until {termination}
+	\end{algorithmic}
+	\label{alg:step-size}
+\end{algorithm}
+
+\begin{ctheorem}{}{line-search-term}
+	Algorithm~\ref{alg:step-size} terminates.
+\end{ctheorem}
+\begin{proof}
+	Suppose that the algorithm did not terminate. Eventually, $\beta <
+	+\infty$, since by the compact level set assumption on $f$, $h(\alpha) > 0$
+	for all $\alpha$ large enough. Then eventually the left hand endpoint
+	$\gamma > 0$, since if we kept shrinking the interval without increasing
+	$\gamma$, eventually the Wolfe condition would fail (as $f \in C^1$, which
+	implies the continuity of $h'$).
+
+	We thus obtain that $\textsc{Armijo}(\gamma)$ holds,
+	$\textsc{Armijo}(\beta)$ fails. By bisection, $\gamma \uparrow \bar{\alpha}
+	> 0$ and $\beta \downarrow \bar{\alpha}$. Consequently, $\gamma$ must keep
+	increasing and $\beta$ must keep decreasing (not necessarily in every
+	iteration). We can now derive a contradiction from the Mean Value Theorem,
+	by considering the slopes of $h$ in the points examined by the algorithm.
+\end{proof}
+
+\begin{remark}
+	The line search algorithm still works with modifications that either
+	address hitting a nondifferentiable point (or interpreting derivatives as
+	right derivatives of $h$) for a wide class of nonsmooth functions (in
+	particular, semialgebraic functions). It is also usefule for bundle methods
+	on convex functions.
+\end{remark}
+
+Let us now consider what happens once we incorporate line search into a
+steepest-descent kind of algorithm. We have
+\begin{align}
+	x_{k+1} = x_k + \alpha_k p_k \nonumber \\
+	\begin{aligned}
+	f(x_{k+1}) - f(x_k) &< c_1 \alpha_k \ip{\grad f_k, p_k} \\
+	\ip{\grad f_{k+1}, p_k} &> c_2 \ip{\grad f_k, p_k}
+	\end{aligned} \label{eq:armijo-wolfe}
+\end{align}
+In particular, the conditions appearing in~\cref{eq:armijo-wolfe} are a consequence
+of the Armijo-Wolfe conditions, which are satisfied for $\alpha_k$. Then we obtain
+\begin{align*}
+	(c_2 - 1) \ip{\grad f_k, p_k} &< \ip{\grad f_{k+1} - \grad f_k, p_k}
+	\leq \norm{p_k} \norm{\grad f_{k+1} - \grad f_k} \quad
+	(\text{Cauchy-Schwarz}) \\
+		&\leq L \norm{x_k - x_{k+1}} \norm{p_k} \quad (\text{Lipschitz constant
+		of gradient on the level set}) \\
+		&= L \alpha_k \norm{p_k}^2,
+\end{align*}
+so in particular $\alpha_k > \frac{(c_2 - 1) \ip{\grad f_k, p_k}}{L \alpha_k
+\norm{p_k}^2}$. From the Armijo condition,
+\begin{align*}
+	f_k - f_{k+1} &> -c_1 \alpha_k \ip{\grad f_k, p_k}
+	> \frac{(1 - c_2) c_1}{L} \left( \ip{-\grad f(x_k),
+	\frac{p_k}{\norm{p_k}}} \right)^2 \\
+				  &= \frac{(1 - c_2) c_1}{L}
+				  	 \left( \norm{\grad f_k} \cos \theta_k \right)^2,
+\end{align*}
+where $\theta_k$ is the angle between $-\grad f_k$ and $p_k$. For steepest
+descent, $\theta_k = 0$. Adding $f_k - f_{k+1}$ all up, we derive
+\begin{align*}
+	\sum_{k=0}^{M} f_k - f_{k+1} &> \frac{(1 - c_2) c_1}{L}
+	\sum_{k=0}^M \left( \norm{\grad f_k} \cos \theta_k \right)^2 \\
+	f_0 - f_M &> \frac{(1 - c_2) c_1}{L} \sum_{k=0}^M
+		\left( \norm{\grad f_k} \cos \theta_k \right)^2,
+\end{align*}
+so (taking limits for $M$) we obtain:
+\begin{ctheorem}{\cite{Zout60}}{linesearch-finite-norm-sum}
+	$\sum_k \norm{\grad f_k}^2 \cos^2 \theta_k$ is finite.
+\end{ctheorem}
+
+\begin{corollary}
+	If $\theta_k < \frac{\pi}{2}$ uniformly, we deduce that $\norm{\grad f_k}
+	\to 0$, so $\grad f_k \to 0$. This is true in particular for steepest
+	descent, since $\theta_k = 0$.
+\end{corollary}
