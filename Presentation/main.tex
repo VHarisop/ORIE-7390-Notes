@@ -1,0 +1,124 @@
+\documentclass[10pt]{beamer}
+
+\usepackage{default}
+\usepackage{xltxtra}
+\usepackage{fontspec}
+\usepackage{latex-macros}
+\usepackage{cancel}
+%\usefonttheme[onlymath]{serif}
+\usefonttheme{professionalfonts}
+
+\usepackage{cleveref}
+\usepackage{svg}
+\usepackage{pgf}
+\usepackage{tikzducks, tikz}
+\usetikzlibrary{arrows}
+\usepackage{mathrsfs}
+\usepackage[sort]{natbib}
+
+\mode<presentation>
+{
+    \usetheme
+    [navbar=true,colorblocks=true,pagenumbers=true]{Cornell}
+}
+
+\usepackage[skins]{tcolorbox}
+\newcommand{\xstar}{x^{\star}}
+\newcommand{\eps}{\varepsilon}
+
+\allowdisplaybreaks
+
+\begin{document}
+
+\title{On the convergence of the proximal algorithm for nonsmooth functions
+involving analytic features}
+\author{Hedy Attouch \& J{\'e}{\^o}me Bolte}
+\frame{\titlepage}
+\frame{\tableofcontents}
+
+%% INTRODUCTION: Problem motivation, difficulties and prior art
+\section{Introduction}
+
+\begin{frame}{Introduction}
+Recall the definition of the \textit{proximal point} method:
+\begin{equation}
+	x_{k+1} \in \mathrm{prox}_{\lambda_k f}
+	:= \argmin_{u \in \Rbb^d} \set{
+	f(u) + \frac{1}{2 \lambda_k} \norm{u - x_k}^2 }, \;
+	x_0 \in \Rbb^d
+	\label{eq:proximal-point-method}
+\end{equation}
+Our setting:
+\begin{itemize}
+	\item $f: \Rbb^d \to \overline{\Rbb}$: proper, lsc
+	\item $\lambda_k > 0, \; \forall k$
+	\item $\inf_{\Rbb^d} f > -\infty$
+\end{itemize}
+\end{frame}
+
+\section{Introduction \& Background}
+
+\begin{frame}{Introduction}
+	Two main questions:
+	\begin{enumerate}
+		\item<1-> Does the sequence defined by~\cref{eq:proximal-point-method}
+			converge?
+		\item<2-> Is there a generic way to say \textit{how fast} it does?
+	\end{enumerate}
+
+	\visible<3->{
+		Tackle both using \textbf{{\L}ojasiewicz exponents}, which appear in a
+		special case of the Kurdyka-{\L}ojasiewicz inequality.
+	}
+\end{frame}
+
+\begin{frame}{Background}
+	Recall the following definitions and facts:
+	\begin{enumerate}
+		\item \textbf{Critical points} of $f$: denote
+			\begin{align*}
+				\mathrm{crit}(f) := \set{x \in \dom f \mmid 0 \in \partial
+				f(x)},
+			\end{align*}
+			where $\partial f$ denotes the \textbf{limiting} subdifferential.
+		\item For a proper lsc $f$ with $\inf f > -\infty$ it holds that
+			\[
+				x_{k+1} \in \mathrm{prox}_{\lambda_k f}
+				\Rightarrow \frac{x_k - x_{k+1}}{\lambda_k} \in \partial f(x).
+			\]
+	\end{enumerate}
+\end{frame}
+
+\section{Main Results}
+
+\begin{frame}{{\L}ojasiewicz exponents}
+	A slightly specialized version of the familiar KL inequality:
+	\begin{definition} \label{defn:loj-exp}
+		A function $f$ sat. the {\L}ojasiewicz property around $\hat{x} \in
+		\mathrm{crit}(f)$ if $\exists C, \eps > 0, \theta \in [0, 1)$ such that
+		\[
+			C \norm{v} \abs{f(x) - f(\hat{x})}^{1 - \theta} \geq 1, \;
+			\forall v \in \partial f(x), \; \forall x \in \hat{x} + \eps
+			\mathbb{B}.
+		\]
+	\end{definition}
+	Note: the {\L}ojasiewicz property is a special case of the KL inequality
+	with desingularizer $\varphi(s) = C s^{1 - \theta}$.
+\end{frame}
+
+\begin{frame}{Main takeaway}
+	Two positive answers to our earlier questions:
+	\begin{enumerate}
+		\item Bounded sequences $\set{x_k}$ converge to critical points of $f$
+		\item Rate of convergence is controlled by {\L}ojasiewicz exponent
+	\end{enumerate}
+\end{frame}
+
+\section{
+
+\begin{frame}[allowframebreaks]{References}
+\bibliographystyle{plain}
+\bibliography{references}
+\end{frame}
+
+\end{document}
