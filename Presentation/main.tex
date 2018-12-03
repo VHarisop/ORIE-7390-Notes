@@ -19,12 +19,14 @@
 \theoremstyle{definition}
 \newtheorem{proposition}{Proposition}
 
+\usepackage{tikz,pgfplots}
+
 \begin{document}
 
 \title{On the convergence of the proximal algorithm for nonsmooth functions
 involving analytic features}
 \subtitle{Hedy Attouch, J{\'e}r{\^o}me Bolte}
-\author{Presenter: Vasilis Charisopoulos}
+\author{Presenter: \textsc{Vasilis Charisopoulos}}
 \frame{\titlepage}
 \frame{\tableofcontents}
 
@@ -149,7 +151,7 @@ Our setting:
     \[
         \color{MidnightBlue}
         \forall x \in K + \epsilon \mathbf{B}:
-        \abs{f(x) - f(\xhat)}^{\theta} \leq C \mathrm{dist}(0, \partial f(x)).
+        \abs{f(x) - f(\xhat)}^{\theta} \leq C \mathrm{dist}_{\partial f(x)}(0).
     \]
     Proved by topological definition of compactness and L-property.
 
@@ -158,9 +160,19 @@ Our setting:
 \end{frame}
 
 \begin{frame}{Functions satisfying L-property}
+    Notable classes of functions satisfying the L-property:
     \begin{itemize}
     \item Real-analytic~\citep{Loja63} \& Sub-analytic
     functions~\citep{BolDanLew07}
+    \item Convex functions exhibiting so-called \textbf{H{\"o}lderian}
+    growth\footnote{Includes e.g. \textit{sharp} functions}:
+    \[
+        \color{MidnightBlue}
+        f(x) - f^{\star} \geq C \left(\mathrm{dist}_{\argmin f}(x)\right)^{p},
+        \;
+        p \geq 1, \; \forall x \in \argmin f + \epsilon \mathbf{B}.
+    \]
+    (in particular, $\norm{x}^{p}, \; p \geq 1$)
     \end{itemize}
 \end{frame}
 
@@ -194,11 +206,27 @@ Our setting:
         \leq M \left(f(x^k)^{1-\theta} - f(x^{k+1})^{1-\theta}\right) \\
         \color{MidnightBlue}
         \overset{(\text{algebra...})}{\Rightarrow}
-        \norm{x^{k+1} - x^k} \leq r \norm{x^k - x^{k-1}}
-        + \frac{M}{r} \left(f(x^k)^{1-\theta} - f(x^{k+1})^{1-\theta}\right),
+        \underbrace{\norm{x^{k+1} - x^k} \leq r \norm{x^k - x^{k-1}}
+        + \frac{M}{r} \left(f(x^k)^{1-\theta} - f(x^{k+1})^{1-\theta}\right)}_{
+        \text{error bound}}
     \end{align*}
-    for some $r \in (0, 1)$. ``Telescope'' both sides to obtain convergence,
-    Cauchy property.
+    for some $\color{MidnightBlue} r \in (0, 1)$. ``Telescope'' both sides to
+    obtain convergence, Cauchy property.
+\end{frame}
+
+\begin{frame}{Consequences of Theorem 1}
+    \textbf{Example}:
+    Suppose $f(x) = g(x) + \delta_{\cD}(x)$, $\cD$ compact. Then
+    {\color{MidnightBlue}
+    \begin{align*}
+        \mathrm{prox}_{\lambda f}(x^k) & \equiv
+        \argmin_{x \in \cD} \set{
+            g(x) + \frac{1}{2 \lambda} \norm{x - x^k}^2}
+            \Rightarrow \set{x^k}_{k \in \Nbb} \subset \cD,
+    \end{align*}
+    }
+    so obtain convergence for free.
+    Should also extend to prox-gradient.
 \end{frame}
 
 \subsection{Rate of convergence}
@@ -215,6 +243,61 @@ Our setting:
         $\norm{x^k - x^{\star}} = \cO(k^{-\frac{1-\theta}{2\theta - 1}})$
         \end{itemize}
     \end{block}
+\end{frame}
+
+\begin{frame}{Proof Sketch}
+    Denote $\Delta_k := \sum_{p = k}^{\infty} \norm{x^p - x^{p+1}}$, shown to
+    be finite. Triangle inequality + algebra from error bound give
+    \[  \color{MidnightBlue}
+        \norm{x^k - x^{\star}} \leq \Delta_k \leq
+        \frac{1}{1 - r} \left(\Delta_{k-1} - \Delta_k\right)
+        + \tilde{C} \left(\Delta_{k-1}
+        - \Delta_k\right)^{\frac{1 - \theta}{\theta}}.
+    \]
+    \begin{itemize}
+    \item {$\theta \in (1/2, 1)$}:
+    $\Delta_k \to 0$, big enough $k$ implies (after some
+    algebra):
+    \[  \color{MidnightBlue}
+        0 \leq \mu(\theta) \leq \left(\Delta_{k-1}^{\frac{1 - 2\theta}{1 -
+        \theta}} - \Delta_k^{\frac{1 - 2 \theta}{1 - \theta}} \right).
+    \]
+    Noticing $\frac{1 - 2\theta}{1 - \theta} < 0$, summing up for some
+    large enough integers $N, N'$ gives:
+    \[	\color{MidnightBlue}
+        \Delta_N \leq c N^{-\frac{1-\theta}{2\theta - 1}}.
+    \]
+    \item {$\theta \in (0, 1/2]$}: $\frac{1-\theta}{\theta} = 1$ so obtain
+    \[ \color{MidnightBlue}
+        \Delta_k \leq \left(\tilde{C} + \frac{1}{1 - r}\right)
+        \left(\Delta_{k-1} - \Delta_k\right). \]
+    \end{itemize}
+\end{frame}
+
+
+%\begin{frame}{Mandatory slide with picture}
+%    Example: $f(x) = \norm{x}_1 \Rightarrow
+%    [x^{k+1}]_j = \begin{cases}
+%        0, & \abs{[x^k]_j} \leq \lambda_k \\
+%        [x^k]_j - \mathrm{sign}([x^k]_j) \lambda_k, & \text{o.w.}
+%    \end{cases} $
+%    \begin{figure}[h]
+%        \begin{tikzpicture}% table
+%        \begin{axis}[xlabel=$k$,ylabel=$\norm{x^k}^p$]
+%        \addplot+ table[x expr=\coordindex+1,y index={0}] {code/test.csv};
+%        \addplot+ table[x expr=\coordindex+1,y index={1}] {code/test.csv};
+%        \addplot+ table[x expr=\coordindex+1,y index={2}] {code/test.csv};
+%        \addplot+ table[x expr=\coordindex+1,y index={3}] {code/test.csv};
+%        \addplot+ table[x expr=\coordindex+1,y index={4}] {code/test.csv};
+%        \end{axis}
+%        \end{tikzpicture}
+%    \end{figure}
+%\end{frame}
+
+\begin{frame}
+    \begin{center} \Large
+    Thank You! \\ Questions?
+    \end{center}
 \end{frame}
 
 \begin{frame}[allowframebreaks]{References}
