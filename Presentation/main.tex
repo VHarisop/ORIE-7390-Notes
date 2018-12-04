@@ -275,24 +275,31 @@ Our setting:
 \end{frame}
 
 
-%\begin{frame}{Mandatory slide with picture}
-%    Example: $f(x) = \norm{x}_1 \Rightarrow
-%    [x^{k+1}]_j = \begin{cases}
-%        0, & \abs{[x^k]_j} \leq \lambda_k \\
-%        [x^k]_j - \mathrm{sign}([x^k]_j) \lambda_k, & \text{o.w.}
-%    \end{cases} $
-%    \begin{figure}[h]
-%        \begin{tikzpicture}% table
-%        \begin{axis}[xlabel=$k$,ylabel=$\norm{x^k}^p$]
-%        \addplot+ table[x expr=\coordindex+1,y index={0}] {code/test.csv};
-%        \addplot+ table[x expr=\coordindex+1,y index={1}] {code/test.csv};
-%        \addplot+ table[x expr=\coordindex+1,y index={2}] {code/test.csv};
-%        \addplot+ table[x expr=\coordindex+1,y index={3}] {code/test.csv};
-%        \addplot+ table[x expr=\coordindex+1,y index={4}] {code/test.csv};
-%        \end{axis}
-%        \end{tikzpicture}
-%    \end{figure}
-%\end{frame}
+\begin{frame}{Mandatory slide with picture}
+	Examples: $\norm{x}_1$ with
+	\(
+		\color{MidnightBlue}
+    	[x^{k+1}]_j = \begin{cases}
+        0, & \abs{[x^k]_j} \leq \lambda_k \\
+        [x^k]_j - \mathrm{sign}([x^k]_j) \lambda_k, & \text{o.w.}
+	\end{cases} \)
+	and $\norm{x}^2$ with
+	\(
+		\color{MidnightBlue}
+		x^{k+1} = \frac{\lambda_k}{2 + \lambda_k} x^k.
+		\)
+    \begin{figure}[h]
+        \begin{tikzpicture}% table
+			\begin{axis}[xlabel=$k$,ylabel=$f(x^k)$, ymode=log, no markers]
+				\addplot+[thick] table[x=k, y=l1, col sep=comma] {code/experiment.csv};
+				\addplot+[thick] table[x=k, y=l2, col sep=comma] {code/experiment.csv};
+				\legend{$\norm{x}_1$, $\norm{x}^2$};
+        	\end{axis}
+        \end{tikzpicture}
+		\caption{Convergence plots}
+		\label{fig:conv-plots}
+    \end{figure}
+\end{frame}
 
 \begin{frame}
     \begin{center} \Large
